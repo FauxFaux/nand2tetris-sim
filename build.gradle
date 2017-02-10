@@ -2,7 +2,6 @@ apply plugin: 'distribution'
 
 subprojects {
     apply plugin: 'java'
-    sourceCompatibility = 1.4
 }
 
 distributions {
