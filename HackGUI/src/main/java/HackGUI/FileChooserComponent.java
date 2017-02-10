@@ -17,12 +17,13 @@
 
 package HackGUI;
 
-import java.awt.*;
 import javax.swing.*;
-import java.awt.event.*;
 import javax.swing.filechooser.FileFilter;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.*;
+import java.util.Vector;
 
 /**
  * This class represents a window from which the users can select different types
@@ -58,8 +59,8 @@ public class FileChooserComponent extends JPanel {
     public FileChooserComponent() {
         listeners = new Vector();
         jbInit();
-        fileChooserFrame.setSize(440,250);
-        fileChooserFrame.setLocation(250,250);
+        fileChooserFrame.setSize(440, 250);
+        fileChooserFrame.setLocation(250, 250);
         fileChooserFrame.setTitle("Choose a file :");
         fileChooserFrame.getContentPane().add(fc);
     }
@@ -83,8 +84,8 @@ public class FileChooserComponent extends JPanel {
      * button by calling the enterPressed method to all the listeners.
      */
     public void notifyListeners() {
-        for (int i=0;i<listeners.size();i++) {
-           ((EnterPressedListener)listeners.elementAt(i)).enterPressed();
+        for (int i = 0; i < listeners.size(); i++) {
+            ((EnterPressedListener) listeners.elementAt(i)).enterPressed();
         }
     }
 
@@ -105,9 +106,9 @@ public class FileChooserComponent extends JPanel {
     /**
      * Sets the selection of the file chooser to directories only.
      */
-     public void setSelectionToDirectories() {
+    public void setSelectionToDirectories() {
         fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-     }
+    }
 
     /**
      * Sets the current file name.
@@ -134,7 +135,7 @@ public class FileChooserComponent extends JPanel {
      * Returns true if the file name was changed by the user, false - otherwise.
      */
     public boolean isFileNameChanged() {
-         return !currentFileName.equals(fileName.getText());
+        return !currentFileName.equals(fileName.getText());
     }
 
     /**
@@ -191,7 +192,7 @@ public class FileChooserComponent extends JPanel {
      */
     public void browseButton_actionPerformed(ActionEvent e) {
         int returnVal = fc.showDialog(FileChooserComponent.this, "Select file");
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();
             fileName.setText(file.getAbsolutePath());
         }

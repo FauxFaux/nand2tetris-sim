@@ -34,14 +34,14 @@ public class HardwareSimulatorApplication extends HackApplication {
                                         String defaultScript, String contentsFileName,
                                         String aboutFileName) {
         super(new HardwareSimulator(simulatorComponent), controllerComponent, simulatorComponent,
-              defaultScript, contentsFileName, aboutFileName);
+            defaultScript, contentsFileName, aboutFileName);
     }
 
     protected void createController(HackSimulator simulator, ControllerGUI controllerComponent,
                                     String defaultScript)
-     throws ScriptException, ControllerException {
+        throws ScriptException, ControllerException {
         HardwareSimulatorController c =
-            new HardwareSimulatorController((HardwareSimulatorControllerGUI)controllerComponent,
-                                            (HardwareSimulator)simulator, defaultScript);
+            new HardwareSimulatorController((HardwareSimulatorControllerGUI) controllerComponent,
+                (HardwareSimulator) simulator, defaultScript);
     }
 }

@@ -17,8 +17,9 @@
 
 package HackGUI;
 
-import java.util.EventObject;
 import Hack.Controller.Breakpoint;
+
+import java.util.EventObject;
 
 /**
  * An event for notifying a BreakpointChangedListener on a change in one of the

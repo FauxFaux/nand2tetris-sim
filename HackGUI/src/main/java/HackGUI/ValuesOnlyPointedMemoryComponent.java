@@ -17,7 +17,8 @@
 
 package HackGUI;
 
-import javax.swing.table.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableModel;
 
 /**
  * A Memory component that has an address pointer and displays only its values
@@ -44,7 +45,8 @@ public class ValuesOnlyPointedMemoryComponent extends PointedMemoryComponent {
     }
 
     // Determines the width of each column in the table.
-    protected void determineColumnWidth() {}
+    protected void determineColumnWidth() {
+    }
 
     // An inner class representing the model of the table.
     public class ValuesOnlyPointedMemoryTableModel extends MemoryTableModel {

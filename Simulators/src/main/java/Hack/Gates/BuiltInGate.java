@@ -22,11 +22,14 @@ package Hack.Gates;
  */
 public abstract class BuiltInGate extends Gate {
 
-    protected void clockUp() {}
+    protected void clockUp() {
+    }
 
-    protected void clockDown() {}
+    protected void clockDown() {
+    }
 
-    protected void reCompute() {}
+    protected void reCompute() {
+    }
 
     /**
      * Initializes the gate

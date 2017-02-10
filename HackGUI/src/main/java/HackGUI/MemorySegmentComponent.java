@@ -17,19 +17,27 @@
 
 package HackGUI;
 
-import Hack.ComputerParts.*;
-import Hack.Events.*;
-import java.util.*;
-import java.awt.*;
-import java.awt.event.*;
+import Hack.ComputerParts.ComputerPartEvent;
+import Hack.ComputerParts.ComputerPartEventListener;
+import Hack.ComputerParts.MemorySegmentGUI;
+import Hack.Events.ErrorEvent;
+import Hack.Events.ErrorEventListener;
+
 import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.Vector;
 
 /**
  * This class represents the gui of a memory segment.
  */
 public class MemorySegmentComponent extends JPanel
- implements MemorySegmentGUI, MemoryChangeListener {
+    implements MemorySegmentGUI, MemoryChangeListener {
 
     /**
      * The current format.
@@ -85,7 +93,7 @@ public class MemorySegmentComponent extends JPanel
     protected boolean hideNullValue;
 
     // The start and end row indices of the enabled region.
-    protected int startEnabling,endEnabling;
+    protected int startEnabling, endEnabling;
 
     // If true, the disabled region is shaded.
     protected boolean hideDisabledRange;
@@ -115,7 +123,7 @@ public class MemorySegmentComponent extends JPanel
     /**
      * Sets the null value of this component.
      */
-    public void setNullValue (short value, boolean hideNullValue) {
+    public void setNullValue(short value, boolean hideNullValue) {
         nullValue = value;
         this.hideNullValue = hideNullValue;
     }
@@ -190,16 +198,16 @@ public class MemorySegmentComponent extends JPanel
      * memoryChanged method to all the listeners.
      */
     public void notifyListeners(int address, short value) {
-        ComputerPartEvent event = new ComputerPartEvent(this,address,value);
-        for (int i=0;i<listeners.size();i++) {
-           ((ComputerPartEventListener)listeners.elementAt(i)).valueChanged(event);
+        ComputerPartEvent event = new ComputerPartEvent(this, address, value);
+        for (int i = 0; i < listeners.size(); i++) {
+            ((ComputerPartEventListener) listeners.elementAt(i)).valueChanged(event);
         }
     }
 
     public void notifyListeners() {
         ComputerPartEvent event = new ComputerPartEvent(this);
-        for (int i=0;i<listeners.size();i++) {
-           ((ComputerPartEventListener)listeners.elementAt(i)).guiGainedFocus();
+        for (int i = 0; i < listeners.size(); i++) {
+            ((ComputerPartEventListener) listeners.elementAt(i)).guiGainedFocus();
         }
     }
 
@@ -217,15 +225,15 @@ public class MemorySegmentComponent extends JPanel
         errorEventListeners.removeElement(listener);
     }
 
-   /**
+    /**
      * Notifies all the ErrorEventListener on an error in this gui by
      * creating an ErrorEvent (with the error message) and sending it
      * using the errorOccured method to all the listeners.
      */
     public void notifyErrorListeners(String errorMessage) {
         ErrorEvent event = new ErrorEvent(this, errorMessage);
-        for (int i=0; i<errorEventListeners.size(); i++)
-            ((ErrorEventListener)errorEventListeners.elementAt(i)).errorOccured(event);
+        for (int i = 0; i < errorEventListeners.size(); i++)
+            ((ErrorEventListener) errorEventListeners.elementAt(i)).errorOccured(event);
     }
 
     /**
@@ -233,15 +241,15 @@ public class MemorySegmentComponent extends JPanel
      * memory segment (the data should be taken from the main memory gui).
      */
     public void setValueAt(int index, short value) {
-            Rectangle r = segmentTable.getCellRect(index, 0, true);
-            segmentTable.scrollRectToVisible(r);
-            repaint();
+        Rectangle r = segmentTable.getCellRect(index, 0, true);
+        segmentTable.scrollRectToVisible(r);
+        repaint();
     }
 
     /**
      * Sets the start address.
      */
-    public void setStartAddress (int index) {
+    public void setStartAddress(int index) {
         startAddress = index;
         segmentTable.revalidate();
     }
@@ -259,8 +267,8 @@ public class MemorySegmentComponent extends JPanel
      * Returns the value at the given index in its string representation.
      */
     public String getValueAsString(int index) {
-        return Format.translateValueToString(memory.getValueAsShort((short)(index + startAddress)),
-                                             dataFormat);
+        return Format.translateValueToString(memory.getValueAsShort((short) (index + startAddress)),
+            dataFormat);
     }
 
     /**
@@ -271,8 +279,8 @@ public class MemorySegmentComponent extends JPanel
         Rectangle r = segmentTable.getCellRect(index, 1, true);
         segmentTable.scrollRectToVisible(r);
         setTopLevelLocation();
-        return new Point((int)(r.getX() + topLevelLocation.getX()),
-                         (int)(r.getY() + topLevelLocation.getY()));
+        return new Point((int) (r.getX() + topLevelLocation.getX()),
+            (int) (r.getY() + topLevelLocation.getY()));
     }
 
     /**
@@ -294,7 +302,7 @@ public class MemorySegmentComponent extends JPanel
     /**
      * hides the existing flash.
      */
-    public void hideFlash () {
+    public void hideFlash() {
         flashIndex = -1;
         repaint();
 
@@ -303,7 +311,7 @@ public class MemorySegmentComponent extends JPanel
     /**
      * flashes the value at the given index.
      */
-    public void flash (int index) {
+    public void flash(int index) {
         flashIndex = index;
         Utilities.tableCenterScroll(this, segmentTable, index);
     }
@@ -344,7 +352,7 @@ public class MemorySegmentComponent extends JPanel
 
     // Determines the width of each column in the table.
     protected void determineColumnWidth() {
-        if(segmentTable.getColumnCount()==2) {
+        if (segmentTable.getColumnCount() == 2) {
             TableColumn column = null;
             for (int i = 0; i < 2; i++) {
                 column = segmentTable.getColumnModel().getColumn(i);
@@ -395,7 +403,7 @@ public class MemorySegmentComponent extends JPanel
      */
     public void setVisibleRows(int num) {
         int tableHeight = num * segmentTable.getRowHeight();
-        scrollPane.setSize(getTableWidth(), tableHeight+3);
+        scrollPane.setSize(getTableWidth(), tableHeight + 3);
         setPreferredSize(new Dimension(getTableWidth(), tableHeight + 30));
         setSize(getTableWidth(), tableHeight + 30);
     }
@@ -415,7 +423,7 @@ public class MemorySegmentComponent extends JPanel
         scrollPane = new JScrollPane(segmentTable);
         scrollPane.setMinimumSize(new Dimension(getTableWidth(), 0));
 
-        setLayout(new BorderLayout(0,0));
+        setLayout(new BorderLayout(0, 0));
 
         determineColumnWidth();
         nameLbl.setPreferredSize(new Dimension(getTableWidth(), 25));
@@ -448,7 +456,7 @@ public class MemorySegmentComponent extends JPanel
 
     // Returns the string at the given location
     private String getStrAt(int index) {
-        short currentValue = memory.getValueAsShort((short)(index + startAddress));
+        short currentValue = memory.getValueAsShort((short) (index + startAddress));
         if (currentValue == nullValue && hideNullValue)
             return "";
         else
@@ -476,7 +484,7 @@ public class MemorySegmentComponent extends JPanel
          * Returns the number of rows.
          */
         public int getRowCount() {
-            if(memory!=null)
+            if (memory != null)
                 return Math.max(memory.getMemorySize() - startAddress, 0);
             else
                 return 0;
@@ -493,7 +501,7 @@ public class MemorySegmentComponent extends JPanel
          * Returns the value at a specific row and column.
          */
         public Object getValueAt(int row, int col) {
-            if(col==0)
+            if (col == 0)
                 return String.valueOf(row);
             else
                 return getStrAt(row);
@@ -505,7 +513,7 @@ public class MemorySegmentComponent extends JPanel
          */
         public boolean isCellEditable(int row, int col) {
             boolean result = false;
-            if(isEnabled && col == 1 &&
+            if (isEnabled && col == 1 &&
                 (endEnabling == -1 || (row + startAddress >= startEnabling && row + startAddress <= endEnabling)))
                 result = true;
 
@@ -516,17 +524,16 @@ public class MemorySegmentComponent extends JPanel
          * Sets the value at a specific row and column.
          */
         public void setValueAt(Object value, int row, int col) {
-            String data = ((String)value).trim();
+            String data = ((String) value).trim();
             if (!getStrAt(row).equals(data)) {
                 try {
                     short currentValue;
-                    if(data.equals("") && hideNullValue)
+                    if (data.equals("") && hideNullValue)
                         currentValue = nullValue;
                     else
                         currentValue = Format.translateValueToShort(data, memory.dataFormat);
-                    notifyListeners((short)row,currentValue);
-                }
-                catch(NumberFormatException nfe) {
+                    notifyListeners((short) row, currentValue);
+                } catch (NumberFormatException nfe) {
                     notifyErrorListeners("Illegal value");
                 }
                 repaint();
@@ -539,8 +546,7 @@ public class MemorySegmentComponent extends JPanel
     class MemorySegmentTableCellRenderer extends DefaultTableCellRenderer {
 
         public Component getTableCellRendererComponent
-            (JTable table, Object value, boolean selected, boolean focused, int row, int column)
-        {
+            (JTable table, Object value, boolean selected, boolean focused, int row, int column) {
             setForeground(null);
             setBackground(null);
 
@@ -551,13 +557,13 @@ public class MemorySegmentComponent extends JPanel
         }
 
         public void setRenderer(int row, int column) {
-            if(column == 0)
+            if (column == 0)
                 setHorizontalAlignment(SwingConstants.CENTER);
             else if (column == 1) {
                 setHorizontalAlignment(SwingConstants.RIGHT);
 
-                for (int i=0;i<highlightIndex.size(); i++) {
-                    if(row == ((Integer)highlightIndex.elementAt(i)).intValue()) {
+                for (int i = 0; i < highlightIndex.size(); i++) {
+                    if (row == ((Integer) highlightIndex.elementAt(i)).intValue()) {
                         setForeground(Color.blue);
                         break;
                     }
@@ -567,12 +573,12 @@ public class MemorySegmentComponent extends JPanel
                     setBackground(Color.orange);
             }
             setEnabledRange(row);
-       }
+        }
 
-       public void setEnabledRange(int row) {
+        public void setEnabledRange(int row) {
             if ((row + startAddress < startEnabling || row + startAddress > endEnabling)
-                    && hideDisabledRange)
+                && hideDisabledRange)
                 setForeground(Color.white);
-       }
-   }
+        }
+    }
 }

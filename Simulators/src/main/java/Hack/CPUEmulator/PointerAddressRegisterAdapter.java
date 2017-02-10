@@ -17,7 +17,10 @@
 
 package Hack.CPUEmulator;
 
-import Hack.ComputerParts.*;
+import Hack.ComputerParts.ComputerPartEvent;
+import Hack.ComputerParts.PointedMemory;
+import Hack.ComputerParts.Register;
+import Hack.ComputerParts.RegisterGUI;
 
 /**
  * A register which receives a PointedMemory object.
@@ -37,7 +40,7 @@ public class PointerAddressRegisterAdapter extends Register {
      * the pointedMemory object.
      */
     public PointerAddressRegisterAdapter(RegisterGUI gui, PointedMemory memory) {
-        super(gui, (short)(-32768), (short)32767);
+        super(gui, (short) (-32768), (short) 32767);
         this.memory = memory;
         updatePointer = true;
     }

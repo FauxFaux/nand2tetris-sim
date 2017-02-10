@@ -18,15 +18,18 @@
 package HackGUI;
 
 import Hack.ComputerParts.LabeledPointedMemoryGUI;
-import javax.swing.table.*;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import java.awt.*;
 
 /**
  * This class represents a memomy component with additional feature of another
  * column representing the labels of this memory component.
  */
-public class LabeledMemoryComponent extends PointedMemoryComponent implements LabeledPointedMemoryGUI{
+public class LabeledMemoryComponent extends PointedMemoryComponent implements LabeledPointedMemoryGUI {
 
     // The array of labels of this memory.
     protected String[] labels;
@@ -38,8 +41,8 @@ public class LabeledMemoryComponent extends PointedMemoryComponent implements La
      * Constructs a new LabeledMemoryComponent.
      */
     public LabeledMemoryComponent() {
-        searchButton.setLocation(199,2);
-        clearButton.setLocation(168,2);
+        searchButton.setLocation(199, 2);
+        clearButton.setLocation(168, 2);
         memoryTable.setGridColor(Color.lightGray);
         labels = new String[0];
     }
@@ -127,8 +130,7 @@ public class LabeledMemoryComponent extends PointedMemoryComponent implements La
             if (i == 0) {
                 column.setMinWidth(1);
                 column.setPreferredWidth(1);
-            }
-            else if (i==1) {
+            } else if (i == 1) {
                 column.setMinWidth(1);
                 column.setPreferredWidth(1);
             }
@@ -149,11 +151,11 @@ public class LabeledMemoryComponent extends PointedMemoryComponent implements La
          * Returns the value at a specific row and column.
          */
         public Object getValueAt(int row, int col) {
-            String result ="";
-            if(col==0)
+            String result = "";
+            if (col == 0)
                 result = labels[row];
             else
-                result = (String)super.getValueAt(row, col - 1);
+                result = (String) super.getValueAt(row, col - 1);
             return result;
         }
 
@@ -180,7 +182,7 @@ public class LabeledMemoryComponent extends PointedMemoryComponent implements La
                 setHorizontalAlignment(SwingConstants.RIGHT);
                 setFont(Utilities.boldValueFont);
                 setBackground(Color.lightGray);
-                if (row==labelFlashIndex)
+                if (row == labelFlashIndex)
                     setBackground(Color.orange);
             }
         }

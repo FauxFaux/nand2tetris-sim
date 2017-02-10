@@ -20,8 +20,7 @@ package HackGUI;
 /**
  * An exception for translation errors.
  */
-public class TranslationException extends Exception
-{
+public class TranslationException extends Exception {
     /**
      * Constructs a new TranslationException with the given message.
      */

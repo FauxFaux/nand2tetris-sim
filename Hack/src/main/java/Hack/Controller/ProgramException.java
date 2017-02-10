@@ -20,8 +20,7 @@ package Hack.Controller;
 /**
  * An exception for errors in the program.
  */
-public class ProgramException extends Exception
-{
+public class ProgramException extends Exception {
     /**
      * Constructs a new ProgramException with the given message.
      */

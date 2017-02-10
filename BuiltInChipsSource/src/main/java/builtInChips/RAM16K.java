@@ -31,7 +31,7 @@ public class RAM16K extends RAM {
         if (memoryGUI != null) {
             memoryGUI.setName("RAM 16K:");
             memoryGUI.setVisibleRows(7);
-            memoryGUI.setLocation(4,295);
+            memoryGUI.setLocation(4, 295);
         }
     }
 }

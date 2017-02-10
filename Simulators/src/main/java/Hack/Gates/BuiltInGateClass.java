@@ -31,7 +31,7 @@ public class BuiltInGateClass extends GateClass {
      * The HDL's input and output pin names are also given.
      */
     public BuiltInGateClass(String gateName, HDLTokenizer input, PinInfo[] inputPinsInfo, PinInfo[] outputPinsInfo)
-     throws HDLException {
+        throws HDLException {
         super(gateName, inputPinsInfo, outputPinsInfo);
 
         // read java class name
@@ -104,8 +104,8 @@ public class BuiltInGateClass extends GateClass {
         }
 
         if (!(input.getTokenType() == HDLTokenizer.TYPE_SYMBOL &&
-              input.getSymbol() == '}'))
-                input.HDLError("Missing '}'");
+            input.getSymbol() == '}'))
+            input.HDLError("Missing '}'");
     }
 
     /**
@@ -124,7 +124,7 @@ public class BuiltInGateClass extends GateClass {
             outputNodes[i] = new Node();
 
         try {
-            result = (BuiltInGate)javaGateClass.newInstance();
+            result = (BuiltInGate) javaGateClass.newInstance();
         } catch (IllegalAccessException iae) {
             throw new InstantiationException(iae.getMessage());
         }
@@ -134,7 +134,7 @@ public class BuiltInGateClass extends GateClass {
         // if the gate has a gui component, add the gate to the gate manager
         // and set it to be its own parent for eval notifications
         if (result instanceof BuiltInGateWithGUI)
-            GatesManager.getInstance().addChip((BuiltInGateWithGUI)result);
+            GatesManager.getInstance().addChip((BuiltInGateWithGUI) result);
 
         // Add a DirtyGateAdapter as a listener to all the non-clocked inputs,
         // so the gate will become dirty when one of its non-clocked input changes.

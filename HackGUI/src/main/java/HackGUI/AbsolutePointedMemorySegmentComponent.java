@@ -17,8 +17,8 @@
 
 package HackGUI;
 
+import javax.swing.table.TableModel;
 import java.awt.*;
-import javax.swing.table.*;
 
 /**
  * A PointedMemorySegmentComponent with an absolute address referencing.
@@ -43,7 +43,7 @@ public class AbsolutePointedMemorySegmentComponent extends PointedMemorySegmentC
      * Returns the coordinates of the top left corner of the value at the given index.
      */
     public Point getCoordinates(int index) {
-        return super.getCoordinates(index-startAddress);
+        return super.getCoordinates(index - startAddress);
     }
 
     /**
@@ -60,7 +60,7 @@ public class AbsolutePointedMemorySegmentComponent extends PointedMemorySegmentC
          * Returns the value at a specific row and column.
          */
         public Object getValueAt(int row, int col) {
-            if(col==0)
+            if (col == 0)
                 return String.valueOf(row + startAddress);
             else
                 return super.getValueAt(row, col);

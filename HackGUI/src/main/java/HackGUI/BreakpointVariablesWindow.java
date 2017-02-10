@@ -18,10 +18,12 @@
 package HackGUI;
 
 import Hack.Controller.Breakpoint;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
 
 /**
  * This class represents the window of adding or editing a breakpoint.
@@ -65,14 +67,14 @@ public class BreakpointVariablesWindow extends JFrame {
     /**
      * Registers the given BreakpointChangedListener as a listener to this component.
      */
-    public void addListener (BreakpointChangedListener listener) {
+    public void addListener(BreakpointChangedListener listener) {
         listeners.addElement(listener);
     }
 
     /**
      * Un-registers the given BreakpointChangedListener from being a listener to this component.
      */
-    public void removeListener (BreakpointChangedListener listener) {
+    public void removeListener(BreakpointChangedListener listener) {
         listeners.removeElement(listener);
     }
 
@@ -81,10 +83,10 @@ public class BreakpointVariablesWindow extends JFrame {
      * BreakpointChangedEvent and sending it using the breakpointChanged method to all
      * of the listeners.
      */
-    public void notifyListeners () {
-        BreakpointChangedEvent event = new BreakpointChangedEvent(this,breakpoint);
-        for(int i=0;i<listeners.size();i++) {
-            ((BreakpointChangedListener)listeners.elementAt(i)).breakpointChanged(event);
+    public void notifyListeners() {
+        BreakpointChangedEvent event = new BreakpointChangedEvent(this, breakpoint);
+        for (int i = 0; i < listeners.size(); i++) {
+            ((BreakpointChangedListener) listeners.elementAt(i)).breakpointChanged(event);
         }
     }
 
@@ -92,7 +94,7 @@ public class BreakpointVariablesWindow extends JFrame {
      * Sets the list of recognized variables with the given one.
      */
     public void setVariables(String[] newVars) {
-        for (int i=0;i<newVars.length;i++) {
+        for (int i = 0; i < newVars.length; i++) {
             nameCombo.addItem(newVars[i]);
         }
     }
@@ -100,21 +102,21 @@ public class BreakpointVariablesWindow extends JFrame {
     /**
      * Sets the name of the breakpoint.
      */
-    public void setBreakpointName (String name) {
+    public void setBreakpointName(String name) {
         nameTxt.setText(name);
     }
 
     /**
      * Sets the value of the breakpoint.
      */
-    public void setBreakpointValue (String value) {
+    public void setBreakpointValue(String value) {
         valueTxt.setText(value);
     }
 
     /**
      * Sets the selected value in the combobox to the given index.
      */
-    public void setNameCombo (int index) {
+    public void setNameCombo(int index) {
         nameCombo.setSelectedIndex(index);
     }
 
@@ -167,15 +169,15 @@ public class BreakpointVariablesWindow extends JFrame {
         this.getContentPane().add(cancelButton, null);
         this.getContentPane().add(nameCombo, null);
 
-        setSize(320,160);
-        setLocation(500,250);
+        setSize(320, 160);
+        setLocation(500, 250);
     }
 
     /**
      * Implementing the action of pressing the ok button.
      */
     public void okButton_actionPerformed(ActionEvent e) {
-        breakpoint = new Breakpoint(nameTxt.getText(),valueTxt.getText());
+        breakpoint = new Breakpoint(nameTxt.getText(), valueTxt.getText());
         setVisible(false);
         notifyListeners();
     }
@@ -191,7 +193,7 @@ public class BreakpointVariablesWindow extends JFrame {
      * Implementing the action of changing the selected item in the combo box.
      */
     public void nameCombo_actionPerformed(ActionEvent e) {
-        String name = (String)nameCombo.getSelectedItem();
+        String name = (String) nameCombo.getSelectedItem();
         nameTxt.setText(name);
     }
 }

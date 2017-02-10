@@ -56,15 +56,17 @@ public class Bus extends ComputerPart {
         if (animate && sourcePart.animate && hasGUI) {
             try {
                 wait(100);
-            } catch (InterruptedException ie) {}
+            } catch (InterruptedException ie) {
+            }
 
-            gui.move(((ValueComputerPartGUI)sourcePart.getGUI()).getCoordinates(sourceIndex),
-                     ((ValueComputerPartGUI)targetPart.getGUI()).getCoordinates(targetIndex),
-                     ((ValueComputerPartGUI)sourcePart.getGUI()).getValueAsString(sourceIndex));
+            gui.move(((ValueComputerPartGUI) sourcePart.getGUI()).getCoordinates(sourceIndex),
+                ((ValueComputerPartGUI) targetPart.getGUI()).getCoordinates(targetIndex),
+                ((ValueComputerPartGUI) sourcePart.getGUI()).getValueAsString(sourceIndex));
         }
 
         targetPart.setValueAt(targetIndex, sourcePart.getValueAt(sourceIndex), false);
     }
 
-    public void refreshGUI() {}
+    public void refreshGUI() {
+    }
 }

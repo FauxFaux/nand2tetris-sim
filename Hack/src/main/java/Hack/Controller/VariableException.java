@@ -20,8 +20,7 @@ package Hack.Controller;
 /**
  * An exception for errors with variable definitions.
  */
-public class VariableException extends Exception
-{
+public class VariableException extends Exception {
     /**
      * Constructs a new VariableException with the given message and variable name.
      */

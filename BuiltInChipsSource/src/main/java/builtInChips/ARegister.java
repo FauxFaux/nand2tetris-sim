@@ -30,7 +30,7 @@ public class ARegister extends RegisterWithGUI {
     public ARegister() {
         if (gui != null) {
             gui.setName("A:");
-            gui.setLocation(4,442);
+            gui.setLocation(4, 442);
         }
     }
 }

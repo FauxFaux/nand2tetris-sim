@@ -17,18 +17,21 @@
 
 package SimulatorsGUI;
 
-import HackGUI.*;
-import Hack.CPUEmulator.*;
+import Hack.CPUEmulator.ALUGUI;
+import HackGUI.Format;
+import HackGUI.Utilities;
+
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.geom.*;
-import javax.swing.border.*;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 
 
 /**
  * This class represents the gui of an ALU.
  */
-public class ALUComponent extends JPanel implements ALUGUI{
+public class ALUComponent extends JPanel implements ALUGUI {
 
     // location constants
     private final static int START_LOCATION_ZERO_X = 7;
@@ -69,10 +72,10 @@ public class ALUComponent extends JPanel implements ALUGUI{
     private JTextField commandLbl = new JTextField();
 
     // The initial ALU color.
-    private Color aluColor = new Color(107,194,46);
+    private Color aluColor = new Color(107, 194, 46);
 
     // The label with the string "ALU".
-     private JLabel nameLbl = new JLabel();
+    private JLabel nameLbl = new JLabel();
 
     // The border of the alu's command.
     private Border commandBorder;
@@ -100,7 +103,7 @@ public class ALUComponent extends JPanel implements ALUGUI{
     /**
      * Sets the null value.
      */
-    public void setNullValue (short value, boolean hideNullValue) {
+    public void setNullValue(short value, boolean hideNullValue) {
         nullValue = value;
         this.hideNullValue = hideNullValue;
     }
@@ -109,13 +112,12 @@ public class ALUComponent extends JPanel implements ALUGUI{
      * Translates a given short to a string according to the current format.
      */
     protected String translateValueToString(short value) {
-        if(hideNullValue) {
-            if(value == nullValue)
+        if (hideNullValue) {
+            if (value == nullValue)
                 return "";
             else
                 return Format.translateValueToString(value, dataFormat);
-        }
-        else return Format.translateValueToString(value, dataFormat);
+        } else return Format.translateValueToString(value, dataFormat);
 
     }
 
@@ -123,8 +125,11 @@ public class ALUComponent extends JPanel implements ALUGUI{
      * Enabling and diabling user inputs. those methods aren't implemented
      * because in the ALU the text fields are always disabled.
      */
-    public void disableUserInput() {}
-    public void enableUserInput() {}
+    public void disableUserInput() {
+    }
+
+    public void enableUserInput() {
+    }
 
 
     /**
@@ -139,7 +144,7 @@ public class ALUComponent extends JPanel implements ALUGUI{
      * Hides the ALU's command flash.
      */
     public void hideCommandFlash() {
-        commandLbl.setBackground(new Color(107,194,46));
+        commandLbl.setBackground(new Color(107, 194, 46));
         repaint();
     }
 
@@ -156,16 +161,16 @@ public class ALUComponent extends JPanel implements ALUGUI{
      * Stops the alu's flashing.
      */
     public void hideBodyFlash() {
-        aluColor = new Color(107,194,46);
-        commandLbl.setBackground(new Color(107,194,46));
+        aluColor = new Color(107, 194, 46);
+        commandLbl.setBackground(new Color(107, 194, 46));
         repaint();
     }
 
     /**
      * flashes the value at the given index.
      */
-    public void flash (int index) {
-        switch(index) {
+    public void flash(int index) {
+        switch (index) {
             case 0:
                 location0.setBackground(Color.orange);
                 break;
@@ -181,7 +186,7 @@ public class ALUComponent extends JPanel implements ALUGUI{
     /**
      * hides the existing flash.
      */
-    public void hideFlash () {
+    public void hideFlash() {
         location0.setBackground(null);
         location1.setBackground(null);
         location2.setBackground(null);
@@ -202,7 +207,7 @@ public class ALUComponent extends JPanel implements ALUGUI{
      */
     public void highlight(int index) {
 
-        switch(index) {
+        switch (index) {
             case 0:
                 location0.setDisabledTextColor(Color.blue);
                 break;
@@ -221,13 +226,13 @@ public class ALUComponent extends JPanel implements ALUGUI{
      */
     public Point getCoordinates(int index) {
         Point location = getLocation();
-        switch(index) {
+        switch (index) {
             case 0:
-                return new Point((int)(location.getX() + location0.getLocation().getX()), (int)(location.getY() + location0.getLocation().getY()));
+                return new Point((int) (location.getX() + location0.getLocation().getX()), (int) (location.getY() + location0.getLocation().getY()));
             case 1:
-                return new Point ((int)(location.getX() + location1.getLocation().getX()), (int)(location.getY() + location1.getLocation().getY()));
+                return new Point((int) (location.getX() + location1.getLocation().getX()), (int) (location.getY() + location1.getLocation().getY()));
             case 2:
-                return new Point ((int)(location.getX() + location2.getLocation().getX()), (int)(location.getY() + location2.getLocation().getY()));
+                return new Point((int) (location.getX() + location2.getLocation().getX()), (int) (location.getY() + location2.getLocation().getY()));
             default:
                 return null;
         }
@@ -236,9 +241,9 @@ public class ALUComponent extends JPanel implements ALUGUI{
     /**
      * Returns the value at the given index in its string representation.
      */
-    public String getValueAsString (int index) {
+    public String getValueAsString(int index) {
 
-        switch(index) {
+        switch (index) {
             case 0:
                 return location0.getText();
             case 1:
@@ -254,9 +259,9 @@ public class ALUComponent extends JPanel implements ALUGUI{
      * Resets the contents of this ALUComponent.
      */
     public void reset() {
-        location0.setText(Format.translateValueToString(nullValue,dataFormat));
-        location1.setText(Format.translateValueToString(nullValue,dataFormat));
-        location2.setText(Format.translateValueToString(nullValue,dataFormat));
+        location0.setText(Format.translateValueToString(nullValue, dataFormat));
+        location1.setText(Format.translateValueToString(nullValue, dataFormat));
+        location2.setText(Format.translateValueToString(nullValue, dataFormat));
         setCommand("");
         hideFlash();
         hideHighlight();
@@ -267,8 +272,8 @@ public class ALUComponent extends JPanel implements ALUGUI{
      */
     public void setValueAt(int index, short value) {
 
-        String data = Format.translateValueToString(value,dataFormat);
-        switch(index) {
+        String data = Format.translateValueToString(value, dataFormat);
+        switch (index) {
             case 0:
                 this.location0Value = value;
                 location0.setText(data);
@@ -287,9 +292,9 @@ public class ALUComponent extends JPanel implements ALUGUI{
     /**
      * Sets the command with the given one.
      */
-     public void setCommand(String command) {
+    public void setCommand(String command) {
         commandLbl.setText(command);
-     }
+    }
 
     /**
      * Paint this ALUComponent.
@@ -303,13 +308,14 @@ public class ALUComponent extends JPanel implements ALUGUI{
         int x4Points[] = {START_ALU_X, FINISH_ALU_X, FINISH_ALU_X, START_ALU_X};
         int y4Points[] = {23, 56, 83, 116};
 
-        GeneralPath filledPolygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD,x4Points.length);
-        filledPolygon.moveTo(x4Points[0],y4Points[0]);
+        GeneralPath filledPolygon = new GeneralPath(GeneralPath.WIND_EVEN_ODD, x4Points.length);
+        filledPolygon.moveTo(x4Points[0], y4Points[0]);
 
-        for (int index = 1; index < x4Points.length; index++) 	{
+        for (int index = 1; index < x4Points.length; index++) {
             filledPolygon.lineTo(x4Points[index], y4Points[index]);
 
-        };
+        }
+        ;
         filledPolygon.closePath();
         g2.setPaint(aluColor);
         g2.fill(filledPolygon);
@@ -319,26 +325,27 @@ public class ALUComponent extends JPanel implements ALUGUI{
         g2.setStroke(regularStroke);
 
         // Drawing the lines.
-        g2.draw(new Line2D.Double(START_LOCATION_ZERO_X + LOCATION_WIDTH,START_LOCATION_ZERO_Y + (LOCATION_HEIGHT / 2),START_ALU_X,START_LOCATION_ZERO_Y + (LOCATION_HEIGHT / 2)));
-        g2.draw(new Line2D.Double(START_LOCATION_ZERO_X + LOCATION_WIDTH,START_LOCATION_ONE_Y + (LOCATION_HEIGHT / 2),START_ALU_X,START_LOCATION_ONE_Y + (LOCATION_HEIGHT / 2)));
-        g2.draw(new Line2D.Double(FINISH_ALU_X,START_LOCATION_TWO_Y + (LOCATION_HEIGHT / 2),START_LOCATION_TWO_X - 1,START_LOCATION_TWO_Y + (LOCATION_HEIGHT / 2)));
+        g2.draw(new Line2D.Double(START_LOCATION_ZERO_X + LOCATION_WIDTH, START_LOCATION_ZERO_Y + (LOCATION_HEIGHT / 2), START_ALU_X, START_LOCATION_ZERO_Y + (LOCATION_HEIGHT / 2)));
+        g2.draw(new Line2D.Double(START_LOCATION_ZERO_X + LOCATION_WIDTH, START_LOCATION_ONE_Y + (LOCATION_HEIGHT / 2), START_ALU_X, START_LOCATION_ONE_Y + (LOCATION_HEIGHT / 2)));
+        g2.draw(new Line2D.Double(FINISH_ALU_X, START_LOCATION_TWO_Y + (LOCATION_HEIGHT / 2), START_LOCATION_TWO_X - 1, START_LOCATION_TWO_Y + (LOCATION_HEIGHT / 2)));
 
     }
+
     /**
      * Sets the numeric format with the given code (out of the format constants
      * in HackController).
      */
     public void setNumericFormat(int formatCode) {
         dataFormat = formatCode;
-        location0.setText(Format.translateValueToString(location0Value,formatCode));
-        location1.setText(Format.translateValueToString(location1Value,formatCode));
-        location2.setText(Format.translateValueToString(location2Value,formatCode));
+        location0.setText(Format.translateValueToString(location0Value, formatCode));
+        location1.setText(Format.translateValueToString(location1Value, formatCode));
+        location2.setText(Format.translateValueToString(location2Value, formatCode));
     }
 
     // Initializes this component.
-    private void jbInit()  {
+    private void jbInit() {
         setOpaque(false);
-        commandBorder = BorderFactory.createLineBorder(Color.black,1);
+        commandBorder = BorderFactory.createLineBorder(Color.black, 1);
         this.setLayout(null);
         location0.setForeground(Color.black);
         location0.setDisabledTextColor(Color.black);

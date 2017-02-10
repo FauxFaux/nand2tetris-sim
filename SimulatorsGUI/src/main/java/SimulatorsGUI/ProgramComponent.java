@@ -17,16 +17,24 @@
 
 package SimulatorsGUI;
 
-import HackGUI.*;
-import Hack.VMEmulator.*;
-import Hack.Events.*;
+import Hack.Events.ErrorEvent;
+import Hack.Events.ErrorEventListener;
+import Hack.Events.ProgramEvent;
+import Hack.Events.ProgramEventListener;
+import Hack.VMEmulator.VMEmulatorInstruction;
+import Hack.VMEmulator.VMProgramGUI;
+import Hack.VirtualMachine.HVMInstruction;
+import HackGUI.MouseOverJButton;
+import HackGUI.Utilities;
+
 import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.util.*;
-import java.awt.event.*;
-import java.io.*;
-import Hack.VirtualMachine.*;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.util.Vector;
 
 /**
  * This class represents the gui of a Program.
@@ -125,8 +133,8 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
      */
     public void notifyProgramListeners(byte eventType, String programFileName) {
         ProgramEvent event = new ProgramEvent(this, eventType, programFileName);
-        for(int i=0;i<listeners.size();i++) {
-            ((ProgramEventListener)listeners.elementAt(i)).programChanged(event);
+        for (int i = 0; i < listeners.size(); i++) {
+            ((ProgramEventListener) listeners.elementAt(i)).programChanged(event);
         }
     }
 
@@ -151,8 +159,8 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
      */
     public void notifyErrorListeners(String errorMessage) {
         ErrorEvent event = new ErrorEvent(this, errorMessage);
-        for (int i=0; i<errorEventListeners.size(); i++)
-            ((ErrorEventListener)errorEventListeners.elementAt(i)).errorOccured(event);
+        for (int i = 0; i < errorEventListeners.size(); i++)
+            ((ErrorEventListener) errorEventListeners.elementAt(i)).errorOccured(event);
     }
 
     /**
@@ -164,16 +172,17 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
 
     /**
      * Sets the contents of the gui with the first instructionsLength
-	 * instructions from the given array of instructions.
+     * instructions from the given array of instructions.
      */
     public synchronized void setContents(VMEmulatorInstruction[] newInstructions,
-										 int newInstructionsLength) {
+                                         int newInstructionsLength) {
         instructions = new VMEmulatorInstruction[newInstructionsLength];
-        System.arraycopy(newInstructions,0,instructions,0,newInstructionsLength);
+        System.arraycopy(newInstructions, 0, instructions, 0, newInstructionsLength);
         programTable.revalidate();
         try {
             wait(100);
-        } catch (InterruptedException ie) {}
+        } catch (InterruptedException ie) {
+        }
         searchWindow.setInstructions(instructions);
     }
 
@@ -199,9 +208,9 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
      */
     public void loadProgram() {
         int returnVal = fileChooser.showDialog(this, "Load Program");
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
             notifyProgramListeners(ProgramEvent.LOAD,
-                                   fileChooser.getSelectedFile().getAbsolutePath());
+                fileChooser.getSelectedFile().getAbsolutePath());
         }
     }
 
@@ -241,9 +250,9 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
             column = programTable.getColumnModel().getColumn(i);
             if (i == 0)
                 column.setPreferredWidth(30);
-            else if (i==1)
+            else if (i == 1)
                 column.setPreferredWidth(40);
-            else if(i==2)
+            else if (i == 2)
                 column.setPreferredWidth(100);
         }
     }
@@ -259,7 +268,7 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
      * Implementing the action of pressing the clear button.
      */
     public void clearButton_actionPerformed(ActionEvent e) {
-        Object[] options = {"Yes", "No","Cancel"};
+        Object[] options = {"Yes", "No", "Cancel"};
         int pressedButtonValue = JOptionPane.showOptionDialog(this.getParent(),
             "Are you sure you want to clear the program?",
             "Warning Message",
@@ -269,7 +278,7 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
             options,
             options[2]);
 
-        if(pressedButtonValue==JOptionPane.YES_OPTION)
+        if (pressedButtonValue == JOptionPane.YES_OPTION)
             notifyProgramListeners(ProgramEvent.CLEAR, null);
     }
 
@@ -286,7 +295,7 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
     /**
      * Sets the name label.
      */
-    public void setNameLabel (String name) {
+    public void setNameLabel(String name) {
         nameLbl.setText(name);
     }
 
@@ -304,7 +313,7 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
         programTable.getTableHeader().setReorderingAllowed(false);
         programTable.getTableHeader().setResizingAllowed(false);
         scrollPane = new JScrollPane(programTable);
-        scrollPane.setLocation(0,27);
+        scrollPane.setLocation(0, 27);
         browseButton.setToolTipText("Load Program");
         browseButton.setIcon(browseIcon);
         browseButton.setBounds(new Rectangle(119, 2, 31, 24));
@@ -387,7 +396,7 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
 
             String[] formattedString = instructions[row].getFormattedStrings();
 
-            switch(col) {
+            switch (col) {
                 case 0:
                     short index = instructions[row].getIndexInFunction();
                     if (index >= 0)
@@ -408,7 +417,7 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
          * Returns true of this table cells are editable, false -
          * otherwise.
          */
-        public boolean isCellEditable(int row, int col){
+        public boolean isCellEditable(int row, int col) {
             return false;
         }
     }
@@ -418,25 +427,23 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
     class ColoredTableCellRenderer extends DefaultTableCellRenderer {
 
         public Component getTableCellRendererComponent
-            (JTable table, Object value, boolean selected, boolean focused, int row, int column)
-        {
+            (JTable table, Object value, boolean selected, boolean focused, int row, int column) {
             setEnabled(table == null || table.isEnabled());
             setBackground(null);
             setForeground(null);
 
-            if(column==0) {
+            if (column == 0) {
                 setHorizontalAlignment(SwingConstants.CENTER);
-            }
-            else {
+            } else {
                 setHorizontalAlignment(SwingConstants.LEFT);
             }
-            if(row==instructionIndex)
+            if (row == instructionIndex)
                 setBackground(Color.yellow);
             else {
                 HVMInstruction currentInstruction = instructions[row];
                 String op = (currentInstruction.getFormattedStrings())[0];
                 if (op.equals("function") && (column == 1 || column == 2))
-                    setBackground(new Color(190,171,210));
+                    setBackground(new Color(190, 171, 210));
             }
 
             super.getTableCellRendererComponent(table, value, selected, focused, row, column);
@@ -445,30 +452,30 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
         }
     }
 
-	/**
-	 * Displays a confirmation window asking the user permission to
-	 * use built-in vm functions
-	 */
-	public boolean confirmBuiltInAccess() {
-		String message =
-			"No implementation was found for some functions which are called in the VM code.\n" +
-			"The VM Emulator provides built-in implementations for the OS functions.\n" +
-			"If available, should this built-in implementation be used for functions which were not implemented in the VM code?";
-		return (JOptionPane.showConfirmDialog(this.getParent(),
-											  message,
-											  "Confirmation Message",
-											  JOptionPane.YES_NO_OPTION,
-											  JOptionPane.QUESTION_MESSAGE) ==
-				JOptionPane.YES_OPTION);
-	}
+    /**
+     * Displays a confirmation window asking the user permission to
+     * use built-in vm functions
+     */
+    public boolean confirmBuiltInAccess() {
+        String message =
+            "No implementation was found for some functions which are called in the VM code.\n" +
+                "The VM Emulator provides built-in implementations for the OS functions.\n" +
+                "If available, should this built-in implementation be used for functions which were not implemented in the VM code?";
+        return (JOptionPane.showConfirmDialog(this.getParent(),
+            message,
+            "Confirmation Message",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE) ==
+            JOptionPane.YES_OPTION);
+    }
 
-	/**
-	 * Displays a notification window with the given message.
-	 */
-	public void notify(String message) {
-		JOptionPane.showMessageDialog(this.getParent(),
-									  message,
-									  "Information Message",
-									  JOptionPane.INFORMATION_MESSAGE);
-	}
+    /**
+     * Displays a notification window with the given message.
+     */
+    public void notify(String message) {
+        JOptionPane.showMessageDialog(this.getParent(),
+            message,
+            "Information Message",
+            JOptionPane.INFORMATION_MESSAGE);
+    }
 }

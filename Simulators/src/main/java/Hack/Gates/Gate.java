@@ -17,7 +17,7 @@
 
 package Hack.Gates;
 
-import java.util.*;
+import java.util.Vector;
 
 /**
  * A chip instance.
@@ -27,12 +27,12 @@ public abstract class Gate {
     /**
      * The special "true" node.
      */
-    public static final Node TRUE_NODE = new Node((short)-1);
+    public static final Node TRUE_NODE = new Node((short) -1);
 
     /**
      * The special "false" node.
      */
-    public static final Node FALSE_NODE = new Node((short)0);
+    public static final Node FALSE_NODE = new Node((short) 0);
 
     /**
      * The special "clock" node.
@@ -97,7 +97,7 @@ public abstract class Gate {
         // notify listeners
         if (dirtyGateListeners != null)
             for (int i = 0; i < dirtyGateListeners.size(); i++)
-                ((DirtyGateListener)dirtyGateListeners.elementAt(i)).gotDirty();
+                ((DirtyGateListener) dirtyGateListeners.elementAt(i)).gotDirty();
     }
 
     /**
@@ -160,7 +160,7 @@ public abstract class Gate {
             // notify listeners
             if (dirtyGateListeners != null)
                 for (int i = 0; i < dirtyGateListeners.size(); i++)
-                    ((DirtyGateListener)dirtyGateListeners.elementAt(i)).gotClean();
+                    ((DirtyGateListener) dirtyGateListeners.elementAt(i)).gotClean();
         }
 
         reCompute();

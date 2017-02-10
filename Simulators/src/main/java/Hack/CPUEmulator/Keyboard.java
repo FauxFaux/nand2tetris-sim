@@ -17,10 +17,12 @@
 
 package Hack.CPUEmulator;
 
-import java.awt.event.*;
-import Hack.Utilities.*;
-import Hack.CPUEmulator.*;
-import Hack.ComputerParts.*;
+import Hack.ComputerParts.ComputerPart;
+import Hack.ComputerParts.ComputerPartGUI;
+import Hack.Utilities.Definitions;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  * A computer keyboard.
@@ -69,16 +71,18 @@ public class Keyboard extends ComputerPart implements KeyListener {
      * Activated when a key is released.
      */
     public void keyReleased(KeyEvent e) {
-        ram.setValueAt(Definitions.KEYBOARD_ADDRESS, (short)0, true);
+        ram.setValueAt(Definitions.KEYBOARD_ADDRESS, (short) 0, true);
         gui.clearKey();
     }
 
     /**
      * Activated when a key is typed.
      */
-    public void keyTyped(KeyEvent e) {}
+    public void keyTyped(KeyEvent e) {
+    }
 
-    public void refreshGUI() {}
+    public void refreshGUI() {
+    }
 
     public void requestFocus() {
         if (hasGUI)

@@ -17,11 +17,18 @@
 
 package HackGUI;
 
-import Hack.ComputerParts.*;
-import Hack.Events.*;
+import Hack.ComputerParts.ComputerPartEvent;
+import Hack.ComputerParts.ComputerPartEventListener;
+import Hack.ComputerParts.RegisterGUI;
+import Hack.Events.ErrorEvent;
+import Hack.Events.ErrorEventListener;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.Vector;
 
 /**
@@ -74,7 +81,7 @@ public class RegisterComponent extends JPanel implements RegisterGUI {
     /**
      * Sets the null value of this component.
      */
-    public void setNullValue (short newValue, boolean hideNullValue) {
+    public void setNullValue(short newValue, boolean hideNullValue) {
         nullValue = newValue;
         this.hideNullValue = hideNullValue;
         if (value == nullValue && hideNullValue)
@@ -90,16 +97,16 @@ public class RegisterComponent extends JPanel implements RegisterGUI {
     }
 
     public void notifyListeners(int address, short value) {
-        ComputerPartEvent event = new ComputerPartEvent(this,0,value);
-        for(int i=0;i<listeners.size();i++) {
-            ((ComputerPartEventListener)listeners.elementAt(i)).valueChanged(event);
+        ComputerPartEvent event = new ComputerPartEvent(this, 0, value);
+        for (int i = 0; i < listeners.size(); i++) {
+            ((ComputerPartEventListener) listeners.elementAt(i)).valueChanged(event);
         }
     }
 
     public void notifyListeners() {
         ComputerPartEvent event = new ComputerPartEvent(this);
-        for(int i=0;i<listeners.size();i++) {
-            ((ComputerPartEventListener)listeners.elementAt(i)).guiGainedFocus();
+        for (int i = 0; i < listeners.size(); i++) {
+            ((ComputerPartEventListener) listeners.elementAt(i)).guiGainedFocus();
         }
     }
 
@@ -124,8 +131,8 @@ public class RegisterComponent extends JPanel implements RegisterGUI {
      */
     public void notifyErrorListeners(String errorMessage) {
         ErrorEvent event = new ErrorEvent(this, errorMessage);
-        for (int i=0; i<errorEventListeners.size(); i++)
-            ((ErrorEventListener)errorEventListeners.elementAt(i)).errorOccured(event);
+        for (int i = 0; i < errorEventListeners.size(); i++)
+            ((ErrorEventListener) errorEventListeners.elementAt(i)).errorOccured(event);
     }
 
     /**
@@ -146,12 +153,11 @@ public class RegisterComponent extends JPanel implements RegisterGUI {
      * Translates a given short to a string according to the current format.
      */
     protected String translateValueToString(short value) {
-        if(hideNullValue) {
-            if(value==nullValue)
+        if (hideNullValue) {
+            if (value == nullValue)
                 return "";
             else return Format.translateValueToString(value, dataFormat);
-        }
-        else
+        } else
             return Format.translateValueToString(value, dataFormat);
     }
 
@@ -181,7 +187,7 @@ public class RegisterComponent extends JPanel implements RegisterGUI {
      */
     public Point getCoordinates(int index) {
         Point location = getLocation();
-        return new Point((int)location.getX() + registerValue.getX() , (int)location.getY() + registerValue.getY());
+        return new Point((int) location.getX() + registerValue.getX(), (int) location.getY() + registerValue.getY());
     }
 
     /**
@@ -201,14 +207,14 @@ public class RegisterComponent extends JPanel implements RegisterGUI {
     /**
      * flashes the value at the given index.
      */
-    public void flash (int index) {
+    public void flash(int index) {
         registerValue.setBackground(Color.orange);
     }
 
     /**
      * hides the existing flash.
      */
-    public void hideFlash () {
+    public void hideFlash() {
         registerValue.setBackground(Color.white);
     }
 
@@ -233,19 +239,18 @@ public class RegisterComponent extends JPanel implements RegisterGUI {
      */
     public void setNumericFormat(int formatCode) {
         dataFormat = formatCode;
-        registerValue.setText(Format.translateValueToString(value,formatCode));
+        registerValue.setText(Format.translateValueToString(value, formatCode));
     }
 
     // Implementing the action of changing the register's value.
     private void valueChanged() {
         String text = registerValue.getText();
-        if(!text.equals(oldValue)) {
+        if (!text.equals(oldValue)) {
             try {
-                value = Format.translateValueToShort(text,dataFormat);
-                notifyListeners(0,value);
+                value = Format.translateValueToShort(text, dataFormat);
+                notifyListeners(0, value);
                 oldValue = text;
-            }
-            catch (NumberFormatException nfe) {
+            } catch (NumberFormatException nfe) {
                 notifyErrorListeners("Illegal value");
                 registerValue.setText(translateValueToString(value));
             }

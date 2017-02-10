@@ -17,9 +17,11 @@
 
 package Hack.Gates;
 
+import Hack.Events.ErrorEvent;
+import Hack.Events.ErrorEventListener;
+
 import java.awt.*;
-import Hack.Events.*;
-import java.util.*;
+import java.util.Vector;
 
 /**
  * A BuiltInGate with a GUI component.
@@ -29,7 +31,7 @@ import java.util.*;
  * the error listeners of the computer part itself.
  */
 public abstract class BuiltInGateWithGUI extends BuiltInGate
- implements ErrorEventListener {
+    implements ErrorEventListener {
 
     private Vector errorListeners;
 
@@ -84,7 +86,7 @@ public abstract class BuiltInGateWithGUI extends BuiltInGate
         GateErrorEvent event = new GateErrorEvent(this, errorMessage);
 
         for (int i = 0; i < errorListeners.size(); i++)
-            ((GateErrorEventListener)errorListeners.elementAt(i)).gateErrorOccured(event);
+            ((GateErrorEventListener) errorListeners.elementAt(i)).gateErrorOccured(event);
     }
 
     /**
@@ -94,7 +96,7 @@ public abstract class BuiltInGateWithGUI extends BuiltInGate
         GateErrorEvent event = new GateErrorEvent(this, null);
 
         for (int i = 0; i < errorListeners.size(); i++)
-            ((GateErrorEventListener)errorListeners.elementAt(i)).gateErrorOccured(event);
+            ((GateErrorEventListener) errorListeners.elementAt(i)).gateErrorOccured(event);
     }
 
     /**

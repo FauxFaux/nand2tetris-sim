@@ -17,8 +17,9 @@
 
 package Hack.VMEmulator;
 
+import Hack.VirtualMachine.HVMInstruction;
+
 import java.util.EventObject;
-import Hack.VirtualMachine.*;
 
 /**
  * An event for notifying an VMProgramRowSelectionEventListener on a change in the selected row,

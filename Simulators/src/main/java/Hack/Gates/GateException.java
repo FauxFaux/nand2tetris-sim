@@ -20,8 +20,7 @@ package Hack.Gates;
 /**
  * An exception for errors in a gate.
  */
-public class GateException extends Exception
-{
+public class GateException extends Exception {
     /**
      * Constructs a new GateException with the given message.
      */

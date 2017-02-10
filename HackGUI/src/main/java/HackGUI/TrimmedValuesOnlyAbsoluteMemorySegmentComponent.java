@@ -17,9 +17,9 @@
 
 package HackGUI;
 
-import Hack.*;
-import javax.swing.table.*;
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableModel;
 import java.awt.*;
 
 /**
@@ -50,11 +50,12 @@ public class TrimmedValuesOnlyAbsoluteMemorySegmentComponent extends AbsolutePoi
      * Sets the pointer with the given pointer address.
      */
     public synchronized void setPointer(int pointerAddress) {
-        this.pointerAddress = (short)pointerAddress;
+        this.pointerAddress = (short) pointerAddress;
         segmentTable.revalidate();
         try {
             wait(100);
-        } catch (InterruptedException ie) {}
+        } catch (InterruptedException ie) {
+        }
         scrollToPointer();
     }
 
@@ -75,12 +76,12 @@ public class TrimmedValuesOnlyAbsoluteMemorySegmentComponent extends AbsolutePoi
     public Point getCoordinates(int index) {
         JScrollBar bar = scrollPane.getVerticalScrollBar();
         double visibleRowsCount = Utilities.computeVisibleRowsCount(segmentTable);
-        int location = (int)Math.max(Math.min(index - startAddress, visibleRowsCount - 1), 0);
+        int location = (int) Math.max(Math.min(index - startAddress, visibleRowsCount - 1), 0);
         Rectangle r = segmentTable.getCellRect(location, 0, true);
         segmentTable.scrollRectToVisible(r);
         setTopLevelLocation();
-        return new Point((int)(r.getX() + topLevelLocation.getX()),
-                         (int)(r.getY() + topLevelLocation.getY()));
+        return new Point((int) (r.getX() + topLevelLocation.getX()),
+            (int) (r.getY() + topLevelLocation.getY()));
     }
 
     /**

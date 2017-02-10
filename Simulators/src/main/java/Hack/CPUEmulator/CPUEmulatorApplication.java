@@ -17,7 +17,8 @@
 
 package Hack.CPUEmulator;
 
-import Hack.Controller.*;
+import Hack.Controller.ControllerGUI;
+import Hack.Controller.HackApplication;
 
 /**
  * A CPU Emulator application.
@@ -33,6 +34,6 @@ public class CPUEmulatorApplication extends HackApplication {
                                   CPUEmulatorGUI simulatorComponent, String defaultScript,
                                   String contentsFileName, String aboutFileName) {
         super(new CPUEmulator(simulatorComponent), controllerComponent, simulatorComponent,
-              defaultScript, contentsFileName, aboutFileName);
+            defaultScript, contentsFileName, aboutFileName);
     }
 }

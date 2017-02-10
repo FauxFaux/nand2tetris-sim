@@ -17,8 +17,8 @@
 
 package Hack.VMEmulator;
 
-import Hack.ComputerParts.*;
-import Hack.Events.*;
+import Hack.ComputerParts.InteractiveComputerPartGUI;
+import Hack.Events.ProgramEventListener;
 
 /**
  * An interface for the GUI of the VM program. displays a list of instructions and
@@ -50,10 +50,10 @@ public interface VMProgramGUI extends InteractiveComputerPartGUI {
 
     /**
      * Sets the contents of the gui with the first instructionsLength
-	 * instructions from the given array of instructions.
+     * instructions from the given array of instructions.
      */
     public void setContents(VMEmulatorInstruction[] instructions,
-							int instructionsLength);
+                            int instructionsLength);
 
     /**
      * Sets the current instruction with the given instruction index.
@@ -69,15 +69,15 @@ public interface VMProgramGUI extends InteractiveComputerPartGUI {
      * Hides the displayed message.
      */
     public void hideMessage();
-	
-	/**
-	 * Displays a confirmation window asking the user permission to
-	 * use built-in vm functions
-	 */
-	public boolean confirmBuiltInAccess();
 
-	/**
-	 * Displays a notification window with the given message.
-	 */
-	public void notify(String message);
+    /**
+     * Displays a confirmation window asking the user permission to
+     * use built-in vm functions
+     */
+    public boolean confirmBuiltInAccess();
+
+    /**
+     * Displays a notification window with the given message.
+     */
+    public void notify(String message);
 }

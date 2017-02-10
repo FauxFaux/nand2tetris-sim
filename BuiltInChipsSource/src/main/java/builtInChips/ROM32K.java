@@ -17,21 +17,27 @@
 
 package builtInChips;
 
+import Hack.Assembler.AssemblerException;
+import Hack.Assembler.HackAssemblerTranslator;
+import Hack.CPUEmulator.ROM;
+import Hack.ComputerParts.ComputerPartEvent;
+import Hack.ComputerParts.ComputerPartEventListener;
+import Hack.Events.ProgramEvent;
+import Hack.Events.ProgramEventListener;
+import Hack.Gates.BuiltInGateWithGUI;
+import Hack.Gates.GateException;
+import Hack.Gates.GatesManager;
+import Hack.Utilities.Definitions;
+import SimulatorsGUI.ROMComponent;
+
 import java.awt.*;
-import Hack.Gates.*;
-import Hack.ComputerParts.*;
-import Hack.Events.*;
-import Hack.Utilities.*;
-import SimulatorsGUI.*;
-import Hack.CPUEmulator.*;
-import Hack.Assembler.*;
 
 /**
-/* A Read only memory of 32K registers, each 16 bit-wide.  The output is the value
-/* stored at the memory location specified by the 15-bit address.
+ * /* A Read only memory of 32K registers, each 16 bit-wide.  The output is the value
+ * /* stored at the memory location specified by the 15-bit address.
  */
 public class ROM32K extends BuiltInGateWithGUI
- implements ComputerPartEventListener, ProgramEventListener {
+    implements ComputerPartEventListener, ProgramEventListener {
 
     // The gui
     private ROMComponent gui;
@@ -49,7 +55,7 @@ public class ROM32K extends BuiltInGateWithGUI
             gui = new ROMComponent();
             gui.setContents(values);
             gui.setVisibleRows(7);
-            gui.setLocation(326,295);
+            gui.setLocation(326, 295);
             gui.setName("ROM:");
             gui.reset();
             gui.addListener(this);
@@ -74,8 +80,8 @@ public class ROM32K extends BuiltInGateWithGUI
      */
     protected void loadProgram(String fileName) throws AssemblerException {
         short[] program = HackAssemblerTranslator.loadProgram(fileName,
-                                                              Definitions.ROM_SIZE,
-                                                              (short)0);
+            Definitions.ROM_SIZE,
+            (short) 0);
 
         if (gui != null) {
             if (fileName.endsWith(".hack"))
@@ -181,8 +187,7 @@ public class ROM32K extends BuiltInGateWithGUI
 
             if (gui != null)
                 gui.hideMessage();
-        }
-        else
+        } else
             throw new GateException("This chip doesn't support this command");
     }
 }

@@ -15,20 +15,22 @@
  * mark your changes clearly, for the benefit of others.                        *
  ********************************************************************************/
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * A text file comparer. Receives two text file names as command line arguments
  * and compares them line by line (ignoring spaces). An error is displayed
  * in case of a comparison failure. A "success" message is displayed in
- *  case of successful comparison.
+ * case of successful comparison.
  */
 public class TextComparer {
 
-  /**
-   * The command line Text Comparer program.
-   */
-  public static void main(String[] args) {
+    /**
+     * The command line Text Comparer program.
+     */
+    public static void main(String[] args) {
         if (args.length != 2) {
             System.err.println("Usage: java TextComparer <file name> <file name>");
             System.exit(-1);
@@ -64,8 +66,7 @@ public class TextComparer {
                 if (line2 == null) {
                     System.out.println("Second file is shorter (only " + count + " lines)");
                     System.exit(-1);
-                }
-                else {
+                } else {
                     line2 = removeSpaces(line2);
                     if (!line1.equals(line2)) {
                         System.out.println("Comparison failure in line " + count + ":");
@@ -102,15 +103,15 @@ public class TextComparer {
     private static String removeSpaces(String sourceLine) {
         StringBuffer line;
         int k;
-        int i=0;
-        int j=0 ;
+        int i = 0;
+        int j = 0;
         line = new StringBuffer(sourceLine);
-        while (j<line.length()) {
+        while (j < line.length()) {
             if (line.charAt(j) == ' ')
                 j++;
             else {
                 if (i != j)
-                    line.setCharAt(i,line.charAt(j));
+                    line.setCharAt(i, line.charAt(j));
                 i++;
                 j++;
             }

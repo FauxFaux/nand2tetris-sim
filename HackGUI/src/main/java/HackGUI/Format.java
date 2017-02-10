@@ -17,8 +17,8 @@
 
 package HackGUI;
 
+import Hack.Controller.HackController;
 import Hack.Utilities.Conversions;
-import Hack.Controller.*;
 
 /**
  * A utility class for handling format convsersions.
@@ -52,11 +52,11 @@ public class Format {
                 break;
 
             case HEX_FORMAT:
-                result = (short)Conversions.hexToInt(data);
+                result = (short) Conversions.hexToInt(data);
                 break;
 
             case BIN_FORMAT:
-                result = (short)Conversions.binaryToInt(data);
+                result = (short) Conversions.binaryToInt(data);
                 break;
         }
 
@@ -76,11 +76,11 @@ public class Format {
                 break;
 
             case HEX_FORMAT:
-                result = Conversions.decimalToHex(value,4);
+                result = Conversions.decimalToHex(value, 4);
                 break;
 
             case BIN_FORMAT:
-                result = Conversions.decimalToBinary(value,16);
+                result = Conversions.decimalToBinary(value, 16);
                 break;
         }
 

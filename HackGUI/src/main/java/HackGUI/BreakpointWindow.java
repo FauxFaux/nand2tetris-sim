@@ -18,11 +18,16 @@
 package HackGUI;
 
 import Hack.Controller.Breakpoint;
+
 import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
-import java.util.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Vector;
 
 /**
  * This class represents the gui of a breakpoint panel.
@@ -81,29 +86,29 @@ public class BreakpointWindow extends JFrame implements MouseListener, Breakpoin
     /**
      * Sets the breakpoints list with the given one.
      */
-    public void setBreakpoints (Vector breakpoints) {
-        this.breakpoints = (Vector)breakpoints.clone();
+    public void setBreakpoints(Vector breakpoints) {
+        this.breakpoints = (Vector) breakpoints.clone();
         breakpointTable.revalidate();
     }
 
     /**
      * Sets the list of recognized variables with the given one.
      */
-    public void setVariables (String[] newVars) {
+    public void setVariables(String[] newVars) {
         variables.setVariables(newVars);
     }
 
     /**
-    * Registers the given BreakpointChangedListener as a listener to this component.
-    */
-    public void addBreakpointListener (BreakpointsChangedListener listener) {
+     * Registers the given BreakpointChangedListener as a listener to this component.
+     */
+    public void addBreakpointListener(BreakpointsChangedListener listener) {
         listeners.addElement(listener);
     }
 
     /**
      * Un-registers the given BreakpointChangedListener from being a listener to this component.
      */
-    public void removeBreakpointListener (BreakpointsChangedListener listener) {
+    public void removeBreakpointListener(BreakpointsChangedListener listener) {
         listeners.removeElement(listener);
     }
 
@@ -112,10 +117,10 @@ public class BreakpointWindow extends JFrame implements MouseListener, Breakpoin
      * BreakpointChangedEvent and sending it using the breakpointChanged method to all
      * of the listeners.
      */
-    public void notifyListeners () {
-        BreakpointsChangedEvent event = new BreakpointsChangedEvent(this,breakpoints);
-        for(int i=0;i<listeners.size();i++) {
-            ((BreakpointsChangedListener)listeners.elementAt(i)).breakpointsChanged(event);
+    public void notifyListeners() {
+        BreakpointsChangedEvent event = new BreakpointsChangedEvent(this, breakpoints);
+        for (int i = 0; i < listeners.size(); i++) {
+            ((BreakpointsChangedListener) listeners.elementAt(i)).breakpointsChanged(event);
         }
     }
 
@@ -132,10 +137,10 @@ public class BreakpointWindow extends JFrame implements MouseListener, Breakpoin
      */
     public void breakpointChanged(BreakpointChangedEvent event) {
         Breakpoint p = event.getBreakpoint();
-        if(selectedRowIndex == -1)
+        if (selectedRowIndex == -1)
             breakpoints.addElement(p);
         else
-            breakpoints.setElementAt(p,selectedRowIndex);
+            breakpoints.setElementAt(p, selectedRowIndex);
         breakpointTable.revalidate();
         repaint();
         notifyListeners();
@@ -148,8 +153,8 @@ public class BreakpointWindow extends JFrame implements MouseListener, Breakpoin
         if (e.getClickCount() == 2) {
             int row = breakpointTable.getSelectedRow();
             selectedRowIndex = row;
-            variables.setBreakpointName(((Breakpoint)breakpoints.elementAt(row)).getVarName());
-            variables.setBreakpointValue(((Breakpoint)breakpoints.elementAt(row)).getValue());
+            variables.setBreakpointName(((Breakpoint) breakpoints.elementAt(row)).getVarName());
+            variables.setBreakpointValue(((Breakpoint) breakpoints.elementAt(row)).getValue());
             //variables.setVisible(true);
             variables.showWindow();
         }
@@ -159,22 +164,26 @@ public class BreakpointWindow extends JFrame implements MouseListener, Breakpoin
     /**
      * Empty implementation.
      */
-    public void mouseExited (MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+    }
 
     /**
      * Empty implementation.
      */
-    public void mouseEntered (MouseEvent e) {}
+    public void mouseEntered(MouseEvent e) {
+    }
 
     /**
      * Empty implementation.
      */
-    public void mouseReleased (MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {
+    }
 
     /**
      * Empty implementation.
      */
-    public void mousePressed (MouseEvent e) {}
+    public void mousePressed(MouseEvent e) {
+    }
 
     // Initializes this window.
     private void jbInit() {
@@ -213,8 +222,8 @@ public class BreakpointWindow extends JFrame implements MouseListener, Breakpoin
         this.getContentPane().add(addButton, null);
         this.getContentPane().add(removeButton, null);
         this.getContentPane().add(okButton, null);
-        setSize(210,410);
-        setLocation(250,250);
+        setSize(210, 410);
+        setLocation(250, 250);
     }
 
     /**
@@ -277,9 +286,9 @@ public class BreakpointWindow extends JFrame implements MouseListener, Breakpoin
          * Returns the value at a specific row and column.
          */
         public Object getValueAt(int row, int col) {
-            Breakpoint breakpoint = (Breakpoint)breakpoints.elementAt(row);
+            Breakpoint breakpoint = (Breakpoint) breakpoints.elementAt(row);
 
-            if(col==0)
+            if (col == 0)
                 return breakpoint.getVarName();
             else
                 return breakpoint.getValue();
@@ -289,14 +298,14 @@ public class BreakpointWindow extends JFrame implements MouseListener, Breakpoin
          * Removes a row from this table.
          */
         public void removeRow(int index) {
-            if(breakpoints.size()>0)
+            if (breakpoints.size() > 0)
                 breakpoints.removeElementAt(index);
         }
 
         /**
          * Returns true of this table cells are editable, false - otherwise.
          */
-        public boolean isCellEditable(int row, int col){
+        public boolean isCellEditable(int row, int col) {
             return false;
         }
     }
@@ -306,10 +315,9 @@ public class BreakpointWindow extends JFrame implements MouseListener, Breakpoin
     class ColoredTableCellRenderer extends DefaultTableCellRenderer {
 
         public Component getTableCellRendererComponent
-            (JTable table, Object value, boolean selected, boolean focused, int row, int column)
-        {
+            (JTable table, Object value, boolean selected, boolean focused, int row, int column) {
             setEnabled(table == null || table.isEnabled());
-            if (((Breakpoint)breakpoints.elementAt(row)).isReached())
+            if (((Breakpoint) breakpoints.elementAt(row)).isReached())
                 setBackground(Color.red);
             else
                 setBackground(null);

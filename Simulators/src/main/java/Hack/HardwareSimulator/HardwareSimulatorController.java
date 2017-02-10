@@ -17,9 +17,13 @@
 
 package Hack.HardwareSimulator;
 
-import Hack.Controller.*;
-import Hack.Gates.*;
-import java.io.*;
+import Hack.Controller.ControllerException;
+import Hack.Controller.HackController;
+import Hack.Controller.ScriptException;
+import Hack.Gates.GateException;
+import Hack.Gates.GatesManager;
+
+import java.io.File;
 
 /**
  * A HackController for the Hardware Simulator.
@@ -33,7 +37,7 @@ public class HardwareSimulatorController extends HackController {
      */
     public HardwareSimulatorController(HardwareSimulatorControllerGUI gui,
                                        HardwareSimulator simulator, String defaultScriptName)
-     throws ScriptException, ControllerException  {
+        throws ScriptException, ControllerException {
         super(gui, simulator, defaultScriptName);
 
         gui.disableEval();
@@ -52,7 +56,7 @@ public class HardwareSimulatorController extends HackController {
     protected void doUnknownAction(byte action, Object data) {
         switch (action) {
             case HardwareSimulatorControllerEvent.CHIP_CHANGED:
-                File file = (File)data;
+                File file = (File) data;
                 updateProgramFile(file.getPath());
                 if (!singleStepLocked) // new HDL was loaded manually
                     reloadDefaultScript();
@@ -63,28 +67,28 @@ public class HardwareSimulatorController extends HackController {
                 break;
 
             case HardwareSimulatorControllerEvent.EVAL_CLICKED:
-                ((HardwareSimulator)simulator).runEvalTask();
+                ((HardwareSimulator) simulator).runEvalTask();
                 break;
 
             case HardwareSimulatorControllerEvent.TICKTOCK_CLICKED:
-                ((HardwareSimulator)simulator).runTickTockTask();
+                ((HardwareSimulator) simulator).runTickTockTask();
                 break;
 
             case HardwareSimulatorControllerEvent.DISABLE_EVAL:
-                ((HardwareSimulatorControllerGUI)gui).disableEval();
+                ((HardwareSimulatorControllerGUI) gui).disableEval();
                 break;
 
             case HardwareSimulatorControllerEvent.ENABLE_EVAL:
-                ((HardwareSimulatorControllerGUI)gui).enableEval();
+                ((HardwareSimulatorControllerGUI) gui).enableEval();
                 break;
 
             case HardwareSimulatorControllerEvent.DISABLE_TICKTOCK:
-                ((HardwareSimulatorControllerGUI)gui).disableTickTock();
-                ((HardwareSimulatorControllerGUI)gui).disableTickTock();
+                ((HardwareSimulatorControllerGUI) gui).disableTickTock();
+                ((HardwareSimulatorControllerGUI) gui).disableTickTock();
                 break;
 
             case HardwareSimulatorControllerEvent.ENABLE_TICKTOCK:
-                ((HardwareSimulatorControllerGUI)gui).enableTickTock();
+                ((HardwareSimulatorControllerGUI) gui).enableTickTock();
                 break;
 
         }
@@ -100,7 +104,7 @@ public class HardwareSimulatorController extends HackController {
 
         public void run() {
             try {
-                ((HardwareSimulator)simulator).loadGate(chipName, true);
+                ((HardwareSimulator) simulator).loadGate(chipName, true);
             } catch (GateException ge) {
                 gui.displayMessage(ge.getMessage(), true);
             }

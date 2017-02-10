@@ -18,9 +18,10 @@
 package HackGUI;
 
 import javax.swing.*;
-import java.io.*;
-import java.awt.event.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.File;
 
 /**
  * A FileChooserComponent that enables viewing files during selection.
@@ -48,7 +49,7 @@ public class ViewableFileChooserComponent extends FileChooserComponent {
      * Sets the content window's location.
      */
     public void setWindowLocation(int x, int y) {
-        window.setLocation(x,y);
+        window.setLocation(x, y);
     }
 
     /**
@@ -88,12 +89,11 @@ public class ViewableFileChooserComponent extends FileChooserComponent {
         if (viewCheckBox.isSelected()) {
             if (!currentFileName.equals("")) {
                 setFileContent();
-            }
-            else {
+            } else {
                 viewCheckBox.setSelected(false);
                 window.setVisible(false);
                 deleteContentFile();
-           }
+            }
         }
     }
 
@@ -119,8 +119,7 @@ public class ViewableFileChooserComponent extends FileChooserComponent {
             window.setTitle("Loading...");
             window.setVisible(true);
             setFileContent();
-        }
-        else if (e.getStateChange() == ItemEvent.DESELECTED)
+        } else if (e.getStateChange() == ItemEvent.DESELECTED)
             window.setVisible(false);
     }
 }

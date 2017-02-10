@@ -17,8 +17,10 @@
 
 package Hack.VMEmulator;
 
-import Hack.ComputerParts.*;
-import java.util.*;
+import Hack.ComputerParts.ComputerPart;
+import Hack.ComputerParts.ComputerPartGUI;
+
+import java.util.Vector;
 
 /**
  * A call stack. Holds a vector of called function names.
@@ -44,7 +46,7 @@ public class CallStack extends ComputerPart {
      * Returns the name of the function at the top of the stack.
      */
     public String getTopFunction() {
-        return (names.size() > 0 ? (String)names.elementAt(names.size() - 1) : "");
+        return (names.size() > 0 ? (String) names.elementAt(names.size() - 1) : "");
     }
 
     /**

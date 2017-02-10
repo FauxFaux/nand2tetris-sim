@@ -17,12 +17,14 @@
 
 package SimulatorsGUI;
 
-import java.util.StringTokenizer;
-import java.awt.*;
+import Hack.VirtualMachine.HVMInstruction;
+import HackGUI.Utilities;
+
 import javax.swing.*;
-import java.awt.event.*;
-import HackGUI.*;
-import Hack.VirtualMachine.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.StringTokenizer;
 
 /**
  * This class represents a search window for the use of ProgramComponent.
@@ -74,16 +76,16 @@ public class SearchProgramWindow extends JFrame {
         int rowIndex = -1;
         String searchedStr = instruction.getText();
         StringTokenizer tokenizer = new StringTokenizer(searchedStr);
-        String firstToken= "", secondToken="", thirdToken="";
+        String firstToken = "", secondToken = "", thirdToken = "";
         int numOfTokens = tokenizer.countTokens();
-        switch(numOfTokens) {
+        switch (numOfTokens) {
             case 0:
                 break;
             case 1:
                 firstToken = tokenizer.nextToken();
-                for(int i=0; i<instructions.length; i++) {
+                for (int i = 0; i < instructions.length; i++) {
                     String[] formattedStr = instructions[i].getFormattedStrings();
-                    if(formattedStr[0].equalsIgnoreCase(firstToken)) {
+                    if (formattedStr[0].equalsIgnoreCase(firstToken)) {
                         rowIndex = i;
                         break;
                     }
@@ -92,10 +94,10 @@ public class SearchProgramWindow extends JFrame {
             case 2:
                 firstToken = tokenizer.nextToken();
                 secondToken = tokenizer.nextToken();
-                for(int i=0; i<instructions.length; i++) {
+                for (int i = 0; i < instructions.length; i++) {
                     String[] formattedStr = instructions[i].getFormattedStrings();
-                    if(formattedStr[0].equalsIgnoreCase(firstToken) &&
-                       formattedStr[1].equalsIgnoreCase(secondToken)) {
+                    if (formattedStr[0].equalsIgnoreCase(firstToken) &&
+                        formattedStr[1].equalsIgnoreCase(secondToken)) {
                         rowIndex = i;
                         break;
                     }
@@ -106,11 +108,11 @@ public class SearchProgramWindow extends JFrame {
                 secondToken = tokenizer.nextToken();
                 thirdToken = tokenizer.nextToken();
 
-                for(int i=0; i<instructions.length; i++) {
+                for (int i = 0; i < instructions.length; i++) {
                     String[] formattedStr = instructions[i].getFormattedStrings();
-                    if(formattedStr[0].equalsIgnoreCase(firstToken) &&
-                       formattedStr[1].equalsIgnoreCase(secondToken) &&
-                       formattedStr[2].equalsIgnoreCase(thirdToken)) {
+                    if (formattedStr[0].equalsIgnoreCase(firstToken) &&
+                        formattedStr[1].equalsIgnoreCase(secondToken) &&
+                        formattedStr[2].equalsIgnoreCase(thirdToken)) {
                         rowIndex = i;
                         break;
                     }
@@ -163,8 +165,8 @@ public class SearchProgramWindow extends JFrame {
         this.getContentPane().add(cancelButton, null);
         this.getContentPane().add(instructionLbl, null);
 
-        setSize(320,150);
-        setLocation(250,250);
+        setSize(320, 150);
+        setLocation(250, 250);
     }
 
     /**
@@ -173,14 +175,15 @@ public class SearchProgramWindow extends JFrame {
     public void okButton_actionPerformed(ActionEvent e) {
         try {
             int row = getSearchedRowIndex();
-            if(row != -1) {
+            if (row != -1) {
                 Rectangle r = table.getCellRect(row, 0, true);
                 table.scrollRectToVisible(r);
-                table.setRowSelectionInterval(row,row);
+                table.setRowSelectionInterval(row, row);
                 setVisible(false);
             }
-        } catch (NumberFormatException nfe) {}
-          catch (IllegalArgumentException iae) {}
+        } catch (NumberFormatException nfe) {
+        } catch (IllegalArgumentException iae) {
+        }
     }
 
     /**

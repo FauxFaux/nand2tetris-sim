@@ -201,7 +201,7 @@ public class ControllerEvent extends EventObject {
     /**
      * Returns the event's supplied data.
      */
-     public Object getData() {
+    public Object getData() {
         return data;
-     }
+    }
 }

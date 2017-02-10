@@ -17,10 +17,11 @@
 
 package HackGUI;
 
-import Hack.ComputerParts.*;
+import Hack.ComputerParts.PointedMemorySegmentGUI;
+
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
-import java.awt.event.*;
-import javax.swing.table.*;
+import java.awt.event.FocusEvent;
 
 public class PointedMemorySegmentComponent extends MemorySegmentComponent implements PointedMemorySegmentGUI {
 
@@ -49,7 +50,7 @@ public class PointedMemorySegmentComponent extends MemorySegmentComponent implem
      * Sets the pointer with the given pointer address (absolute address).
      */
     public void setPointer(int pointerAddress) {
-        this.pointerAddress = (short)pointerAddress;
+        this.pointerAddress = (short) pointerAddress;
         scrollToPointer();
     }
 
@@ -61,7 +62,7 @@ public class PointedMemorySegmentComponent extends MemorySegmentComponent implem
      * Scrolls the table to the pointer location.
      */
     protected void scrollToPointer() {
-        if(pointerAddress >= 0)
+        if (pointerAddress >= 0)
             Utilities.tableCenterScroll(this, segmentTable, pointerAddress);
     }
 
@@ -94,5 +95,5 @@ public class PointedMemorySegmentComponent extends MemorySegmentComponent implem
 
             super.setRenderer(row, column);
         }
-   }
+    }
 }

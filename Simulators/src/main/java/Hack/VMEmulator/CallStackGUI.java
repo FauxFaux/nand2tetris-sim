@@ -17,8 +17,9 @@
 
 package Hack.VMEmulator;
 
-import Hack.ComputerParts.*;
-import java.util.*;
+import Hack.ComputerParts.ComputerPartGUI;
+
+import java.util.Vector;
 
 /**
  * An interface for a GUI of the call stack.

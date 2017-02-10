@@ -83,7 +83,6 @@ public interface VirtualMachine {
     public abstract void not();
 
 
-
     //----  Memory access commands ---//
 
     /**
@@ -120,14 +119,13 @@ public interface VirtualMachine {
     public abstract void ifGoTo(String l);
 
 
-
-
     //----  Function calls commands ---//
 
     /**
      * Here Starts the code of a function according to the given function name
      * that has the given number of local variables.
-     * @param functionName The function name
+     *
+     * @param functionName   The function name
      * @param numberOfLocals The number of local variables
      */
     public abstract void function(String functionName, short numberOfLocals);
@@ -140,7 +138,8 @@ public interface VirtualMachine {
     /**
      * Calls a function according to the given function number stating
      * that the given number of arguments have been pushed onto the stack
-     * @param functionName The function name
+     *
+     * @param functionName      The function name
      * @param numberOfArguments The number of arguments of the function
      */
     public abstract void callFunction(String functionName, short numberOfArguments);

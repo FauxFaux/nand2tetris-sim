@@ -17,11 +17,14 @@
 
 package HackGUI;
 
-import java.awt.*;
 import javax.swing.*;
-import javax.swing.table.*;
-import java.io.*;
-import java.util.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Vector;
 
 /**
  * A component for displaying the contents of a text file in a table format.
@@ -80,18 +83,19 @@ public class FileDisplayComponent extends JPanel {
     /**
      * Sets the text file to be displayed.
      */
-    public synchronized void setContents (String fileName) {
+    public synchronized void setContents(String fileName) {
         this.fileName = fileName;
         BufferedReader reader;
         Vector rowsVector = new Vector();
         try {
             reader = new BufferedReader(new FileReader(fileName));
             String line;
-            while((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 rowsVector.addElement(line);
             }
             reader.close();
-        } catch (IOException ioe) {}
+        } catch (IOException ioe) {
+        }
         rows = new String[rowsVector.size()];
         rowsVector.toArray(rows);
         fileDisplayTable.clearSelection();
@@ -130,10 +134,10 @@ public class FileDisplayComponent extends JPanel {
 
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.getHorizontalScrollBar().setUnitIncrement(scrollPane.getHorizontalScrollBar().getBlockIncrement());
-        scrollPane.setLocation(0,0);
+        scrollPane.setLocation(0, 0);
         scrollPane.setPreferredSize(new Dimension(516, 260));
         scrollPane.setSize(516, 260);
-        setSize(516,260);
+        setSize(516, 260);
 
         this.add(scrollPane, null);
     }
@@ -173,7 +177,7 @@ public class FileDisplayComponent extends JPanel {
          * Returns true of this table cells are editable, false -
          * otherwise.
          */
-        public boolean isCellEditable(int row, int col){
+        public boolean isCellEditable(int row, int col) {
             return false;
         }
     }
@@ -182,8 +186,7 @@ public class FileDisplayComponent extends JPanel {
     class FileDisplayTableCellRenderer extends DefaultTableCellRenderer {
 
         public Component getTableCellRendererComponent
-            (JTable table, Object value, boolean selected, boolean focused, int row, int column)
-        {
+            (JTable table, Object value, boolean selected, boolean focused, int row, int column) {
 
             setForeground(null);
             setBackground(null);

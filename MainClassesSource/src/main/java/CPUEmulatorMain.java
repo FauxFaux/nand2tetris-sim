@@ -15,21 +15,24 @@
  * mark your changes clearly, for the benefit of others.                        *
  ********************************************************************************/
 
-import Hack.Controller.*;
-import Hack.CPUEmulator.*;
-import HackGUI.*;
-import SimulatorsGUI.*;
+import Hack.CPUEmulator.CPUEmulator;
+import Hack.CPUEmulator.CPUEmulatorApplication;
+import Hack.CPUEmulator.CPUEmulatorGUI;
+import Hack.Controller.ControllerGUI;
+import Hack.Controller.HackController;
+import HackGUI.ControllerComponent;
+import SimulatorsGUI.CPUEmulatorComponent;
+
 import javax.swing.*;
 
 /**
  * The CPU Emulator.
  */
-public class CPUEmulatorMain
-{
-  /**
-   * The command line CPU Emulator program.
-   */
-  public static void main(String[] args) {
+public class CPUEmulatorMain {
+    /**
+     * The command line CPU Emulator program.
+     */
+    public static void main(String[] args) {
         if (args.length > 1)
             System.err.println("Usage: java CPUEmulatorMain [script name]");
         else if (args.length == 0) {
@@ -43,9 +46,8 @@ public class CPUEmulatorMain
             ControllerGUI controllerGUI = new ControllerComponent();
             CPUEmulatorApplication application =
                 new CPUEmulatorApplication(controllerGUI, simulatorGUI, "bin/scripts/defaultCPU.txt",
-                                           "bin/help/cpuUsage.html", "bin/help/cpuAbout.html");
-        }
-        else
+                    "bin/help/cpuUsage.html", "bin/help/cpuAbout.html");
+        } else
             new HackController(new CPUEmulator(), args[0]);
     }
 }

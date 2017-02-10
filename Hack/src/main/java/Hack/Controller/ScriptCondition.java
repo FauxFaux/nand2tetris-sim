@@ -17,7 +17,7 @@
 
 package Hack.Controller;
 
-import Hack.Utilities.*;
+import Hack.Utilities.Conversions;
 
 /**
  * Represents a boolean condition. Has two arguments, which may be variable names or
@@ -100,8 +100,7 @@ public class ScriptCondition {
                 comparisonOperator = NOT_EQUAL;
             else
                 throw new ScriptException("Illegal comparison operator: " + op);
-        }
-        else
+        } else
             throw new ScriptException("Comparison operator expected");
 
         // check arg1
@@ -154,22 +153,37 @@ public class ScriptCondition {
         // if both values are integers, compare them using integer comparison.
         if (isNum0 && isNum1) {
             switch (comparisonOperator) {
-                case EQUAL: result = (num0 == num1); break;
-                case GREATER: result = (num0 > num1); break;
-                case LESS: result = (num0 < num1); break;
-                case GREATER_EQUAL: result = (num0 >= num1); break;
-                case LESS_EQUAL: result = (num0 <= num1); break;
-                case NOT_EQUAL: result = (num0 != num1); break;
+                case EQUAL:
+                    result = (num0 == num1);
+                    break;
+                case GREATER:
+                    result = (num0 > num1);
+                    break;
+                case LESS:
+                    result = (num0 < num1);
+                    break;
+                case GREATER_EQUAL:
+                    result = (num0 >= num1);
+                    break;
+                case LESS_EQUAL:
+                    result = (num0 <= num1);
+                    break;
+                case NOT_EQUAL:
+                    result = (num0 != num1);
+                    break;
             }
-        }
-        else if (!isNum0 && !isNum1) { // if = or <>, compare using string comparison
+        } else if (!isNum0 && !isNum1) { // if = or <>, compare using string comparison
             switch (comparisonOperator) {
-                case EQUAL: result = val0.equals(val1); break;
-                case NOT_EQUAL: result = !val0.equals(val1); break;
-                default: throw new ControllerException("Only = and <> can be used to compare strings");
+                case EQUAL:
+                    result = val0.equals(val1);
+                    break;
+                case NOT_EQUAL:
+                    result = !val0.equals(val1);
+                    break;
+                default:
+                    throw new ControllerException("Only = and <> can be used to compare strings");
             }
-        }
-        else
+        } else
             throw new ControllerException("Cannot compare an integer with a string");
         return result;
     }

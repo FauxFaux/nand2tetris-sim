@@ -17,7 +17,7 @@
 
 package Hack.Gates;
 
-import Hack.Utilities.*;
+import Hack.Utilities.Shifter;
 
 /**
  * A node that represents a sub-bus.
@@ -42,7 +42,7 @@ public class SubNode extends Node {
      * Returns the value of this sub-node.
      */
     public short get() {
-        return Shifter.unsignedShiftRight((short)(value & mask), shiftRight);
+        return Shifter.unsignedShiftRight((short) (value & mask), shiftRight);
     }
 
     /**
@@ -54,7 +54,7 @@ public class SubNode extends Node {
         short bitHolder = Shifter.powersOf2[low];
         for (byte i = low; i <= high; i++) {
             mask |= bitHolder;
-            bitHolder = (short)(bitHolder << 1);
+            bitHolder = (short) (bitHolder << 1);
         }
 
         return mask;

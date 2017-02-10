@@ -17,7 +17,6 @@
 
 package builtInVMCode;
 
-import Hack.VMEmulator.BuiltInVMClass;
 import Hack.VMEmulator.TerminateVMProgramThrowable;
 
 /**
@@ -27,59 +26,59 @@ import Hack.VMEmulator.TerminateVMProgramThrowable;
 public class Memory extends JackOSClass {
 
     public static void init()
-			throws TerminateVMProgramThrowable {
-		writeMemory(HEAP_START_ADDRESS,
-					(HEAP_END_ADDRESS+1)-(HEAP_START_ADDRESS+2));
-		writeMemory(HEAP_START_ADDRESS+1, HEAP_END_ADDRESS+1);
+        throws TerminateVMProgramThrowable {
+        writeMemory(HEAP_START_ADDRESS,
+            (HEAP_END_ADDRESS + 1) - (HEAP_START_ADDRESS + 2));
+        writeMemory(HEAP_START_ADDRESS + 1, HEAP_END_ADDRESS + 1);
     }
 
-	public static short peek(short address)
-			throws TerminateVMProgramThrowable {
-		return readMemory(address);
-	}
+    public static short peek(short address)
+        throws TerminateVMProgramThrowable {
+        return readMemory(address);
+    }
 
     public static void poke(short address, short value)
-			throws TerminateVMProgramThrowable {
-		writeMemory(address, value);
+        throws TerminateVMProgramThrowable {
+        writeMemory(address, value);
     }
 
     public static short alloc(short size)
-			throws TerminateVMProgramThrowable {
+        throws TerminateVMProgramThrowable {
         if (size < 1) {
             callFunction("Sys.error", MEMORY_ALLOC_NONPOSITIVE_SIZE);
         }
-		short segmentAddress = HEAP_START_ADDRESS;
-		short segmentCapacity = 0;
+        short segmentAddress = HEAP_START_ADDRESS;
+        short segmentCapacity = 0;
         while (segmentAddress <= HEAP_END_ADDRESS &&
-			   (segmentCapacity=readMemory(segmentAddress)) < size) {
-			segmentAddress = readMemory(segmentAddress+1);
+            (segmentCapacity = readMemory(segmentAddress)) < size) {
+            segmentAddress = readMemory(segmentAddress + 1);
         }
         if (segmentAddress > HEAP_END_ADDRESS) {
             callFunction("Sys.error", MEMORY_ALLOC_HEAP_OVERFLOW);
         }
-		if (segmentCapacity > size+2) {
-			writeMemory(segmentAddress+size+2, segmentCapacity-size-2);
-			writeMemory(segmentAddress+size+3, readMemory(segmentAddress+1));
-			writeMemory(segmentAddress+1, segmentAddress+size+2);
-		}
-		writeMemory(segmentAddress, 0);
-		return (short)(segmentAddress+2);
+        if (segmentCapacity > size + 2) {
+            writeMemory(segmentAddress + size + 2, segmentCapacity - size - 2);
+            writeMemory(segmentAddress + size + 3, readMemory(segmentAddress + 1));
+            writeMemory(segmentAddress + 1, segmentAddress + size + 2);
+        }
+        writeMemory(segmentAddress, 0);
+        return (short) (segmentAddress + 2);
     }
 
     public static void deAlloc(short arr)
-			throws TerminateVMProgramThrowable {
-		short segmentAddress = (short)(arr-2);
-		short segmentCapacity = readMemory(segmentAddress);
-		short nextSegmentAddress = readMemory(segmentAddress+1);
-		short nextCapacity;
+        throws TerminateVMProgramThrowable {
+        short segmentAddress = (short) (arr - 2);
+        short segmentCapacity = readMemory(segmentAddress);
+        short nextSegmentAddress = readMemory(segmentAddress + 1);
+        short nextCapacity;
         if (nextSegmentAddress > HEAP_END_ADDRESS ||
-			(nextCapacity=readMemory(nextSegmentAddress)) == 0) {
-			writeMemory(segmentAddress, nextSegmentAddress-segmentAddress-2);
+            (nextCapacity = readMemory(nextSegmentAddress)) == 0) {
+            writeMemory(segmentAddress, nextSegmentAddress - segmentAddress - 2);
         } else {
-			writeMemory(segmentAddress,
-						nextSegmentAddress-segmentAddress+nextCapacity);
-			writeMemory(segmentAddress+1,
-						readMemory(nextSegmentAddress+1));
+            writeMemory(segmentAddress,
+                nextSegmentAddress - segmentAddress + nextCapacity);
+            writeMemory(segmentAddress + 1,
+                readMemory(nextSegmentAddress + 1));
         }
     }
 

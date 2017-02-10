@@ -17,11 +17,11 @@
 
 package HackGUI;
 
-import java.awt.*;
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Vector;
-import java.io.*;
 
 /**
  * This class repersents the GUI of the component which allows the user to load
@@ -69,14 +69,14 @@ public class ControllerFileChooser extends JFrame {
     /**
      * Registers the given FilesTypeListener as a listener to this component.
      */
-    public void addListener (FilesTypeListener listener) {
+    public void addListener(FilesTypeListener listener) {
         listeners.addElement(listener);
     }
 
     /**
      * Un-registers the given FilesTypeListener from being a listener to this component.
      */
-    public void removeListener (FilesTypeListener listener) {
+    public void removeListener(FilesTypeListener listener) {
         listeners.removeElement(listener);
     }
 
@@ -85,11 +85,11 @@ public class ControllerFileChooser extends JFrame {
      * FilesTypeEvent and sending it using the filesNamesChanged method to all
      * of the listeners.
      */
-    public void notifyListeners (String script, String output, String comparison) {
-        FilesTypeEvent event = new FilesTypeEvent(this,script, output,comparison);
+    public void notifyListeners(String script, String output, String comparison) {
+        FilesTypeEvent event = new FilesTypeEvent(this, script, output, comparison);
 
-        for(int i=0;i<listeners.size();i++) {
-            ((FilesTypeListener)listeners.elementAt(i)).filesNamesChanged(event);
+        for (int i = 0; i < listeners.size(); i++) {
+            ((FilesTypeListener) listeners.elementAt(i)).filesNamesChanged(event);
         }
     }
 
@@ -152,8 +152,8 @@ public class ControllerFileChooser extends JFrame {
         this.getContentPane().add(comparisonFileChooser, null);
         this.getContentPane().add(okButton, null);
         this.getContentPane().add(cancelButton, null);
-        setSize(500,210);
-        setLocation(20,415);
+        setSize(500, 210);
+        setLocation(20, 415);
     }
 
     /**
@@ -175,25 +175,25 @@ public class ControllerFileChooser extends JFrame {
         String output = null;
         String comparison = null;
 
-        if(scriptFileChooser.isFileNameChanged() || !scriptFileChooser.getFileName().equals("")) {
+        if (scriptFileChooser.isFileNameChanged() || !scriptFileChooser.getFileName().equals("")) {
             script = scriptFileChooser.getFileName();
             scriptFileChooser.setCurrentFileName(script);
             scriptFileChooser.showCurrentFileName();
         }
 
-        if(outputFileChooser.isFileNameChanged() || !outputFileChooser.getFileName().equals("") ) {
+        if (outputFileChooser.isFileNameChanged() || !outputFileChooser.getFileName().equals("")) {
             output = outputFileChooser.getFileName();
             outputFileChooser.setCurrentFileName(output);
             outputFileChooser.showCurrentFileName();
         }
 
-        if(comparisonFileChooser.isFileNameChanged() || !comparisonFileChooser.getFileName().equals("")) {
+        if (comparisonFileChooser.isFileNameChanged() || !comparisonFileChooser.getFileName().equals("")) {
             comparison = comparisonFileChooser.getFileName();
             comparisonFileChooser.setCurrentFileName(comparison);
             comparisonFileChooser.showCurrentFileName();
         }
-        if(!(script == null && output == null && comparison == null)) {
-            notifyListeners(script,output,comparison);
+        if (!(script == null && output == null && comparison == null)) {
+            notifyListeners(script, output, comparison);
         }
         setVisible(false);
     }

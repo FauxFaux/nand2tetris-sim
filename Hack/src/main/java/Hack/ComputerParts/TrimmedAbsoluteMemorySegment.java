@@ -17,8 +17,6 @@
 
 package Hack.ComputerParts;
 
-import Hack.ComputerParts.*;
-
 /**
  * An AbsolutePointedMemorySegment in which the pointer is always set to the address just
  * after the last updated address.
@@ -44,7 +42,7 @@ public class TrimmedAbsoluteMemorySegment extends AbsolutePointedMemorySegment {
 
     public void setValueAt(int index, short value, boolean quiet) {
         if (displayChanges)
-            ((PointedMemorySegmentGUI)gui).setPointer(index + 1);
+            ((PointedMemorySegmentGUI) gui).setPointer(index + 1);
 
         super.setValueAt(index, value, quiet);
     }

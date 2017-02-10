@@ -18,12 +18,15 @@
 package SimulatorsGUI;
 
 import Hack.VMEmulator.CallStackGUI;
-import HackGUI.*;
-import java.util.*;
+import HackGUI.Utilities;
+
 import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.Vector;
 
 /**
  * This class represents the gui of a CallStack.
@@ -63,7 +66,7 @@ public class CallStackComponent extends JPanel implements CallStackGUI {
      * Sets the call stack with the given vector of method names.
      */
     public void setContents(Vector newMethodNames) {
-        methodNames = (Vector)newMethodNames.clone();
+        methodNames = (Vector) newMethodNames.clone();
         callStackTable.revalidate();
 
         Rectangle r = callStackTable.getCellRect(newMethodNames.size() - 1, 0, true);
@@ -91,7 +94,7 @@ public class CallStackComponent extends JPanel implements CallStackGUI {
         setSize(getTableWidth(), tableHeight + 30);
     }
 
-     /**
+    /**
      * Returns the width of the table.
      */
     public int getTableWidth() {
@@ -113,7 +116,7 @@ public class CallStackComponent extends JPanel implements CallStackGUI {
         callStackTable.setDefaultRenderer(callStackTable.getColumnClass(0), getCellRenderer());
         scrollPane = new JScrollPane(callStackTable);
         setVisibleRows(DEFAULT_VISIBLE_ROWS);
-        scrollPane.setLocation(0,27);
+        scrollPane.setLocation(0, 27);
         setBorder(BorderFactory.createEtchedBorder());
         this.setLayout(null);
         nameLbl.setText("Call Stack");
@@ -178,7 +181,7 @@ public class CallStackComponent extends JPanel implements CallStackGUI {
          * Returns true of this table cells are editable, false -
          * otherwise.
          */
-        public boolean isCellEditable(int row, int col){
+        public boolean isCellEditable(int row, int col) {
             return false;
         }
     }
@@ -192,8 +195,7 @@ public class CallStackComponent extends JPanel implements CallStackGUI {
          * Returns the cell renderer component.
          */
         public Component getTableCellRendererComponent
-            (JTable table, Object value, boolean selected, boolean focused, int row, int column)
-        {
+        (JTable table, Object value, boolean selected, boolean focused, int row, int column) {
             setForeground(null);
             setBackground(null);
 
@@ -207,7 +209,7 @@ public class CallStackComponent extends JPanel implements CallStackGUI {
          * Sets a new cell renderer.
          */
         public void setRenderer(int row, int column) {
-            if(row == (methodNames.size() - 1))
+            if (row == (methodNames.size() - 1))
                 setForeground(Color.blue);
         }
     }

@@ -17,13 +17,25 @@
 
 package HackGUI;
 
-import Hack.ComputerParts.*;
-import Hack.Events.*;
-import java.awt.event.*;
-import java.awt.*;
-import java.util.Vector;
+import Hack.ComputerParts.ComputerPartEvent;
+import Hack.ComputerParts.ComputerPartEventListener;
+import Hack.ComputerParts.MemoryGUI;
+import Hack.Events.ClearEvent;
+import Hack.Events.ClearEventListener;
+import Hack.Events.ErrorEvent;
+import Hack.Events.ErrorEventListener;
+
 import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.util.Vector;
 
 /**
  * This class represents the GUI of a memory.
@@ -66,7 +78,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
     protected String[] addresses;
 
     // Creating buttons and icons.
-    protected MouseOverJButton  searchButton = new MouseOverJButton();
+    protected MouseOverJButton searchButton = new MouseOverJButton();
     protected MouseOverJButton clearButton = new MouseOverJButton();
     private ImageIcon searchIcon = new ImageIcon(Utilities.imagesDir + "find.gif");
     private ImageIcon clearIcon = new ImageIcon(Utilities.imagesDir + "smallnew.gif");
@@ -138,7 +150,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
     /**
      * Sets the null value of this component.
      */
-    public void setNullValue (short value, boolean hideNullValue) {
+    public void setNullValue(short value, boolean hideNullValue) {
         nullValue = value;
         this.hideNullValue = hideNullValue;
     }
@@ -181,9 +193,9 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
     /**
      * Sets the name of this component.
      */
-     public void setName(String name) {
+    public void setName(String name) {
         nameLbl.setText(name);
-     }
+    }
 
     /**
      * Sets the location of this component relative to its top level ancestor.
@@ -201,30 +213,31 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
     }
 
     public void notifyListeners(int address, short value) {
-        ComputerPartEvent event = new ComputerPartEvent(this,address,value);
-        for (int i=0;i<listeners.size();i++) {
-           ((ComputerPartEventListener)listeners.elementAt(i)).valueChanged(event);
+        ComputerPartEvent event = new ComputerPartEvent(this, address, value);
+        for (int i = 0; i < listeners.size(); i++) {
+            ((ComputerPartEventListener) listeners.elementAt(i)).valueChanged(event);
         }
     }
 
     public void notifyListeners() {
         ComputerPartEvent event = new ComputerPartEvent(this);
-        for (int i=0;i<listeners.size();i++) {
-           ((ComputerPartEventListener)listeners.elementAt(i)).guiGainedFocus();
+        for (int i = 0; i < listeners.size(); i++) {
+            ((ComputerPartEventListener) listeners.elementAt(i)).guiGainedFocus();
         }
     }
 
-    public void addClearListener (ClearEventListener listener) {
+    public void addClearListener(ClearEventListener listener) {
         clearListeners.addElement(listener);
     }
-    public void removeClearListener (ClearEventListener listener) {
+
+    public void removeClearListener(ClearEventListener listener) {
         clearListeners.removeElement(listener);
     }
 
     public void notifyClearListeners() {
         ClearEvent clearEvent = new ClearEvent(this);
-        for(int i=0; i<clearListeners.size();i++)
-            ((ClearEventListener)clearListeners.elementAt(i)).clearRequested(clearEvent);
+        for (int i = 0; i < clearListeners.size(); i++)
+            ((ClearEventListener) clearListeners.elementAt(i)).clearRequested(clearEvent);
     }
 
     /**
@@ -241,15 +254,15 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
         errorEventListeners.removeElement(listener);
     }
 
-   /**
+    /**
      * Notifies all the ErrorEventListener on an error in this gui by
      * creating an ErrorEvent (with the error message) and sending it
      * using the errorOccured method to all the listeners.
      */
     public void notifyErrorListeners(String errorMessage) {
         ErrorEvent event = new ErrorEvent(this, errorMessage);
-        for (int i=0; i<errorEventListeners.size(); i++)
-            ((ErrorEventListener)errorEventListeners.elementAt(i)).errorOccured(event);
+        for (int i = 0; i < errorEventListeners.size(); i++)
+            ((ErrorEventListener) errorEventListeners.elementAt(i)).errorOccured(event);
     }
 
     /**
@@ -270,8 +283,8 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
      * Notifies all the changeListeners on a need to repaint themselves.
      */
     public void notifyRepaintListeners() {
-        for (int i=0;i<changeListeners.size();i++) {
-           ((MemoryChangeListener)changeListeners.elementAt(i)).repaintChange();
+        for (int i = 0; i < changeListeners.size(); i++) {
+            ((MemoryChangeListener) changeListeners.elementAt(i)).repaintChange();
         }
     }
 
@@ -279,8 +292,8 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
      * Notifies all the changeListeners on a need to revalidate themselves.
      */
     public void notifyRevalidateListeners() {
-        for (int i=0;i<changeListeners.size();i++) {
-           ((MemoryChangeListener)changeListeners.elementAt(i)).revalidateChange();
+        for (int i = 0; i < changeListeners.size(); i++) {
+            ((MemoryChangeListener) changeListeners.elementAt(i)).revalidateChange();
         }
     }
 
@@ -294,8 +307,8 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
         valuesStr = new String[newValues.length];
 
         System.arraycopy(newValues, 0, values, 0, newValues.length);
-        for(int i=0;i<values.length;i++) {
-            addresses[i] = Format.translateValueToString((short)i, Format.DEC_FORMAT);
+        for (int i = 0; i < values.length; i++) {
+            addresses[i] = Format.translateValueToString((short) i, Format.DEC_FORMAT);
             valuesStr[i] = translateValueToString(values[i]);
         }
         memoryTable.revalidate();
@@ -316,7 +329,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
      * (Assumes legal index - between 0 and getSize()-1).
      */
     public void setValueAt(int index, short value) {
-        updateTable(value,index);
+        updateTable(value, index);
         repaint();
         notifyRepaintListeners();
     }
@@ -325,7 +338,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
      * Resets the contents of this MemoryComponent.
      */
     public void reset() {
-        for(int i= 0; i<values.length;i++){
+        for (int i = 0; i < values.length; i++) {
             updateTable(nullValue, i);
         }
         repaint();
@@ -355,7 +368,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
     /**
      * hides the existing flash.
      */
-    public void hideFlash () {
+    public void hideFlash() {
         flashIndex = -1;
         repaint();
     }
@@ -363,7 +376,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
     /**
      * flashes the value at the given index.
      */
-    public void flash (int index) {
+    public void flash(int index) {
         flashIndex = index;
         Utilities.tableCenterScroll(this, memoryTable, index);
     }
@@ -397,8 +410,8 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
     /**
      * Selects the commands in the range fromIndex..toIndex
      */
-    public void select(int fromIndex,int toIndex) {
-        memoryTable.setRowSelectionInterval(fromIndex,toIndex);
+    public void select(int fromIndex, int toIndex) {
+        memoryTable.setRowSelectionInterval(fromIndex, toIndex);
         Utilities.tableCenterScroll(this, memoryTable, fromIndex);
     }
 
@@ -413,32 +426,32 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
     /**
      * Returns the coordinates of the top left corner of the value at the given index.
      */
-    public Point getCoordinates (int index) {
+    public Point getCoordinates(int index) {
         JScrollBar bar = scrollPane.getVerticalScrollBar();
         Rectangle r = memoryTable.getCellRect(index, getValueColumnIndex(), true);
         memoryTable.scrollRectToVisible(r);
-        return new Point((int)(r.getX() + topLevelLocation.getX()),
-                         (int)(r.getY() + topLevelLocation.getY() - bar.getValue()));
+        return new Point((int) (r.getX() + topLevelLocation.getX()),
+            (int) (r.getY() + topLevelLocation.getY() - bar.getValue()));
     }
 
     /**
      * Returns the address string at a specific address.
      */
-    public String getAddressStr (short address) {
+    public String getAddressStr(short address) {
         return addresses[address];
     }
 
     /**
      * Returns the value (in a string representation) at a specific address.
      */
-    public String getValueStr (short address) {
+    public String getValueStr(short address) {
         return valuesStr[address];
     }
 
     /**
      * Returns the value (in a short representation) at a specific address.
      */
-    public short getValueAsShort (short address) {
+    public short getValueAsShort(short address) {
         return values[address];
     }
 
@@ -449,7 +462,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
     protected short translateValueToShort(String data) throws TranslationException {
         short result = 0;
         try {
-            result = Format.translateValueToShort(data,dataFormat);
+            result = Format.translateValueToShort(data, dataFormat);
         } catch (NumberFormatException nfe) {
             throw new TranslationException("Illegal value: " + data);
         }
@@ -461,25 +474,24 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
      * Translates a given short to a string according to the current format.
      */
     protected String translateValueToString(short value) {
-        if(hideNullValue) {
-            if(value == nullValue)
+        if (hideNullValue) {
+            if (value == nullValue)
                 return "";
             else
                 return Format.translateValueToString(value, dataFormat);
-        }
-        else
+        } else
             return Format.translateValueToString(value, dataFormat);
     }
 
     /**
      * Sets the font of the table.
      */
-    public void setTableFont (Font font) {
+    public void setTableFont(Font font) {
         memoryTable.setFont(font);
     }
 
     // Initializes this memory.
-    private void jbInit(){
+    private void jbInit() {
 
         memoryTable.addFocusListener(new FocusListener() {
             public void focusGained(FocusEvent e) {
@@ -506,7 +518,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
         nameLbl.setFont(Utilities.labelsFont);
         determineColumnWidth();
         setBorder(BorderFactory.createEtchedBorder());
-        scrollPane.setLocation(0,27);
+        scrollPane.setLocation(0, 27);
 
         clearButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -583,7 +595,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
      */
     public void clearButton_actionPerformed(ActionEvent e) {
 
-        Object[] options = {"Yes", "No","Cancel"};
+        Object[] options = {"Yes", "No", "Cancel"};
         int pressedButtonValue = JOptionPane.showOptionDialog(this.getParent(),
             "Are you sure you want to clear ?",
             "Warning Message",
@@ -593,7 +605,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
             options,
             options[2]);
 
-        if(pressedButtonValue==JOptionPane.YES_OPTION)
+        if (pressedButtonValue == JOptionPane.YES_OPTION)
             notifyClearListeners();
     }
 
@@ -625,7 +637,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
          * Returns the value at a specific row and column.
          */
         public Object getValueAt(int row, int col) {
-            if(col==0)
+            if (col == 0)
                 return addresses[row];
             else
                 return valuesStr[row];
@@ -637,8 +649,8 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
          */
         public boolean isCellEditable(int row, int col) {
             boolean result = false;
-            if(isEnabled && col == 1 &&
-                (endEnabling == -1 || (row>= startEnabling && row <= endEnabling)))
+            if (isEnabled && col == 1 &&
+                (endEnabling == -1 || (row >= startEnabling && row <= endEnabling)))
                 result = true;
 
             return result;
@@ -648,16 +660,16 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
          * Sets the value at a specific row and column.
          */
         public void setValueAt(Object value, int row, int col) {
-            String data = ((String)value).trim();
+            String data = ((String) value).trim();
             if (!valuesStr[row].equals(data)) {
                 try {
                     valuesStr[row] = data;
-                    if(data.equals("") && hideNullValue)
+                    if (data.equals("") && hideNullValue)
                         values[row] = nullValue;
                     else
                         values[row] = translateValueToShort(data);
-                    notifyListeners((short)row,values[row]);
-                } catch(TranslationException te) {
+                    notifyListeners((short) row, values[row]);
+                } catch (TranslationException te) {
                     notifyErrorListeners(te.getMessage());
                     valuesStr[row] = translateValueToString(values[row]);
                 }
@@ -673,7 +685,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
      */
     public void setNumericFormat(int formatCode) {
         dataFormat = formatCode;
-        for(int i=0;i<values.length; i++)
+        for (int i = 0; i < values.length; i++)
             valuesStr[i] = translateValueToString(values[i]);
         repaint();
         notifyRepaintListeners();
@@ -692,8 +704,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
     class MemoryTableCellRenderer extends DefaultTableCellRenderer {
 
         public Component getTableCellRendererComponent
-            (JTable table, Object value, boolean selected, boolean focused, int row, int column)
-        {
+            (JTable table, Object value, boolean selected, boolean focused, int row, int column) {
             setForeground(null);
             setBackground(null);
 
@@ -705,13 +716,13 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
 
         public void setRenderer(int row, int column) {
 
-            if(column == 0)
+            if (column == 0)
                 setHorizontalAlignment(SwingConstants.CENTER);
             else if (column == 1) {
                 setHorizontalAlignment(SwingConstants.RIGHT);
 
-                for (int i=0;i<highlightIndex.size(); i++) {
-                    if(row == ((Integer)highlightIndex.elementAt(i)).intValue()) {
+                for (int i = 0; i < highlightIndex.size(); i++) {
+                    if (row == ((Integer) highlightIndex.elementAt(i)).intValue()) {
                         setForeground(Color.blue);
                         break;
                     }
@@ -721,7 +732,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
                     setBackground(Color.orange);
             }
             if (row < startEnabling || row > endEnabling && grayDisabledRange)
-                    setForeground(Color.lightGray);
+                setForeground(Color.lightGray);
         }
     }
 }

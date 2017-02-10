@@ -17,11 +17,13 @@
 
 package SimulatorsGUI;
 
-import Hack.CPUEmulator.*;
-import HackGUI.*;
-import java.awt.*;
+import Hack.CPUEmulator.KeyboardGUI;
+import HackGUI.Utilities;
+
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 /**
  * A keyboard GUI component. Receives key input by using key events.
@@ -61,7 +63,8 @@ public class KeyboardComponent extends JPanel implements KeyboardGUI {
     /**
      * Resets the contents of this KeyboardComponent.
      */
-    public void reset() {}
+    public void reset() {
+    }
 
     // Initializes this component.
     private void jbInit() {

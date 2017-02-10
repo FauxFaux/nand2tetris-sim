@@ -66,10 +66,9 @@ public class PinInfo {
         if (subBus != null) {
             from = subBus[0];
             to = subBus[1];
-        }
-        else {
+        } else {
             from = 0;
-            to = (byte)(width - 1);
+            to = (byte) (width - 1);
         }
 
         for (byte i = from; i <= to; i++)
@@ -87,10 +86,9 @@ public class PinInfo {
         if (subBus != null) {
             from = subBus[0];
             to = subBus[1];
-        }
-        else {
+        } else {
             from = 0;
-            to = (byte)(width - 1);
+            to = (byte) (width - 1);
         }
 
         for (byte i = from; i <= to && !found; i++)
@@ -104,6 +102,6 @@ public class PinInfo {
     }
 
     public boolean equals(Object other) {
-        return (other instanceof PinInfo) && name.equals(((PinInfo)other).name);
+        return (other instanceof PinInfo) && name.equals(((PinInfo) other).name);
     }
 }

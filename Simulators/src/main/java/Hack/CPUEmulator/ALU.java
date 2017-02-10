@@ -17,8 +17,9 @@
 
 package Hack.CPUEmulator;
 
-import Hack.Utilities.*;
-import Hack.ComputerParts.*;
+import Hack.ComputerParts.ComputerPartGUI;
+import Hack.ComputerParts.ValueComputerPart;
+import Hack.Utilities.Definitions;
 
 /**
  * A computer ALU. Has two inputs, one output, and a set of commands.
@@ -81,7 +82,7 @@ public class ALU extends ValueComputerPart {
      * ADDorAND - if true, ADDs the inputs. Otherwise, ANDs the inputs (logical AND)
      * negateOutput - if true, negates the output after the operation.
      */
-    public synchronized void setCommand(String description,  boolean zero0, boolean negate0,
+    public synchronized void setCommand(String description, boolean zero0, boolean negate0,
                                         boolean zero1, boolean negate1, boolean ADDorAND,
                                         boolean negateOutput) {
         commandDescription = description;
@@ -99,7 +100,8 @@ public class ALU extends ValueComputerPart {
             gui.commandFlash();
             try {
                 wait(COMMAND_FLASH_TIME);
-            } catch (InterruptedException ie) {}
+            } catch (InterruptedException ie) {
+            }
             gui.hideCommandFlash();
         }
     }
@@ -115,12 +117,13 @@ public class ALU extends ValueComputerPart {
             gui.bodyFlash();
             try {
                 wait(BODY_FLASH_TIME);
-            } catch (InterruptedException ie) {}
+            } catch (InterruptedException ie) {
+            }
             gui.hideBodyFlash();
         }
 
         short result = Definitions.computeALU(input0, input1, zero0, negate0, zero1,
-                                              negate1, ADDorAND, negateOutput);
+            negate1, ADDorAND, negateOutput);
 
         setValueAt(2, result, false);
     }
@@ -150,9 +153,15 @@ public class ALU extends ValueComputerPart {
         short result = 0;
 
         switch (index) {
-            case 0: result = input0; break;
-            case 1: result = input1; break;
-            case 2: result = output; break;
+            case 0:
+                result = input0;
+                break;
+            case 1:
+                result = input1;
+                break;
+            case 2:
+                result = output;
+                break;
         }
 
         return result;
@@ -160,9 +169,15 @@ public class ALU extends ValueComputerPart {
 
     public void doSetValueAt(int index, short value) {
         switch (index) {
-            case 0: input0 = value; break;
-            case 1: input1 = value; break;
-            case 2: output = value; break;
+            case 0:
+                input0 = value;
+                break;
+            case 1:
+                input1 = value;
+                break;
+            case 2:
+                output = value;
+                break;
         }
     }
 

@@ -18,11 +18,13 @@
 package HackGUI;
 
 import Hack.ComputerParts.BusGUI;
-import Hack.Controller.*;
-import java.awt.event.*;
-import java.awt.*;
+import Hack.Controller.HackController;
+
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.Border;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class BusComponent extends JPanel implements ActionListener, BusGUI {
 
@@ -82,8 +84,8 @@ public class BusComponent extends JPanel implements ActionListener, BusGUI {
         stepLengths = new double[range];
         delays = new int[range];
         for (int i = 0; i < range; i++) {
-            stepLengths[i] = function[i] * (double)(MAX_STEP_LENGTH - MIN_STEP_LENGTH) + MIN_STEP_LENGTH;
-            delays[i] = (int)(MAX_MS - function[i] * (double)(MAX_MS - MIN_MS));
+            stepLengths[i] = function[i] * (double) (MAX_STEP_LENGTH - MIN_STEP_LENGTH) + MIN_STEP_LENGTH;
+            delays[i] = (int) (MAX_MS - function[i] * (double) (MAX_MS - MIN_MS));
         }
 
         setSpeed(3);
@@ -98,9 +100,9 @@ public class BusComponent extends JPanel implements ActionListener, BusGUI {
     public synchronized void actionPerformed(ActionEvent e) {
         x = x + dx;
         y = y + dy;
-        txtField.setLocation((int)x,(int)y);
+        txtField.setLocation((int) x, (int) y);
         counter--;
-        if(counter==0) {
+        if (counter == 0) {
             timer.stop();
             txtField.setVisible(false);
             notify();
@@ -110,22 +112,22 @@ public class BusComponent extends JPanel implements ActionListener, BusGUI {
     /**
      * Moves the given value from the source coordinates to the target coordinates.
      */
-    public synchronized void move (Point p1, Point p2, String value) {
+    public synchronized void move(Point p1, Point p2, String value) {
         txtField.setText(value);
         x = p1.getX() - 2;
         y = p1.getY() - 2;
-        txtField.setLocation((int)x,(int)y);
+        txtField.setLocation((int) x, (int) y);
         txtField.setVisible(true);
 
-        int totalX = (int)(p2.getX() - p1.getX()) + 2;
-        int totalY = (int)(p2.getY() - p1.getY()) + 2;
+        int totalX = (int) (p2.getX() - p1.getX()) + 2;
+        int totalY = (int) (p2.getY() - p1.getY()) + 2;
 
         int absX = Math.abs(totalX);
         int absY = Math.abs(totalY);
 
-        dy = (double)(currentStepLength * absY) / (double)(absX + absY);
+        dy = (double) (currentStepLength * absY) / (double) (absX + absY);
         dx = currentStepLength - dy;
-        counter = (int)((double)absX / dx);
+        counter = (int) ((double) absX / dx);
         if (totalX < 0)
             dx = -dx;
         if (totalY < 0)
@@ -150,7 +152,8 @@ public class BusComponent extends JPanel implements ActionListener, BusGUI {
     /**
      * Resets the content of this BusComponent.
      */
-    public void reset() {}
+    public void reset() {
+    }
 
     /**
      * Sets the font to be used in the bus.
@@ -168,7 +171,7 @@ public class BusComponent extends JPanel implements ActionListener, BusGUI {
 
     // Initializes this component.
     private void jbInit() {
-        txtBorder = BorderFactory.createMatteBorder(4,4,4,4,Color.orange);
+        txtBorder = BorderFactory.createMatteBorder(4, 4, 4, 4, Color.orange);
         txtField.setBounds(new Rectangle(10, 8, WIDTH, HEIGHT));
         txtField.setBackground(Color.white);
         txtField.setEnabled(false);

@@ -17,16 +17,17 @@
 
 package Hack.Controller;
 
-import java.util.*;
-import Hack.Events.*;
-import Hack.ComputerParts.*;
-import java.io.*;
+import Hack.ComputerParts.ComputerPartErrorEventListener;
+import Hack.Events.ProgramEvent;
+import Hack.Events.ProgramEventListener;
+
+import java.io.File;
+import java.util.Vector;
 
 /**
  * An abstract base class for a simulator that can be controlled by the Hack Controller.
  */
-public abstract class HackSimulator implements ProgramEventListener, ComputerPartErrorEventListener
-{
+public abstract class HackSimulator implements ProgramEventListener, ComputerPartErrorEventListener {
     // The vector of listeners
     private Vector listeners;
 
@@ -67,7 +68,7 @@ public abstract class HackSimulator implements ProgramEventListener, ComputerPar
      * Throws ProgramException if an error occurs in the program.
      */
     public abstract void doCommand(String[] command)
-     throws CommandException, ProgramException, VariableException;
+        throws CommandException, ProgramException, VariableException;
 
     /**
      * Restarts the simulator.
@@ -197,7 +198,7 @@ public abstract class HackSimulator implements ProgramEventListener, ComputerPar
         ControllerEvent event = new ControllerEvent(this, action, data);
 
         for (int i = 0; i < listeners.size(); i++)
-            ((ControllerEventListener)listeners.elementAt(i)).actionPerformed(event);
+            ((ControllerEventListener) listeners.elementAt(i)).actionPerformed(event);
     }
 
     /**
@@ -223,7 +224,7 @@ public abstract class HackSimulator implements ProgramEventListener, ComputerPar
         ProgramEvent event = new ProgramEvent(this, eventType, programFileName);
 
         for (int i = 0; i < programListeners.size(); i++) {
-            ((ProgramEventListener)programListeners.elementAt(i)).programChanged(event);
+            ((ProgramEventListener) programListeners.elementAt(i)).programChanged(event);
         }
     }
 

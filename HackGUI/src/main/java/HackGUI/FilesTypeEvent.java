@@ -37,7 +37,7 @@ public class FilesTypeEvent extends EventObject {
     /**
      * Constructs a new FilesTypeEvent with the given source and the three names of files.
      */
-    public FilesTypeEvent(Object source, String firstFileName, String secondFileName, String thirdFileName ) {
+    public FilesTypeEvent(Object source, String firstFileName, String secondFileName, String thirdFileName) {
         super(source);
         this.firstFileName = firstFileName;
         this.secondFileName = secondFileName;

@@ -17,11 +17,13 @@
 
 package SimulatorsGUI;
 
-import java.awt.*;
-import java.awt.event.*;
+import Hack.CPUEmulator.ScreenGUI;
+import Hack.Utilities.Definitions;
+
 import javax.swing.*;
-import Hack.CPUEmulator.*;
-import Hack.Utilities.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * A Screen GUI component.
@@ -56,9 +58,9 @@ public class ScreenComponent extends JPanel implements ScreenGUI, ActionListener
         int borderWidth = borderInsets.left + borderInsets.right;
         int borderHeight = borderInsets.top + borderInsets.bottom;
         setPreferredSize(new Dimension(Definitions.SCREEN_WIDTH + borderWidth,
-                                       Definitions.SCREEN_HEIGHT + borderHeight));
+            Definitions.SCREEN_HEIGHT + borderHeight));
         setSize(Definitions.SCREEN_WIDTH + borderWidth,
-                Definitions.SCREEN_HEIGHT + borderHeight);
+            Definitions.SCREEN_HEIGHT + borderHeight);
 
         data = new short[Definitions.SCREEN_SIZE];
         x = new int[Definitions.SCREEN_SIZE];
@@ -101,7 +103,7 @@ public class ScreenComponent extends JPanel implements ScreenGUI, ActionListener
     /**
      * Resets the content of this component.
      */
-    public void reset(){
+    public void reset() {
         for (int i = 0; i < data.length; i++)
             data[i] = 0;
 
@@ -160,7 +162,7 @@ public class ScreenComponent extends JPanel implements ScreenGUI, ActionListener
                             // since there's no drawPixel, uses drawLine to draw one pixel
                             g.drawLine(x[i] + j, y[i], x[i] + j, y[i]);
 
-                        value = (short)(value >> 1);
+                        value = (short) (value >> 1);
                     }
                 }
             }

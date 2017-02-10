@@ -17,14 +17,18 @@
 
 package Hack.Controller;
 
+import Hack.Events.ProgramEvent;
+import Hack.Events.ProgramEventListener;
+import Hack.Utilities.Conversions;
+import Hack.Utilities.Definitions;
+
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.Vector;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
-import Hack.Utilities.*;
-import Hack.Events.*;
+import java.util.Vector;
 
 /**
  * A Controller for HackSimulators. Executes scripts written in a special scripting language
@@ -32,7 +36,7 @@ import Hack.Events.*;
  * Constructed with a GUI that enables the execution control of the script.
  */
 public class HackController
- implements ControllerEventListener, ActionListener, ProgramEventListener {
+    implements ControllerEventListener, ActionListener, ProgramEventListener {
 
     /**
      * The number of speed units.
@@ -250,7 +254,7 @@ public class HackController
      * and the default script file for this simulator.
      */
     public HackController(ControllerGUI gui, HackSimulator simulator, String defaultScriptName)
-     throws ScriptException, ControllerException {
+        throws ScriptException, ControllerException {
 
         this.gui = gui;
         this.simulator = simulator;
@@ -267,7 +271,7 @@ public class HackController
 
         delays = new int[NUMBER_OF_SPEED_UNITS];
         for (int i = 0; i < NUMBER_OF_SPEED_UNITS; i++)
-            delays[i] = (int)(MAX_MS - SPEED_FUNCTION[i] * (float)(MAX_MS - MIN_MS));
+            delays[i] = (int) (MAX_MS - SPEED_FUNCTION[i] * (float) (MAX_MS - MIN_MS));
 
         currentSpeedUnit = INITIAL_SPEED_UNIT;
         animationMode = simulator.getInitialAnimationMode();
@@ -400,7 +404,7 @@ public class HackController
 
             // Check Breakpoints
             for (int i = 0; i < breakpoints.size(); i++) {
-                Breakpoint breakpoint = (Breakpoint)breakpoints.elementAt(i);
+                Breakpoint breakpoint = (Breakpoint) breakpoints.elementAt(i);
                 String currentValue = simulator.getValue(breakpoint.getVarName());
                 if (currentValue.equals(breakpoint.getValue())) {
                     // if value is equal and the breakpoint wasn't reached before, turn it on
@@ -441,7 +445,7 @@ public class HackController
     // Executes one command from the script and advances to the next.
     // Returns the command's terminator.
     private byte miniStep()
-     throws ControllerException, ProgramException, CommandException, VariableException {
+        throws ControllerException, ProgramException, CommandException, VariableException {
         Command command;
         boolean redo;
 
@@ -450,79 +454,79 @@ public class HackController
             redo = false;
 
             switch (command.getCode()) {
-            case Command.SIMULATOR_COMMAND:
-                simulator.doCommand((String[])command.getArg());
-                break;
-            case Command.OUTPUT_FILE_COMMAND:
-                doOutputFileCommand(command);
-                break;
-            case Command.COMPARE_TO_COMMAND:
-                doCompareToCommand(command);
-                break;
-            case Command.OUTPUT_LIST_COMMAND:
-                doOutputListCommand(command);
-                break;
-            case Command.OUTPUT_COMMAND:
-                doOutputCommand(command);
-                break;
-            case Command.ECHO_COMMAND:
-                doEchoCommand(command);
-                break;
-            case Command.CLEAR_ECHO_COMMAND:
-                doClearEchoCommand(command);
-                break;
-            case Command.BREAKPOINT_COMMAND:
-                doBreakpointCommand(command);
-                break;
-            case Command.CLEAR_BREAKPOINTS_COMMAND:
-                doClearBreakpointsCommand(command);
-                break;
-            case Command.REPEAT_COMMAND:
-                repeatCounter = ((Integer)command.getArg()).intValue();
-                loopCommandIndex = currentCommandIndex + 1;
-                redo = true;
-                break;
-            case Command.WHILE_COMMAND:
-                whileCondititon = (ScriptCondition)command.getArg();
-                loopCommandIndex = currentCommandIndex + 1;
-                if (!whileCondititon.compare(simulator)) {
-                    // advance till the nearest end while command.
-                    for (; script.getCommandAt(currentCommandIndex).getCode() !=
-                           Command.END_WHILE_COMMAND; currentCommandIndex++);
-				}
-                redo = true; // whether the test was successful or not,
-							 // the while command doesn't count
-                break;
-            case Command.END_SCRIPT_COMMAND:
-                scriptEnded = true;
-                stopMode();
-
-                if (gui != null) {
-                    gui.disableSingleStep();
-                    gui.disableFastForward();
-                }
-
-                try {
-                    if (output != null)
-                        output.close();
-
-                    if (comparisonFile != null) {
-                        if (comparisonFailed)
-                            displayMessage("End of script - Comparison failure at line "
-                                               + comparisonFailureLine, true);
-                        else
-                            displayMessage("End of script - Comparison ended successfully",
-                                               false);
-
-                        comparisonFile.close();
+                case Command.SIMULATOR_COMMAND:
+                    simulator.doCommand((String[]) command.getArg());
+                    break;
+                case Command.OUTPUT_FILE_COMMAND:
+                    doOutputFileCommand(command);
+                    break;
+                case Command.COMPARE_TO_COMMAND:
+                    doCompareToCommand(command);
+                    break;
+                case Command.OUTPUT_LIST_COMMAND:
+                    doOutputListCommand(command);
+                    break;
+                case Command.OUTPUT_COMMAND:
+                    doOutputCommand(command);
+                    break;
+                case Command.ECHO_COMMAND:
+                    doEchoCommand(command);
+                    break;
+                case Command.CLEAR_ECHO_COMMAND:
+                    doClearEchoCommand(command);
+                    break;
+                case Command.BREAKPOINT_COMMAND:
+                    doBreakpointCommand(command);
+                    break;
+                case Command.CLEAR_BREAKPOINTS_COMMAND:
+                    doClearBreakpointsCommand(command);
+                    break;
+                case Command.REPEAT_COMMAND:
+                    repeatCounter = ((Integer) command.getArg()).intValue();
+                    loopCommandIndex = currentCommandIndex + 1;
+                    redo = true;
+                    break;
+                case Command.WHILE_COMMAND:
+                    whileCondititon = (ScriptCondition) command.getArg();
+                    loopCommandIndex = currentCommandIndex + 1;
+                    if (!whileCondititon.compare(simulator)) {
+                        // advance till the nearest end while command.
+                        for (; script.getCommandAt(currentCommandIndex).getCode() !=
+                            Command.END_WHILE_COMMAND; currentCommandIndex++)
+                            ;
                     }
-                    else
-                        displayMessage("End of script", false);
-                } catch (IOException ioe) {
-                    throw new ControllerException("Could not read comparison file");
-                }
+                    redo = true; // whether the test was successful or not,
+                    // the while command doesn't count
+                    break;
+                case Command.END_SCRIPT_COMMAND:
+                    scriptEnded = true;
+                    stopMode();
 
-                break;
+                    if (gui != null) {
+                        gui.disableSingleStep();
+                        gui.disableFastForward();
+                    }
+
+                    try {
+                        if (output != null)
+                            output.close();
+
+                        if (comparisonFile != null) {
+                            if (comparisonFailed)
+                                displayMessage("End of script - Comparison failure at line "
+                                    + comparisonFailureLine, true);
+                            else
+                                displayMessage("End of script - Comparison ended successfully",
+                                    false);
+
+                            comparisonFile.close();
+                        } else
+                            displayMessage("End of script", false);
+                    } catch (IOException ioe) {
+                        throw new ControllerException("Could not read comparison file");
+                    }
+
+                    break;
             }
 
             // advance script line pointer
@@ -534,8 +538,7 @@ public class HackController
                         currentCommandIndex = loopCommandIndex;
                     else
                         currentCommandIndex++;
-                }
-                else if (nextCommand.getCode() == Command.END_WHILE_COMMAND) {
+                } else if (nextCommand.getCode() == Command.END_WHILE_COMMAND) {
                     if (whileCondititon.compare(simulator))
                         currentCommandIndex = loopCommandIndex;
                     else
@@ -553,7 +556,7 @@ public class HackController
 
     // Executes the controller's output-file command.
     private void doOutputFileCommand(Command command) throws ControllerException {
-        currentOutputName = currentScriptFile.getParent() + "/" + (String)command.getArg();
+        currentOutputName = currentScriptFile.getParent() + "/" + (String) command.getArg();
         resetOutputFile();
         if (gui != null)
             gui.setOutputFile(currentOutputName);
@@ -561,7 +564,7 @@ public class HackController
 
     // Executes the controller's compare-to command.
     private void doCompareToCommand(Command command) throws ControllerException {
-        currentComparisonName = currentScriptFile.getParent() + "/" + (String)command.getArg();
+        currentComparisonName = currentScriptFile.getParent() + "/" + (String) command.getArg();
         resetComparisonFile();
         if (gui != null)
             gui.setComparisonFile(currentComparisonName);
@@ -572,18 +575,18 @@ public class HackController
         if (output == null)
             throw new ControllerException("No output file specified");
 
-        varList = (VariableFormat[])command.getArg();
+        varList = (VariableFormat[]) command.getArg();
         StringBuffer line = new StringBuffer("|");
 
         for (int i = 0; i < varList.length; i++) {
             int space = varList[i].padL + varList[i].padR + varList[i].len;
             String varName = varList[i].varName.length() > space ?
-                             varList[i].varName.substring(0, space) : varList[i].varName;
-            int leftSpace = (int)((space - varName.length()) / 2);
+                varList[i].varName.substring(0, space) : varList[i].varName;
+            int leftSpace = (int) ((space - varName.length()) / 2);
             int rightSpace = space - leftSpace - varName.length();
 
             line.append(SPACES.substring(0, leftSpace) + varName +
-                        SPACES.substring(0, rightSpace) + '|');
+                SPACES.substring(0, rightSpace) + '|');
         }
 
         outputAndCompare(line.toString());
@@ -616,13 +619,13 @@ public class HackController
                 value = value.substring(value.length() - varList[i].len);
 
             int leftSpace = varList[i].padL +
-                            (varList[i].format == VariableFormat.STRING_FORMAT ?
-                             0 : (varList[i].len - value.length()));
+                (varList[i].format == VariableFormat.STRING_FORMAT ?
+                    0 : (varList[i].len - value.length()));
             int rightSpace = varList[i].padR +
-                            (varList[i].format == VariableFormat.STRING_FORMAT ?
-                             (varList[i].len - value.length()) : 0);
+                (varList[i].format == VariableFormat.STRING_FORMAT ?
+                    (varList[i].len - value.length()) : 0);
             line.append(SPACES.substring(0, leftSpace) + value +
-                        SPACES.substring(0, rightSpace) + '|');
+                SPACES.substring(0, rightSpace) + '|');
         }
 
         outputAndCompare(line.toString());
@@ -630,7 +633,7 @@ public class HackController
 
     // Executes the controller's echo command.
     private void doEchoCommand(Command command) throws ControllerException {
-        lastEcho = (String)command.getArg();
+        lastEcho = (String) command.getArg();
         if (gui != null)
             gui.displayMessage(lastEcho, false);
     }
@@ -644,7 +647,7 @@ public class HackController
 
     // Executes the controller's breakpoint command.
     private void doBreakpointCommand(Command command) throws ControllerException {
-        Breakpoint breakpoint = (Breakpoint)command.getArg();
+        Breakpoint breakpoint = (Breakpoint) command.getArg();
 
         if (!breakpointExists(breakpoints, breakpoint)) {
             breakpoints.addElement(breakpoint);
@@ -704,7 +707,7 @@ public class HackController
                     comparisonFailed = true;
                     comparisonFailureLine = compareLinesCounter;
                     displayMessage("Comparison failure at line " + comparisonFailureLine,
-                                       true);
+                        true);
                     stopMode();
                 }
             } catch (IOException ioe) {
@@ -715,7 +718,7 @@ public class HackController
 
     // loads the given script file and restarts the GUI.
     protected void loadNewScript(File file, boolean displayMessage)
-     throws ControllerException, ScriptException {
+        throws ControllerException, ScriptException {
         currentScriptFile = file;
         script = new Script(file.getPath());
         breakpoints.removeAllElements();
@@ -762,7 +765,7 @@ public class HackController
                 gui.setCurrentComparisonLine(-1);
         } catch (IOException ioe) {
             throw new ControllerException("Could not open comparison file " +
-                                          currentComparisonName);
+                currentComparisonName);
         }
     }
 
@@ -819,7 +822,7 @@ public class HackController
 
         // Make sure there's no duplicate breakpoints
         for (int i = 0; i < newBreakpoints.size(); i++) {
-            Breakpoint currentBreakpoint = (Breakpoint)newBreakpoints.elementAt(i);
+            Breakpoint currentBreakpoint = (Breakpoint) newBreakpoints.elementAt(i);
 
             if (!breakpointExists(breakpoints, currentBreakpoint))
                 breakpoints.addElement(currentBreakpoint);
@@ -830,7 +833,7 @@ public class HackController
     private boolean breakpointExists(Vector breakpoints, Breakpoint breakpoint) {
         boolean found = false;
         for (int j = 0; j < breakpoints.size() && !found; j++) {
-            Breakpoint scannedBreakpoint = (Breakpoint)breakpoints.elementAt(j);
+            Breakpoint scannedBreakpoint = (Breakpoint) breakpoints.elementAt(j);
             if (breakpoint.getVarName().equals(scannedBreakpoint.getVarName()) &&
                 breakpoint.getValue().equals(scannedBreakpoint.getValue()))
                 found = true;
@@ -856,8 +859,7 @@ public class HackController
             if (error) {
                 System.err.println(message);
                 System.exit(-1);
-            }
-            else {
+            } else {
                 System.out.println(message);
             }
         }
@@ -869,10 +871,11 @@ public class HackController
 
         try {
             BufferedReader r = new BufferedReader(new FileReader("bin/" + simulator.getName() +
-                                                                 ".dat"));
+                ".dat"));
             dir = r.readLine();
             r.close();
-        } catch (IOException ioe) {}
+        } catch (IOException ioe) {
+        }
 
         return new File(dir);
     }
@@ -892,7 +895,8 @@ public class HackController
             PrintWriter r = new PrintWriter(new FileWriter("bin/" + simulator.getName() + ".dat"));
             r.println(dir.getAbsolutePath());
             r.close();
-        } catch (IOException ioe) {}
+        } catch (IOException ioe) {
+        }
     }
 
     // Returns the version string
@@ -917,7 +921,7 @@ public class HackController
     // Updates the current program file name in the gui's title and saves its dir
     // as the current working dir.
     protected void updateProgramFile(String programFileName) {
-        gui.setTitle(simulator.getName() + getVersionString()+ " - " + programFileName);
+        gui.setTitle(simulator.getName() + getVersionString() + " - " + programFileName);
         File file = new File(programFileName);
         saveWorkingDir(file);
     }
@@ -972,30 +976,30 @@ public class HackController
                     rewind();
                     break;
                 case ControllerEvent.SPEED_CHANGE:
-                    setSpeed(((Integer)event.getData()).intValue());
+                    setSpeed(((Integer) event.getData()).intValue());
                     break;
                 case ControllerEvent.BREAKPOINTS_CHANGE:
-                    setBreakpoints((Vector)event.getData());
+                    setBreakpoints((Vector) event.getData());
                     break;
                 case ControllerEvent.SCRIPT_CHANGE:
-                    File file = (File)event.getData();
+                    File file = (File) event.getData();
                     loadNewScript(file, true);
                     setAdditionalDisplay(SCRIPT_ADDITIONAL_DISPLAY);
                     saveWorkingDir(file);
                     rewind();
                     break;
                 case ControllerEvent.ANIMATION_MODE_CHANGE:
-                    setAnimationModeTask.setMode(((Integer)event.getData()).intValue());
+                    setAnimationModeTask.setMode(((Integer) event.getData()).intValue());
                     t = new Thread(setAnimationModeTask);
                     t.start();
                     break;
                 case ControllerEvent.NUMERIC_FORMAT_CHANGE:
-                    setNumericFormatTask.setFormat(((Integer)event.getData()).intValue());
+                    setNumericFormatTask.setFormat(((Integer) event.getData()).intValue());
                     t = new Thread(setNumericFormatTask);
                     t.start();
                     break;
                 case ControllerEvent.ADDITIONAL_DISPLAY_CHANGE:
-                    setAdditionalDisplay(((Integer)event.getData()).intValue());
+                    setAdditionalDisplay(((Integer) event.getData()).intValue());
                     break;
                 case ControllerEvent.DISABLE_ANIMATION_MODE_CHANGE:
                     gui.disableAnimationModes();
@@ -1044,12 +1048,12 @@ public class HackController
                     gui.enableRewind();
                     break;
                 case ControllerEvent.DISPLAY_MESSAGE:
-                    displayMessage((String)event.getData(), false);
+                    displayMessage((String) event.getData(), false);
                     break;
                 case ControllerEvent.DISPLAY_ERROR_MESSAGE:
                     if (timer.isRunning())
                         stopMode();
-                    displayMessage((String)event.getData(), true);
+                    displayMessage((String) event.getData(), true);
                     break;
                 default:
                     doUnknownAction(event.getAction(), event.getData());
@@ -1114,7 +1118,8 @@ public class HackController
                     count = 0;
                     try {
                         wait(1);
-                    } catch (InterruptedException ie) {}
+                    } catch (InterruptedException ie) {
+                    }
                 }
 
                 count++;

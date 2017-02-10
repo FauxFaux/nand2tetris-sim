@@ -19,8 +19,10 @@ package HackGUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 /**
  * A combo box with a title.
@@ -83,8 +85,8 @@ public class TitledComboBox extends JPanel {
     // Notifies the registered listeners on an action in the combo box.
     private void notifyListeners(ActionEvent e) {
         Iterator iter = listeners.iterator();
-        while(iter.hasNext())
-            ((ActionListener)iter.next()).actionPerformed(e);
+        while (iter.hasNext())
+            ((ActionListener) iter.next()).actionPerformed(e);
     }
 
     /**

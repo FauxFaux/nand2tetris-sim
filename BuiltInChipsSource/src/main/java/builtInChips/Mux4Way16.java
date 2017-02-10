@@ -35,10 +35,18 @@ public class Mux4Way16 extends BuiltInGate {
         short out = 0;
 
         switch (sel) {
-            case 0: out = a; break;
-            case 1: out = b; break;
-            case 2: out = c; break;
-            case 3: out = d; break;
+            case 0:
+                out = a;
+                break;
+            case 1:
+                out = b;
+                break;
+            case 2:
+                out = c;
+                break;
+            case 3:
+                out = d;
+                break;
         }
 
         outputPins[0].set(out);

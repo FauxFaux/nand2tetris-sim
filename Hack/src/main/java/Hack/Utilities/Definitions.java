@@ -17,8 +17,8 @@
 
 package Hack.Utilities;
 
-import java.util.*;
-import java.awt.event.*;
+import java.awt.event.KeyEvent;
+import java.util.Hashtable;
 
 /**
  * Hack definitions and services. Designed as a singleton.
@@ -433,15 +433,15 @@ public class Definitions {
         if (zero1)
             input1 = 0;
         if (negate0)
-            input0 = (short)(~input0);
+            input0 = (short) (~input0);
         if (negate1)
-            input1 = (short)(~input1);
+            input1 = (short) (~input1);
         if (ADDorAND)
-            result = (short)(input0 + input1);
+            result = (short) (input0 + input1);
         else
-            result = (short)(input0 & input1);
+            result = (short) (input0 & input1);
         if (negateOutput)
-            result = (short)(~result);
+            result = (short) (~result);
 
         return result;
     }
@@ -450,7 +450,7 @@ public class Definitions {
      * Returns the translation table from pointer names to addresses.
      */
     public Hashtable getAddressesTable() {
-        return (Hashtable)addresses.clone();
+        return (Hashtable) addresses.clone();
     }
 
     /**
@@ -458,8 +458,8 @@ public class Definitions {
      */
     public short getKeyCode(KeyEvent e) {
         short key = 0;
-        int letter = (int)e.getKeyChar();
-        short code = (short)e.getKeyCode();
+        int letter = (int) e.getKeyChar();
+        short code = (short) e.getKeyCode();
 
         if (letter == KeyEvent.CHAR_UNDEFINED)
             key = actionKeyCodes[code];
@@ -475,7 +475,7 @@ public class Definitions {
             else if (letter == 127)
                 key = DELETE_KEY;
             else
-                key = (short)letter;
+                key = (short) letter;
         }
 
         return key;
@@ -487,7 +487,7 @@ public class Definitions {
     public String getKeyName(KeyEvent e) {
         String modifiers = e.getKeyModifiersText(e.getModifiers());
         String result = modifiers + (modifiers.length() > 0 ? "+" : "")
-                        + e.getKeyText(e.getKeyCode());
+            + e.getKeyText(e.getKeyCode());
 
         return result;
     }
@@ -495,29 +495,29 @@ public class Definitions {
     // initializes address translation table
     private void initAddresses() {
         addresses = new Hashtable();
-        addresses.put(SP_NAME,new Short(SP_ADDRESS));
-        addresses.put(LOCAL_POINTER_NAME,new Short(LOCAL_POINTER_ADDRESS));
-        addresses.put(ARG_POINTER_NAME,new Short(ARG_POINTER_ADDRESS));
-        addresses.put(THIS_POINTER_NAME,new Short(THIS_POINTER_ADDRESS));
-        addresses.put(THAT_POINTER_NAME,new Short(THAT_POINTER_ADDRESS));
-        addresses.put(R0_NAME,new Short(R0_ADDRESS));
-        addresses.put(R1_NAME,new Short(R1_ADDRESS));
-        addresses.put(R2_NAME,new Short(R2_ADDRESS));
-        addresses.put(R3_NAME,new Short(R3_ADDRESS));
-        addresses.put(R4_NAME,new Short(R4_ADDRESS));
-        addresses.put(R5_NAME,new Short(R5_ADDRESS));
-        addresses.put(R6_NAME,new Short(R6_ADDRESS));
-        addresses.put(R7_NAME,new Short(R7_ADDRESS));
-        addresses.put(R8_NAME,new Short(R8_ADDRESS));
-        addresses.put(R9_NAME,new Short(R9_ADDRESS));
-        addresses.put(R10_NAME,new Short(R10_ADDRESS));
-        addresses.put(R11_NAME,new Short(R11_ADDRESS));
-        addresses.put(R12_NAME,new Short(R12_ADDRESS));
-        addresses.put(R13_NAME,new Short(R13_ADDRESS));
-        addresses.put(R14_NAME,new Short(R14_ADDRESS));
-        addresses.put(R15_NAME,new Short(R15_ADDRESS));
-        addresses.put(SCREEN_NAME,new Short(SCREEN_START_ADDRESS));
-        addresses.put(KEYBOARD_NAME,new Short(KEYBOARD_ADDRESS));
+        addresses.put(SP_NAME, new Short(SP_ADDRESS));
+        addresses.put(LOCAL_POINTER_NAME, new Short(LOCAL_POINTER_ADDRESS));
+        addresses.put(ARG_POINTER_NAME, new Short(ARG_POINTER_ADDRESS));
+        addresses.put(THIS_POINTER_NAME, new Short(THIS_POINTER_ADDRESS));
+        addresses.put(THAT_POINTER_NAME, new Short(THAT_POINTER_ADDRESS));
+        addresses.put(R0_NAME, new Short(R0_ADDRESS));
+        addresses.put(R1_NAME, new Short(R1_ADDRESS));
+        addresses.put(R2_NAME, new Short(R2_ADDRESS));
+        addresses.put(R3_NAME, new Short(R3_ADDRESS));
+        addresses.put(R4_NAME, new Short(R4_ADDRESS));
+        addresses.put(R5_NAME, new Short(R5_ADDRESS));
+        addresses.put(R6_NAME, new Short(R6_ADDRESS));
+        addresses.put(R7_NAME, new Short(R7_ADDRESS));
+        addresses.put(R8_NAME, new Short(R8_ADDRESS));
+        addresses.put(R9_NAME, new Short(R9_ADDRESS));
+        addresses.put(R10_NAME, new Short(R10_ADDRESS));
+        addresses.put(R11_NAME, new Short(R11_ADDRESS));
+        addresses.put(R12_NAME, new Short(R12_ADDRESS));
+        addresses.put(R13_NAME, new Short(R13_ADDRESS));
+        addresses.put(R14_NAME, new Short(R14_ADDRESS));
+        addresses.put(R15_NAME, new Short(R15_ADDRESS));
+        addresses.put(SCREEN_NAME, new Short(SCREEN_START_ADDRESS));
+        addresses.put(KEYBOARD_NAME, new Short(KEYBOARD_ADDRESS));
     }
 
     // prepare map of action keys from java codes to jack codes

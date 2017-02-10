@@ -17,14 +17,16 @@
 
 package Hack.ComputerParts;
 
-import java.util.*;
-import Hack.Events.*;
+import Hack.Events.ErrorEvent;
+import Hack.Events.ErrorEventListener;
+
+import java.util.Vector;
 
 /**
  * An interactive computer part that has values which can be get & set.
  */
 public abstract class InteractiveValueComputerPart extends ValueComputerPart
- implements ComputerPartEventListener, ErrorEventListener {
+    implements ComputerPartEventListener, ErrorEventListener {
 
     // Error listeners of hi computer prt
     private Vector errorListeners;
@@ -89,7 +91,7 @@ public abstract class InteractiveValueComputerPart extends ValueComputerPart
         ComputerPartErrorEvent event = new ComputerPartErrorEvent(this, errorMessage);
 
         for (int i = 0; i < errorListeners.size(); i++)
-            ((ComputerPartErrorEventListener)errorListeners.elementAt(i)).computerPartErrorOccured(event);
+            ((ComputerPartErrorEventListener) errorListeners.elementAt(i)).computerPartErrorOccured(event);
     }
 
     /**
@@ -99,7 +101,7 @@ public abstract class InteractiveValueComputerPart extends ValueComputerPart
         ComputerPartErrorEvent event = new ComputerPartErrorEvent(this, null);
 
         for (int i = 0; i < errorListeners.size(); i++)
-            ((ComputerPartErrorEventListener)errorListeners.elementAt(i)).computerPartErrorOccured(event);
+            ((ComputerPartErrorEventListener) errorListeners.elementAt(i)).computerPartErrorOccured(event);
     }
 
     /**
@@ -120,8 +122,7 @@ public abstract class InteractiveValueComputerPart extends ValueComputerPart
         if ((newValue < minValue || newValue > maxValue) && newValue != nullValue) {
             notifyErrorListeners("Value must be in the range " + minValue + ".." + maxValue);
             quietUpdateGUI(newIndex, getValueAt(newIndex));
-        }
-        else
+        } else
             setValueAt(newIndex, newValue, true);
     }
 
@@ -133,7 +134,7 @@ public abstract class InteractiveValueComputerPart extends ValueComputerPart
      */
     public void enableUserInput() {
         if (hasGUI)
-            ((InteractiveValueComputerPartGUI)getGUI()).enableUserInput();
+            ((InteractiveValueComputerPartGUI) getGUI()).enableUserInput();
     }
 
     /**
@@ -141,7 +142,7 @@ public abstract class InteractiveValueComputerPart extends ValueComputerPart
      */
     public void disableUserInput() {
         if (hasGUI)
-            ((InteractiveValueComputerPartGUI)getGUI()).disableUserInput();
+            ((InteractiveValueComputerPartGUI) getGUI()).disableUserInput();
     }
 
     /**
@@ -163,12 +164,12 @@ public abstract class InteractiveValueComputerPart extends ValueComputerPart
         grayDisabledRange = gray;
 
         if (displayChanges)
-            ((InteractiveValueComputerPartGUI)getGUI()).setEnabledRange(start, end, gray);
+            ((InteractiveValueComputerPartGUI) getGUI()).setEnabledRange(start, end, gray);
     }
 
     public void refreshGUI() {
         if (displayChanges && startEnabledRange != -1 && endEnabledRange != -1) {
-            ((InteractiveValueComputerPartGUI)getGUI()).setEnabledRange(startEnabledRange, endEnabledRange, grayDisabledRange);
+            ((InteractiveValueComputerPartGUI) getGUI()).setEnabledRange(startEnabledRange, endEnabledRange, grayDisabledRange);
         }
     }
 }

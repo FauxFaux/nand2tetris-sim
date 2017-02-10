@@ -17,8 +17,9 @@
 
 package SimulatorsGUI;
 
-import HackGUI.*;
-import Hack.HardwareSimulator.*;
+import Hack.HardwareSimulator.GateInfoGUI;
+import HackGUI.Utilities;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -54,27 +55,27 @@ public class GateInfoComponent extends JPanel implements GateInfoGUI {
         jbInit();
     }
 
-    public void setChip (String chipName) {
+    public void setChip(String chipName) {
         this.chipName = chipName;
         chipNameTxt.setText(chipName);
     }
 
-    public void setClock (boolean up) {
+    public void setClock(boolean up) {
         clockUp = up;
-        if(up)
+        if (up)
             timeTxt.setText(timeTxt.getText() + "+");
     }
 
-    public void setClocked (boolean clocked) {
-        if(clocked)
+    public void setClocked(boolean clocked) {
+        if (clocked)
             chipNameTxt.setText(chipName + " (Clocked) ");
         else
             chipNameTxt.setText(chipName);
     }
 
 
-    public void setTime (int time) {
-         if (clockUp)
+    public void setTime(int time) {
+        if (clockUp)
             timeTxt.setText(String.valueOf(time) + "+");
         else
             timeTxt.setText(String.valueOf(time));
@@ -122,7 +123,7 @@ public class GateInfoComponent extends JPanel implements GateInfoGUI {
         this.add(timeLbl, null);
         this.add(timeTxt, null);
 
-        setSize(483,37);
+        setSize(483, 37);
         setBorder(BorderFactory.createEtchedBorder());
     }
 }

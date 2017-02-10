@@ -18,7 +18,8 @@
 package HackGUI;
 
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * A button which draws a raised border when the mouse cursor is over it.
@@ -50,15 +51,18 @@ public class MouseOverJButton extends JButton implements MouseListener {
     /**
      * Empty implementation.
      */
-    public void mouseClicked(MouseEvent e){}
+    public void mouseClicked(MouseEvent e) {
+    }
 
     /**
      * Empty implementation.
      */
-    public void mousePressed(MouseEvent e) {}
+    public void mousePressed(MouseEvent e) {
+    }
 
     /**
      * Empty implementation.
      */
-    public void mouseReleased(MouseEvent e) {}
+    public void mouseReleased(MouseEvent e) {
+    }
 }

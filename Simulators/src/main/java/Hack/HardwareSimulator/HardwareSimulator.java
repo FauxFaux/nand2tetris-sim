@@ -17,31 +17,34 @@
 
 package Hack.HardwareSimulator;
 
+import Hack.ComputerParts.ComputerPartErrorEvent;
+import Hack.ComputerParts.TextFileEvent;
+import Hack.ComputerParts.TextFileEventListener;
 import Hack.Controller.*;
-import Hack.ComputerParts.*;
-import Hack.Utilities.*;
-import java.io.*;
+import Hack.Events.ProgramEvent;
 import Hack.Gates.*;
-import Hack.Events.*;
+import Hack.Utilities.Conversions;
+
+import java.io.File;
 
 /**
  * A simulator for the Hack Hardware. Simulates chips (in .hdl format).
- *
+ * <p>
  * Recognizes the following variables:
  * time - the number of tick-tocks that passed since the program started running.
- *        if clock is up, adds a '+' (String) - READ ONLY
+ * if clock is up, adds a '+' (String) - READ ONLY
  * Input/Output/Internal pin name
- *
+ * <p>
  * Recognizes the following commands:
  * load <gate name> - loads the given gate (from an HDL file) into the simulator
- *					  (the file name should not contain the path and the .HDL extension).
+ * (the file name should not contain the path and the .HDL extension).
  * tick - Clock goes up (internal state of clocked gates changes).
  * tock - Clock goes down (outputs of clocked gates are modified).
  * eval - propagate all the input values of the gate and re-compute all outputs of the gate.
  */
 public class HardwareSimulator extends HackSimulator
- implements TextFileEventListener, GateErrorEventListener,
-            DirtyGateListener {
+    implements TextFileEventListener, GateErrorEventListener,
+    DirtyGateListener {
 
     // Variables
     private static final String VAR_TIME = "time";
@@ -132,7 +135,7 @@ public class HardwareSimulator extends HackSimulator
 
     // Initializes the hardware simulator
     private void init() {
-        Gate.CLOCK_NODE.set((short)1);
+        Gate.CLOCK_NODE.set((short) 1);
         clockUp = false;
         time = 0;
         GatesManager.getInstance().setErrorHandler(this);
@@ -175,9 +178,9 @@ public class HardwareSimulator extends HackSimulator
                             throw new VariableException(ge.getMessage(), varName);
                         }
                     } else {
-						throw new VariableException("No such built-in chip used",
-													gateName);
-					}
+                        throw new VariableException("No such built-in chip used",
+                            gateName);
+                    }
                 }
 
                 if (result == null)
@@ -222,7 +225,7 @@ public class HardwareSimulator extends HackSimulator
         else {
             try {
                 index = Integer.parseInt(varName.substring(varName.indexOf("[") + 1,
-                                                           varName.indexOf("]")));
+                    varName.indexOf("]")));
             } catch (Exception nfe) {
                 throw new VariableException("Illegal component index", varName);
             }
@@ -246,7 +249,7 @@ public class HardwareSimulator extends HackSimulator
             numValue = Short.parseShort(value);
         } catch (NumberFormatException nfe) {
             throw new VariableException("'" + value + "' is not a legal value for variable",
-                                        varName);
+                varName);
         }
 
         boolean readOnly = false;
@@ -262,12 +265,11 @@ public class HardwareSimulator extends HackSimulator
                 else {
                     if (!isLegalWidth(varName, numValue))
                         throw new VariableException(value + " doesn't fit in the pin's width",
-                                                    varName);
+                            varName);
                     else
                         node.set(numValue);
                 }
-            }
-            else {
+            } else {
                 boolean found = false;
                 String gateName = getVarChipName(varName);
                 if (gateName != null) {
@@ -283,8 +285,8 @@ public class HardwareSimulator extends HackSimulator
                             throw new VariableException(ge.getMessage(), varName);
                         }
                     } else {
-						throw new VariableException("No such built-in chip used",
-													gateName);
+                        throw new VariableException("No such built-in chip used",
+                            gateName);
                     }
                 }
 
@@ -304,7 +306,7 @@ public class HardwareSimulator extends HackSimulator
      */
     private boolean isLegalWidth(String pinName, short value) {
         byte maxWidth = gate.getGateClass().getPinInfo(pinName).width;
-        byte width = (byte)(value > 0 ? (int)(Math.log(value) / Math.log(2)) + 1 : 1);
+        byte width = (byte) (value > 0 ? (int) (Math.log(value) / Math.log(2)) + 1 : 1);
         return (width <= maxWidth);
     }
 
@@ -314,7 +316,7 @@ public class HardwareSimulator extends HackSimulator
      * Throws ProgramException if an error occurs in the program.
      */
     public void doCommand(String[] command)
-     throws CommandException, ProgramException, VariableException {
+        throws CommandException, ProgramException, VariableException {
         if (command.length == 0)
             throw new CommandException("Empty command", command);
 
@@ -328,8 +330,7 @@ public class HardwareSimulator extends HackSimulator
                 throw new CommandException("Illegal command since clock is already up", command);
 
             performTick();
-        }
-        else if (command[0].equals(COMMAND_TOCK)) {
+        } else if (command[0].equals(COMMAND_TOCK)) {
             if (command.length != 1)
                 throw new CommandException("Illegal number of arguments to command", command);
             else if (gate == null)
@@ -338,21 +339,18 @@ public class HardwareSimulator extends HackSimulator
                 throw new CommandException("Illegal command since clock is already down", command);
 
             performTock();
-        }
-        else if (command[0].equals(COMMAND_EVAL)) {
+        } else if (command[0].equals(COMMAND_EVAL)) {
             if (command.length != 1)
                 throw new CommandException("Illegal number of arguments to command", command);
             else if (gate == null)
                 throw new CommandException("Illegal command since no gate is currently loaded", command);
 
             performEval();
-        }
-        else if (command[0].equals(COMMAND_SETVAR)) {
+        } else if (command[0].equals(COMMAND_SETVAR)) {
             if (command.length != 3)
                 throw new CommandException("Illegal number of arguments to command", command);
             setValue(command[1], command[2]);
-        }
-        else if (command[0].equals(COMMAND_LOAD)) {
+        } else if (command[0].equals(COMMAND_LOAD)) {
             if (command.length != 2)
                 throw new CommandException("Illegal number of arguments to command", command);
 
@@ -365,7 +363,7 @@ public class HardwareSimulator extends HackSimulator
 
                 if (command[1].indexOf("/") >= 0)
                     throw new CommandException("The gate name must not contain path specification",
-                                               command);
+                        command);
 
                 // use gate name without the .hdl extension
                 String gateName = command[1].substring(0, command[1].length() - 4);
@@ -374,8 +372,7 @@ public class HardwareSimulator extends HackSimulator
             } catch (GateException ge) {
                 throw new CommandException(ge.getMessage(), command);
             }
-        }
-        else {
+        } else {
             boolean found = false;
 
             // try to re-direct command to a part with gui
@@ -446,7 +443,7 @@ public class HardwareSimulator extends HackSimulator
             gate.eval();
 
         time = 0;
-        Gate.CLOCK_NODE.set((short)1);
+        Gate.CLOCK_NODE.set((short) 1);
         clockUp = false;
     }
 
@@ -458,13 +455,13 @@ public class HardwareSimulator extends HackSimulator
         if (gui != null) {
             // enter NO_DISPLAY_CHANGES
             if (newAnimationMode == HackController.NO_DISPLAY_CHANGES &&
-                    animationMode != HackController.NO_DISPLAY_CHANGES) {
+                animationMode != HackController.NO_DISPLAY_CHANGES) {
                 inputPins.disableUserInput();
             }
 
             // exit NO_DISPLAY_CHANGES
             if (newAnimationMode != HackController.NO_DISPLAY_CHANGES &&
-                    animationMode == HackController.NO_DISPLAY_CHANGES) {
+                animationMode == HackController.NO_DISPLAY_CHANGES) {
                 inputPins.enableUserInput();
             }
 
@@ -539,9 +536,9 @@ public class HardwareSimulator extends HackSimulator
                 inputPins.setNodes(gate.getInputNodes(), gateClass);
                 outputPins.setNodes(gate.getOutputNodes(), gateClass);
                 if (gateClass instanceof CompositeGateClass) {
-                    internalPins.setNodes(((CompositeGate)gate).getInternalNodes(), gateClass);
+                    internalPins.setNodes(((CompositeGate) gate).getInternalNodes(), gateClass);
                     partPins.setGate(gate);
-                    parts.setParts(((CompositeGate)gate).getParts());
+                    parts.setParts(((CompositeGate) gate).getParts());
                 }
             }
 
@@ -560,8 +557,7 @@ public class HardwareSimulator extends HackSimulator
                         gui.getGateInfo().setClocked(gateClass.isClocked());
                         gui.getGateInfo().enableTime();
                     }
-                }
-                else {
+                } else {
                     notifyListeners(HardwareSimulatorControllerEvent.DISABLE_TICKTOCK, null);
                     if (gui.getGateInfo() != null)
                         gui.getGateInfo().disableTime();
@@ -607,7 +603,7 @@ public class HardwareSimulator extends HackSimulator
                 if (input.hasMoreTokens()) {
                     input.advance();
                     if (input.getTokenType() == HDLTokenizer.TYPE_KEYWORD &&
-                         input.getKeywordType() == HDLTokenizer.KW_PARTS)
+                        input.getKeywordType() == HDLTokenizer.KW_PARTS)
                         partsLineFound = true;
                     else if (input.getTokenType() == HDLTokenizer.TYPE_IDENTIFIER) {
                         String name = input.getIdentifier();
@@ -615,7 +611,7 @@ public class HardwareSimulator extends HackSimulator
                         // verify the a '(' follows
                         input.advance();
                         if (input.getTokenType() == HDLTokenizer.TYPE_SYMBOL
-                             && input.getSymbol() == '(') {
+                            && input.getSymbol() == '(') {
 
                             // check if name is a recognized gate
                             if (GateClass.gateClassExists(name)) {
@@ -638,7 +634,7 @@ public class HardwareSimulator extends HackSimulator
 
                                     input.advance(); // read ',' or ')'
                                     if (input.getTokenType() == HDLTokenizer.TYPE_SYMBOL &&
-                                         input.getSymbol() == ')')
+                                        input.getSymbol() == ')')
                                         endOfPins = true;
                                 }
                             }
@@ -653,13 +649,11 @@ public class HardwareSimulator extends HackSimulator
                 gui.hideInternalPins();
                 gui.hideParts();
                 gui.showPartPins();
-            }
-            else if (partsLineFound) {
+            } else if (partsLineFound) {
                 gui.hideInternalPins();
                 gui.hidePartPins();
                 gui.showParts();
-            }
-            else {
+            } else {
                 gui.hidePartPins();
                 gui.hideParts();
                 gui.showInternalPins();
@@ -683,7 +677,7 @@ public class HardwareSimulator extends HackSimulator
         displayMessage(event.getErrorMessage(), true);
     }
 
-     /**
+    /**
      * Executed when a gate becomes dirty.
      */
     public void gotDirty() {
@@ -725,8 +719,7 @@ public class HardwareSimulator extends HackSimulator
         if (clockUp) {
             Thread t = new Thread(new TockTask());
             t.start();
-        }
-        else {
+        } else {
             Thread t = new Thread(new TickTask());
             t.start();
         }
@@ -734,7 +727,7 @@ public class HardwareSimulator extends HackSimulator
 
     // Performs tick on the current gate
     private void performTick() {
-        Gate.CLOCK_NODE.set((short)0);
+        Gate.CLOCK_NODE.set((short) 0);
         gate.tick();
         clockUp = true;
 
@@ -749,7 +742,7 @@ public class HardwareSimulator extends HackSimulator
 
     // Performs tick on the current gate
     private void performTock() {
-        Gate.CLOCK_NODE.set((short)1);
+        Gate.CLOCK_NODE.set((short) 1);
         gate.tock();
         clockUp = false;
         time++;
@@ -781,7 +774,7 @@ public class HardwareSimulator extends HackSimulator
         if (index < 0)
             throw new VariableException("Illegal variable index", varName);
 
-        return (short)index;
+        return (short) index;
     }
 
     // Returns the given pin name including its sub bus specification.

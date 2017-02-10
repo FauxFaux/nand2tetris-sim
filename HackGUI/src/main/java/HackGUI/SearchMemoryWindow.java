@@ -17,9 +17,10 @@
 
 package HackGUI;
 
-import java.awt.*;
 import javax.swing.*;
-import java.awt.event.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * This class represents a search window for the use of MemoryComponent, ROMComponent,
@@ -66,7 +67,7 @@ public class SearchMemoryWindow extends JFrame {
     }
 
     // Initialization of this component.
-    private void jbInit()  {
+    private void jbInit() {
         instructionLbl.setFont(Utilities.thinLabelsFont);
         instructionLbl.setText("Enter Address :");
         instructionLbl.setBounds(new Rectangle(9, 22, 132, 23));
@@ -98,8 +99,8 @@ public class SearchMemoryWindow extends JFrame {
         this.getContentPane().add(okButton, null);
         this.getContentPane().add(cancelButton, null);
 
-        setSize(300,150);
-        setLocation(250,250);
+        setSize(300, 150);
+        setLocation(250, 250);
     }
 
     /**
@@ -108,11 +109,12 @@ public class SearchMemoryWindow extends JFrame {
     public void okButton_actionPerformed(ActionEvent e) {
         try {
             int row = Format.translateValueToShort(rowNumber.getText(), Format.DEC_FORMAT);
-            table.setRowSelectionInterval(row,row);
+            table.setRowSelectionInterval(row, row);
             Utilities.tableCenterScroll(tableContainer, table, row);
             setVisible(false);
-        } catch (NumberFormatException nfe) {}
-          catch (IllegalArgumentException iae) {}
+        } catch (NumberFormatException nfe) {
+        } catch (IllegalArgumentException iae) {
+        }
 
     }
 

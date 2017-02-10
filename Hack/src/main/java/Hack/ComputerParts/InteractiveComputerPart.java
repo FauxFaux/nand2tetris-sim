@@ -17,8 +17,10 @@
 
 package Hack.ComputerParts;
 
-import Hack.Events.*;
-import java.util.*;
+import Hack.Events.ErrorEvent;
+import Hack.Events.ErrorEventListener;
+
+import java.util.Vector;
 
 /**
  * An interactive computer part - a computer part that enables input to its GUI.
@@ -29,7 +31,7 @@ import java.util.*;
  * the error is sent to the error listeners of the computer part itself.
  */
 public abstract class InteractiveComputerPart extends ComputerPart
- implements ErrorEventListener {
+    implements ErrorEventListener {
 
     private Vector errorListeners;
 
@@ -66,7 +68,7 @@ public abstract class InteractiveComputerPart extends ComputerPart
         ComputerPartErrorEvent event = new ComputerPartErrorEvent(this, errorMessage);
 
         for (int i = 0; i < errorListeners.size(); i++)
-            ((ComputerPartErrorEventListener)errorListeners.elementAt(i)).computerPartErrorOccured(event);
+            ((ComputerPartErrorEventListener) errorListeners.elementAt(i)).computerPartErrorOccured(event);
     }
 
     /**
@@ -76,7 +78,7 @@ public abstract class InteractiveComputerPart extends ComputerPart
         ComputerPartErrorEvent event = new ComputerPartErrorEvent(this, null);
 
         for (int i = 0; i < errorListeners.size(); i++)
-            ((ComputerPartErrorEventListener)errorListeners.elementAt(i)).computerPartErrorOccured(event);
+            ((ComputerPartErrorEventListener) errorListeners.elementAt(i)).computerPartErrorOccured(event);
     }
 
     /**

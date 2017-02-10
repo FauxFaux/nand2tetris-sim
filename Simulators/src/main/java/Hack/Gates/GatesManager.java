@@ -17,7 +17,7 @@
 
 package Hack.Gates;
 
-import java.io.*;
+import java.io.File;
 import java.util.Vector;
 
 /**
@@ -105,38 +105,38 @@ public class GatesManager {
     /**
      * Adds the given chip with gui to the chips' list and to the gates panel.
      */
-     public void addChip(BuiltInGateWithGUI chip) {
+    public void addChip(BuiltInGateWithGUI chip) {
         chips.add(chip);
         chip.addErrorListener(errorHandler);
         chip.setParent(chip); // set the chip to be its own parent for Eval notifications.
 
         if (gatesPanel != null)
             gatesPanel.addGateComponent(chip.getGUIComponent());
-     }
+    }
 
     /**
      * Removes the given chip with gui from the chips' list and from the gates panel.
      */
-     public void removeChip(BuiltInGateWithGUI chip) {
+    public void removeChip(BuiltInGateWithGUI chip) {
         chips.remove(chip);
         chip.removeErrorListener(errorHandler);
 
         if (gatesPanel != null)
             gatesPanel.removeGateComponent(chip.getGUIComponent());
-     }
+    }
 
-     /**
-      * Remove all the chips from the list and from the gates panel.
-      */
-     public void removeAllChips() {
+    /**
+     * Remove all the chips from the list and from the gates panel.
+     */
+    public void removeAllChips() {
         for (int i = 0; i < chips.size(); i++)
-            ((BuiltInGateWithGUI)chips.elementAt(i)).removeErrorListener(errorHandler);
+            ((BuiltInGateWithGUI) chips.elementAt(i)).removeErrorListener(errorHandler);
 
         chips.removeAllElements();
 
         if (gatesPanel != null)
             gatesPanel.removeAllGateComponents();
-     }
+    }
 
     /**
      * Sets the gates panel with the given gate panel.

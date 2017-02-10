@@ -17,8 +17,8 @@
 
 package SimulatorsGUI;
 
-import java.io.File;
 import javax.swing.filechooser.FileFilter;
+import java.io.File;
 
 /**
  * A file filter for HDL files (.hdl).
@@ -35,8 +35,8 @@ public class HDLFileFilter extends FileFilter {
 
         String extension = getExtension(f);
         if (extension != null) {
-            if (extension.equals("hdl") )
-                    return true;
+            if (extension.equals("hdl"))
+                return true;
             else {
                 return false;
             }
@@ -54,8 +54,8 @@ public class HDLFileFilter extends FileFilter {
         String s = f.getName();
         int i = s.lastIndexOf('.');
 
-        if (i > 0 &&  i < s.length() - 1) {
-            ext = s.substring(i+1).toLowerCase();
+        if (i > 0 && i < s.length() - 1) {
+            ext = s.substring(i + 1).toLowerCase();
         }
         return ext;
     }

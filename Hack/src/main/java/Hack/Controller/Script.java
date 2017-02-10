@@ -17,9 +17,11 @@
 
 package Hack.Controller;
 
-import java.util.*;
-import java.io.*;
-import Hack.Utilities.*;
+import Hack.Utilities.Conversions;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Vector;
 
 /**
  * A list of controller commands.
@@ -55,7 +57,7 @@ public class Script {
      * fetched and set using the given hack simulator.
      */
     public Script(String scriptName)
-     throws ScriptException, ControllerException {
+        throws ScriptException, ControllerException {
         this.scriptName = scriptName;
         try {
             input = new ScriptTokenizer(new FileReader(scriptName));
@@ -72,7 +74,7 @@ public class Script {
     private void buildScript() throws ScriptException, ControllerException {
         boolean repeatOpen = false;
         boolean whileOpen = false;
-		boolean justOpened = false;
+        boolean justOpened = false;
         boolean outputListPrepared = false;
         int currentCommandIndex = 0;
         Command command = null;
@@ -83,12 +85,12 @@ public class Script {
             input.advance();
 
             if (justOpened &&
-				input.getTokenType() == ScriptTokenizer.TYPE_SYMBOL &&
+                input.getTokenType() == ScriptTokenizer.TYPE_SYMBOL &&
                 input.getSymbol() == '}') {
-				scriptError("An empty " + (repeatOpen?"Repeat":"While") +
-							" block is not allowed");
-			}
-			justOpened = false;
+                scriptError("An empty " + (repeatOpen ? "Repeat" : "While") +
+                    " block is not allowed");
+            }
+            justOpened = false;
             switch (input.getTokenType()) {
                 case ScriptTokenizer.TYPE_KEYWORD:
                     command = createControllerCommand();
@@ -97,18 +99,16 @@ public class Script {
                             scriptError("Nested Repeat and While are not allowed");
                         else {
                             repeatOpen = true;
-							justOpened = true;
-						}
-                    }
-                    else if (command.getCode() == Command.WHILE_COMMAND) {
+                            justOpened = true;
+                        }
+                    } else if (command.getCode() == Command.WHILE_COMMAND) {
                         if (repeatOpen || whileOpen)
                             scriptError("Nested Repeat and While are not allowed");
                         else {
                             whileOpen = true;
-							justOpened = true;
-						}
-                    }
-                    else if (command.getCode() == Command.OUTPUT_LIST_COMMAND)
+                            justOpened = true;
+                        }
+                    } else if (command.getCode() == Command.OUTPUT_LIST_COMMAND)
                         outputListPrepared = true;
                     else if (command.getCode() == Command.OUTPUT_COMMAND && !outputListPrepared)
                         scriptError("No output list created");
@@ -129,25 +129,26 @@ public class Script {
                             if (repeatOpen) {
                                 command = new Command(Command.END_REPEAT_COMMAND);
                                 repeatOpen = false;
-                            }
-                            else if (whileOpen) {
+                            } else if (whileOpen) {
                                 command = new Command(Command.END_WHILE_COMMAND);
                                 whileOpen = false;
                             }
-                         }
-                    }
-                    else
+                        }
+                    } else
                         scriptError("A command cannot begin with '" + input.getSymbol() + "'");
             }
 
             // sets the terminator of the command
             switch (input.getSymbol()) {
                 case ',':
-                    command.setTerminator(Command.MINI_STEP_TERMINATOR); break;
+                    command.setTerminator(Command.MINI_STEP_TERMINATOR);
+                    break;
                 case ';':
-                    command.setTerminator(Command.SINGLE_STEP_TERMINATOR); break;
+                    command.setTerminator(Command.SINGLE_STEP_TERMINATOR);
+                    break;
                 case '!':
-                    command.setTerminator(Command.STOP_TERMINATOR); break;
+                    command.setTerminator(Command.STOP_TERMINATOR);
+                    break;
             }
 
             commands.addElement(command);
@@ -166,12 +167,12 @@ public class Script {
     // called when the current token is an unrecognized command name.
     // Holds a String array (of simulator command an arguments) as an argument.
     private Command createSimulatorCommand()
-     throws ControllerException, ScriptException {
+        throws ControllerException, ScriptException {
         String[] args = readArgs(MAX_SIMULATOR_COMMAND_ARGUMENTS);
 
         // count args
         int count;
-        for (count = 0; count < args.length && args[count] != null; count++);
+        for (count = 0; count < args.length && args[count] != null; count++) ;
 
         String[] trimmedArgs = new String[count];
         System.arraycopy(args, 0, trimmedArgs, 0, count);
@@ -186,36 +187,36 @@ public class Script {
         Command command = null;
 
         switch (input.getKeywordType()) {
-        case ScriptTokenizer.KW_OUTPUT_FILE:
-            command = createOutputFileCommand();
-            break;
-        case ScriptTokenizer.KW_COMPARE_TO:
-            command = createCompareToCommand();
-            break;
-        case ScriptTokenizer.KW_OUTPUT_LIST:
-            command = createOutputListCommand();
-            break;
-        case ScriptTokenizer.KW_OUTPUT:
-            command = createOutputCommand();
-            break;
-        case ScriptTokenizer.KW_ECHO:
-            command = createEchoCommand();
-            break;
-        case ScriptTokenizer.KW_CLEAR_ECHO:
-            command = createClearEchoCommand();
-            break;
-        case ScriptTokenizer.KW_BREAKPOINT:
-            command = createBreakpointCommand();
-            break;
-        case ScriptTokenizer.KW_CLEAR_BREAKPOINTS:
-            command = createClearBreakpointsCommand();
-            break;
-        case ScriptTokenizer.KW_REPEAT:
-            command = createRepeatCommand();
-            break;
-        case ScriptTokenizer.KW_WHILE:
-            command = createWhileCommand();
-            break;
+            case ScriptTokenizer.KW_OUTPUT_FILE:
+                command = createOutputFileCommand();
+                break;
+            case ScriptTokenizer.KW_COMPARE_TO:
+                command = createCompareToCommand();
+                break;
+            case ScriptTokenizer.KW_OUTPUT_LIST:
+                command = createOutputListCommand();
+                break;
+            case ScriptTokenizer.KW_OUTPUT:
+                command = createOutputCommand();
+                break;
+            case ScriptTokenizer.KW_ECHO:
+                command = createEchoCommand();
+                break;
+            case ScriptTokenizer.KW_CLEAR_ECHO:
+                command = createClearEchoCommand();
+                break;
+            case ScriptTokenizer.KW_BREAKPOINT:
+                command = createBreakpointCommand();
+                break;
+            case ScriptTokenizer.KW_CLEAR_BREAKPOINTS:
+                command = createClearBreakpointsCommand();
+                break;
+            case ScriptTokenizer.KW_REPEAT:
+                command = createRepeatCommand();
+                break;
+            case ScriptTokenizer.KW_WHILE:
+                command = createWhileCommand();
+                break;
         }
 
         return command;
@@ -224,7 +225,7 @@ public class Script {
     // creates and returns a controller output-file command.
     // Holds the output file name (String) as an argument.
     private Command createOutputFileCommand()
-     throws ControllerException, ScriptException {
+        throws ControllerException, ScriptException {
         input.advance();
         String[] args = readArgs(1);
         return new Command(Command.OUTPUT_FILE_COMMAND, args[0]);
@@ -233,7 +234,7 @@ public class Script {
     // creates and returns a controller compare-to command.
     // Holds the comparison file name (String) as an argument.
     private Command createCompareToCommand()
-     throws ControllerException, ScriptException {
+        throws ControllerException, ScriptException {
         input.advance();
         String[] args = readArgs(1);
         return new Command(Command.COMPARE_TO_COMMAND, args[0]);
@@ -242,13 +243,13 @@ public class Script {
     // creates and returns a controller output-list command.
     // Holds an array of VariableFormats as an argument.
     private Command createOutputListCommand()
-     throws ControllerException, ScriptException {
+        throws ControllerException, ScriptException {
         input.advance();
         String[] args = readArgs(MAX_OUTPUT_LIST_ARGUMENTS);
 
         // count args
         int count;
-        for (count = 0; count < args.length && args[count] != null; count++);
+        for (count = 0; count < args.length && args[count] != null; count++) ;
 
         VariableFormat[] vars = new VariableFormat[count];
 
@@ -313,7 +314,7 @@ public class Script {
     // creates and returns a controller output command.
     // Holds no argument.
     private Command createOutputCommand()
-     throws ControllerException, ScriptException {
+        throws ControllerException, ScriptException {
         input.advance();
         checkTerminator();
         return new Command(Command.OUTPUT_COMMAND);
@@ -322,7 +323,7 @@ public class Script {
     // creates and returns a controller echo command.
     // Holds the echoed string as an argument.
     private Command createEchoCommand()
-     throws ControllerException, ScriptException {
+        throws ControllerException, ScriptException {
         input.advance();
         String[] args = readArgs(1);
         return new Command(Command.ECHO_COMMAND, args[0]);
@@ -331,7 +332,7 @@ public class Script {
     // creates and returns a controller Clear-echo command.
     // Holds no argument.
     private Command createClearEchoCommand()
-     throws ControllerException, ScriptException {
+        throws ControllerException, ScriptException {
         input.advance();
         checkTerminator();
         return new Command(Command.CLEAR_ECHO_COMMAND);
@@ -340,13 +341,13 @@ public class Script {
     // creates and returns a controller breakpoint command.
     // Holds a Breakpoint object as an argument.
     private Command createBreakpointCommand()
-     throws ControllerException, ScriptException {
+        throws ControllerException, ScriptException {
         input.advance();
         String[] args = readArgs(2);
 
         // count args
         int count;
-        for (count = 0; count < args.length && args[count] != null; count++);
+        for (count = 0; count < args.length && args[count] != null; count++) ;
 
         if (count < 2)
             scriptError("Not enough arguments");
@@ -365,7 +366,7 @@ public class Script {
     // creates and returns a controller clear-breakpoints command.
     // Holds no argument.
     private Command createClearBreakpointsCommand()
-     throws ControllerException, ScriptException {
+        throws ControllerException, ScriptException {
         input.advance();
         checkTerminator();
         return new Command(Command.CLEAR_BREAKPOINTS_COMMAND);
@@ -374,7 +375,7 @@ public class Script {
     // creates and returns a controller repeat command.
     // Holds the repeat quantity (Integer) as an argument.
     private Command createRepeatCommand()
-     throws ScriptException, ControllerException {
+        throws ScriptException, ControllerException {
         input.advance();
         int repeatNum = 0;
 
@@ -386,8 +387,8 @@ public class Script {
         }
 
         if (!(input.getTokenType() == ScriptTokenizer.TYPE_SYMBOL &&
-              input.getSymbol() == '{'))
-                scriptError("Missing '{' in repeat command");
+            input.getSymbol() == '{'))
+            scriptError("Missing '{' in repeat command");
 
         return new Command(Command.REPEAT_COMMAND, new Integer(repeatNum));
     }
@@ -395,7 +396,7 @@ public class Script {
     // creates and returns a controller While command.
     // Holds a ScriptCondition object as an argument.
     private Command createWhileCommand()
-     throws ScriptException, ControllerException {
+        throws ScriptException, ControllerException {
 
         input.advance();
         ScriptCondition condition = null;
@@ -406,8 +407,8 @@ public class Script {
         }
 
         if (!(input.getTokenType() == ScriptTokenizer.TYPE_SYMBOL &&
-              input.getSymbol() == '{'))
-                scriptError("Missing '{' in while command");
+            input.getSymbol() == '{'))
+            scriptError("Missing '{' in while command");
 
         return new Command(Command.WHILE_COMMAND, condition);
     }
@@ -415,13 +416,13 @@ public class Script {
     // Reads string arguments from the given input and returns them as a string array.
     // If the given maxArgs count is exceeded, an exception is thrown.
     private String[] readArgs(int maxArgs)
-     throws ControllerException, ScriptException {
+        throws ControllerException, ScriptException {
         String[] args = new String[maxArgs];
 
         // fill the temp args holder with the following tokens
         int i = 0;
         while (input.hasMoreTokens() && input.getTokenType() != ScriptTokenizer.TYPE_SYMBOL
-               && i < maxArgs) {
+            && i < maxArgs) {
             args[i++] = input.getToken();
             input.advance();
         }
@@ -436,14 +437,13 @@ public class Script {
 
     // Checks that the current token is a terminator symbol. If not, an exception is thrown.
     private void checkTerminator()
-     throws ScriptException {
+        throws ScriptException {
         if (input.getTokenType() != ScriptTokenizer.TYPE_SYMBOL) {
             if (input.hasMoreTokens())
                 scriptError("too many arguments");
             else
                 scriptError("Script ends without a terminator");
-        }
-        else if (input.getSymbol() != ',' && input.getSymbol() != ';' && input.getSymbol() != '!')
+        } else if (input.getSymbol() != ',' && input.getSymbol() != ';' && input.getSymbol() != '!')
             scriptError("Illegal terminator: '" + input.getSymbol() + "'");
     }
 
@@ -457,7 +457,7 @@ public class Script {
      * Assumes a legal index.
      */
     public Command getCommandAt(int index) {
-        return (Command)commands.elementAt(index);
+        return (Command) commands.elementAt(index);
     }
 
     /**
@@ -465,7 +465,7 @@ public class Script {
      * Assumes a legal index.
      */
     public int getLineNumberAt(int index) {
-        return ((Integer)lineNumbers.elementAt(index)).intValue();
+        return ((Integer) lineNumbers.elementAt(index)).intValue();
     }
 
     /**

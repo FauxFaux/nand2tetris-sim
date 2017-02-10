@@ -17,7 +17,8 @@
 
 package Hack.Utilities;
 
-import java.io.*;
+import java.io.File;
+import java.io.FilenameFilter;
 
 /**
  * A File filter that only accepts files with the extension that is given
@@ -30,6 +31,7 @@ public class HackFileFilter implements FilenameFilter {
 
     /**
      * Constucts a new HackFileFilter with the given extension
+     *
      * @param extension The given extension
      */
     public HackFileFilter(String extension) {

@@ -17,11 +17,19 @@
 
 package Hack.Assembler;
 
-import java.io.*;
+import Hack.ComputerParts.TextFileEvent;
+import Hack.ComputerParts.TextFileGUI;
+import Hack.Translators.HackTranslator;
+import Hack.Translators.HackTranslatorEvent;
+import Hack.Translators.HackTranslatorException;
+import Hack.Utilities.Conversions;
+import Hack.Utilities.Definitions;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Hashtable;
-import Hack.ComputerParts.*;
-import Hack.Utilities.*;
-import Hack.Translators.*;
 
 /**
  * A translator from assmebly (.asm) to hack machine language (.hack)
@@ -55,7 +63,7 @@ public class HackAssembler extends HackTranslator {
      * file that will have the same name as the source but with the .hack extension.
      */
     public HackAssembler(String fileName, int size, short nullValue, boolean save)
-     throws HackTranslatorException {
+        throws HackTranslatorException {
         super(fileName, size, nullValue, save);
     }
 
@@ -66,7 +74,7 @@ public class HackAssembler extends HackTranslator {
      * The gui is assumed to be not null.
      */
     public HackAssembler(HackAssemblerGUI gui, int size, short nullValue, String sourceFileName)
-     throws HackTranslatorException {
+        throws HackTranslatorException {
         super(gui, size, nullValue, sourceFileName);
 
         gui.enableLoadComparison();
@@ -95,7 +103,7 @@ public class HackAssembler extends HackTranslator {
     private void checkComparisonFile(String fileName) throws HackTranslatorException {
         if (!fileName.endsWith("." + getDestinationExtension()))
             throw new HackTranslatorException(fileName + " is not a ." + getDestinationExtension()
-                                              + " file");
+                + " file");
 
         File file = new File(fileName);
         if (!file.exists())
@@ -108,7 +116,7 @@ public class HackAssembler extends HackTranslator {
         varIndex = Definitions.VAR_START_ADDRESS;
 
         if (gui != null)
-            ((HackAssemblerGUI)gui).enableLoadComparison();
+            ((HackAssemblerGUI) gui).enableLoadComparison();
     }
 
     // opens the comparison file for reading.
@@ -117,21 +125,21 @@ public class HackAssembler extends HackTranslator {
             comparisonReader = new BufferedReader(new FileReader(comparisonFileName));
 
             if (gui != null) {
-                TextFileGUI comp = ((HackAssemblerGUI)gui).getComparison();
+                TextFileGUI comp = ((HackAssemblerGUI) gui).getComparison();
                 comp.reset();
                 comp.setContents(comparisonFileName);
 
                 comparisonProgram = new short[comp.getNumberOfLines()];
                 for (int i = 0; i < comp.getNumberOfLines(); i++) {
-					if (comp.getLineAt(i).length() != Definitions.BITS_PER_WORD) {
-						throw new HackTranslatorException("Error in file "+comparisonFileName+": Line "+i+" does not contain exactly "+Definitions.BITS_PER_WORD+" characters");
-					}
-					try {
-						comparisonProgram[i] = (short)Conversions.binaryToInt(comp.getLineAt(i));
-					} catch (NumberFormatException nfe) {
-						throw new HackTranslatorException("Error in file "+comparisonFileName+": Line "+i+" does not contain only 1/0 characters");
-					}
-				}
+                    if (comp.getLineAt(i).length() != Definitions.BITS_PER_WORD) {
+                        throw new HackTranslatorException("Error in file " + comparisonFileName + ": Line " + i + " does not contain exactly " + Definitions.BITS_PER_WORD + " characters");
+                    }
+                    try {
+                        comparisonProgram[i] = (short) Conversions.binaryToInt(comp.getLineAt(i));
+                    } catch (NumberFormatException nfe) {
+                        throw new HackTranslatorException("Error in file " + comparisonFileName + ": Line " + i + " does not contain only 1/0 characters");
+                    }
+                }
             }
         } catch (IOException ioe) {
             throw new HackTranslatorException("Error reading from file " + comparisonFileName);
@@ -152,7 +160,7 @@ public class HackAssembler extends HackTranslator {
 
         try {
             BufferedReader sourceReader = new BufferedReader(new FileReader(sourceFileName));
-            while((line = sourceReader.readLine()) != null) {
+            while ((line = sourceReader.readLine()) != null) {
 
                 AssemblyLineTokenizer input = new AssemblyLineTokenizer(line);
 
@@ -166,9 +174,8 @@ public class HackAssembler extends HackTranslator {
 
                         input.ensureEnd();
 
-                        symbolTable.put(label,new Short(pc));
-                    }
-                    else if (input.contains("["))
+                        symbolTable.put(label, new Short(pc));
+                    } else if (input.contains("["))
                         pc += 2;
                     else
                         pc++;
@@ -183,7 +190,7 @@ public class HackAssembler extends HackTranslator {
 
     protected void initCompilation() throws HackTranslatorException {
         if (gui != null && (inFullCompilation || !compilationStarted))
-            ((HackAssemblerGUI)gui).disableLoadComparison();
+            ((HackAssemblerGUI) gui).disableLoadComparison();
     }
 
     protected void successfulCompilation() throws HackTranslatorException {
@@ -191,7 +198,7 @@ public class HackAssembler extends HackTranslator {
             super.successfulCompilation();
         else {
             if (gui != null)
-                ((HackAssemblerGUI)gui).displayMessage("File compilation & comparison succeeded", false);
+                ((HackAssemblerGUI) gui).displayMessage("File compilation & comparison succeeded", false);
         }
     }
 
@@ -210,18 +217,17 @@ public class HackAssembler extends HackTranslator {
                         showProgram(programSize);
                         gui.getSource().addHighlight(sourcePC, true);
                         gui.getDestination().addHighlight(destPC - 1, true);
-                        ((HackAssemblerGUI)gui).getComparison().addHighlight(destPC - 1, true);
+                        ((HackAssemblerGUI) gui).getComparison().addHighlight(destPC - 1, true);
                         gui.enableRewind();
                         gui.enableLoadSource();
                     }
                 }
-            }
-            else {
+            } else {
                 if (compare)
-                    ((HackAssemblerGUI)gui).getComparison().addHighlight(destPC + length - 2, true);
+                    ((HackAssemblerGUI) gui).getComparison().addHighlight(destPC + length - 2, true);
                 else {
                     gui.getDestination().addHighlight(destPC - 1, true);
-                    ((HackAssemblerGUI)gui).getComparison().addHighlight(destPC - 1, true);
+                    ((HackAssemblerGUI) gui).getComparison().addHighlight(destPC - 1, true);
                 }
             }
 
@@ -248,7 +254,7 @@ public class HackAssembler extends HackTranslator {
     }
 
     protected void fastForward() {
-        ((HackAssemblerGUI)gui).disableLoadComparison();
+        ((HackAssemblerGUI) gui).disableLoadComparison();
         super.fastForward();
     }
 
@@ -256,25 +262,25 @@ public class HackAssembler extends HackTranslator {
         super.hidePointers();
 
         if (comparisonReader != null)
-            ((HackAssemblerGUI)gui).getComparison().clearHighlights();
+            ((HackAssemblerGUI) gui).getComparison().clearHighlights();
     }
 
     protected void end(boolean hidePointers) {
         super.end(hidePointers);
-        ((HackAssemblerGUI)gui).disableLoadComparison();
+        ((HackAssemblerGUI) gui).disableLoadComparison();
     }
 
     protected void stop() {
         super.stop();
-        ((HackAssemblerGUI)gui).disableLoadComparison();
+        ((HackAssemblerGUI) gui).disableLoadComparison();
     }
 
     protected void rewind() {
         super.rewind();
 
         if (comparisonReader != null) {
-            ((HackAssemblerGUI)gui).getComparison().clearHighlights();
-            ((HackAssemblerGUI)gui).getComparison().hideSelect();
+            ((HackAssemblerGUI) gui).getComparison().clearHighlights();
+            ((HackAssemblerGUI) gui).getComparison().hideSelect();
         }
     }
 
@@ -297,18 +303,16 @@ public class HackAssembler extends HackTranslator {
                     }
 
                     if (!numeric) {
-                        Short address = (Short)symbolTable.get(label);
+                        Short address = (Short) symbolTable.get(label);
                         if (address == null) {
                             address = new Short(varIndex++);
                             symbolTable.put(label, address);
                         }
 
                         addCommand(translator.textToCode("@" + address.shortValue()));
-                    }
-                    else
+                    } else
                         addCommand(translator.textToCode(line));
-                }
-                else { // try to compile normaly, if error - try to compile as compact assembly
+                } else { // try to compile normaly, if error - try to compile as compact assembly
                     try {
                         addCommand(translator.textToCode(line));
                     } catch (AssemblerException ae) {
@@ -326,8 +330,7 @@ public class HackAssembler extends HackTranslator {
                             compileLine("@" + address);
                             compileLine(line.substring(0, openAddressPos).concat(
                                 line.substring(closeAddressPos + 1)));
-                        }
-                        else
+                        } else
                             throw new AssemblerException(ae.getMessage());
                     }
                 }
@@ -348,11 +351,10 @@ public class HackAssembler extends HackTranslator {
         int[] range = rowIndexToRange(event.getRowIndex());
         if (range != null) {
             if (comparisonReader != null)
-                ((HackAssemblerGUI)gui).getComparison().select(range[0], range[1]);
-        }
-        else {
+                ((HackAssemblerGUI) gui).getComparison().select(range[0], range[1]);
+        } else {
             if (comparisonReader != null)
-                ((HackAssemblerGUI)gui).getComparison().hideSelect();
+                ((HackAssemblerGUI) gui).getComparison().hideSelect();
         }
     }
 
@@ -363,19 +365,19 @@ public class HackAssembler extends HackTranslator {
             case HackTranslatorEvent.SOURCE_LOAD:
                 comparisonFileName = "";
                 comparisonReader = null;
-                ((HackAssemblerGUI)gui).setComparisonName("");
-                ((HackAssemblerGUI)gui).hideComparison();
+                ((HackAssemblerGUI) gui).setComparisonName("");
+                ((HackAssemblerGUI) gui).hideComparison();
                 break;
 
             case HackAssemblerEvent.COMPARISON_LOAD:
                 clearMessage();
-                String fileName = (String)event.getData();
+                String fileName = (String) event.getData();
                 try {
                     checkComparisonFile(fileName);
                     comparisonFileName = fileName;
                     saveWorkingDir(new File(fileName));
                     resetComparisonFile();
-                    ((HackAssemblerGUI)gui).showComparison();
+                    ((HackAssemblerGUI) gui).showComparison();
                 } catch (HackTranslatorException ae) {
                     gui.displayMessage(ae.getMessage(), true);
                 }

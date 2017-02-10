@@ -17,10 +17,12 @@
 
 package Hack.CPUEmulator;
 
-import Hack.Controller.*;
-import Hack.ComputerParts.*;
-import Hack.Utilities.*;
-import Hack.Assembler.*;
+import Hack.Assembler.AssemblerException;
+import Hack.Assembler.HackAssemblerTranslator;
+import Hack.ComputerParts.Bus;
+import Hack.ComputerParts.Register;
+import Hack.Controller.ProgramException;
+import Hack.Utilities.Definitions;
 
 /**
  * A computer with memory (ROM & RAM) and two registers (A & D). Includes
@@ -28,8 +30,7 @@ import Hack.Assembler.*;
  * method for running the program which is currently in them ROM. Also gives
  * read access to the memory.
  */
-public class CPU
-{
+public class CPU {
     // The address and program counter registers.
     protected PointerAddressRegisterAdapter A, PC;
 
@@ -150,8 +151,8 @@ public class CPU
     /**
      * Executes the current instruction (ROM at pc).
      * Throws ProgramException if the current instruction is illegal or
-	 * if it causes an illegal effect (read/write from M when A is an illegal
-	 * address or jump when A is an illegal address).
+     * if it causes an illegal effect (read/write from M when A is an illegal
+     * address or jump when A is an illegal address).
      */
     public void executeInstruction() throws ProgramException {
         short instruction = rom.getValueAt(PC.get());
@@ -163,16 +164,15 @@ public class CPU
             computeExp(instruction);
             setDestination(instruction);
             pcChanged = checkJump(instruction);
-        }
-        else if (instruction != HackAssemblerTranslator.NOP)
+        } else if (instruction != HackAssemblerTranslator.NOP)
             throw new ProgramException("At line " + PC.get() +
-									   ": Illegal instruction");
+                ": Illegal instruction");
 
         if (!pcChanged) {
-            short newPC = (short)(PC.get() + 1);
+            short newPC = (short) (PC.get() + 1);
             if (newPC < 0 || newPC >= Definitions.ROM_SIZE)
                 throw new ProgramException("At line " + PC.get() +
-										   ": Can't continue past last line");
+                    ": Can't continue past last line");
             PC.setValueAt(0, newPC, true);
         }
 
@@ -182,7 +182,7 @@ public class CPU
     // computes the exp part of the given instruction.
     // The result will be at the alu's output.
     // Throws ProgramException if the calculation involves M and A contains
-	// an illegal address.
+    // an illegal address.
     protected void computeExp(short instruction) throws ProgramException {
         boolean indirect = (instruction & 0x1000) > 0;
         boolean zd = (instruction & 0x0800) > 0;
@@ -193,48 +193,48 @@ public class CPU
         boolean no = (instruction & 0x0040) > 0;
 
         try {
-            alu.setCommand(assemblerTranslator.getExpByCode((short)(instruction & 0xffc0)),
-                           zd, nd, zm, nm, f, no);
-        } catch (AssemblerException ae) {}
+            alu.setCommand(assemblerTranslator.getExpByCode((short) (instruction & 0xffc0)),
+                zd, nd, zm, nm, f, no);
+        } catch (AssemblerException ae) {
+        }
 
         bus.send(D, 0, alu, 0); // sends D to input0 of the alu
 
         // sends A or M[A] to input1 of the alu
         if (indirect) {
-			int address = A.get();
-			if (address < 0 || address >= M.getSize())
-				throw new ProgramException("At line " + PC.get() +
-										   ": Expression involves M but A=" +
-										   address +
-										   " is an illegal memory address.");
+            int address = A.get();
+            if (address < 0 || address >= M.getSize())
+                throw new ProgramException("At line " + PC.get() +
+                    ": Expression involves M but A=" +
+                    address +
+                    " is an illegal memory address.");
             A.setUpdatePointer(true);
             bus.send(M, address, alu, 1);
             A.setUpdatePointer(false);
-        }
-        else
+        } else
             bus.send(A, 0, alu, 1);
 
         alu.compute();
     }
 
     // Sets the registers with the alu's output according to
-	// the given instruction
+    // the given instruction
     // Throws ProgramException if destination contains M and A contains
-	// an illegal address.
+    // an illegal address.
     protected void setDestination(short instruction) throws ProgramException {
         boolean destA = (instruction & 0x0020) > 0;
         boolean destD = (instruction & 0x0010) > 0;
         boolean destM = (instruction & 0x0008) > 0;
 
         if (destM) {
-			int address = A.get();
-			if (address < 0 || address >= M.getSize())
-				throw new ProgramException("At line " + PC.get() +
-										   ": Destination is M but A=" +
-										   address +
-										   " is an illegal memory address.");
+            int address = A.get();
+            if (address < 0 || address >= M.getSize())
+                throw new ProgramException("At line " + PC.get() +
+                    ": Destination is M but A=" +
+                    address +
+                    " is an illegal memory address.");
             A.setUpdatePointer(true);
-			bus.send(alu, 2, M, address);
+            bus.send(alu, 2, M, address);
             A.setUpdatePointer(false);
         }
         if (destA)
@@ -244,10 +244,10 @@ public class CPU
     }
 
     // Sets the program counter (if necessary) according to
-	// the given instruction and the alu's output.
-	// If the program counter was changed, returns true, otherwise false.
+    // the given instruction and the alu's output.
+    // If the program counter was changed, returns true, otherwise false.
     // Throws ProgramException if the program counter should be changed and A
-	// contains an illegal address.
+    // contains an illegal address.
     protected boolean checkJump(short instruction) throws ProgramException {
         boolean jumpNegative = (instruction & 0x0004) > 0;
         boolean jumpEqual = (instruction & 0x0002) > 0;
@@ -259,11 +259,11 @@ public class CPU
         if ((exp < 0 && jumpNegative) ||
             (exp == 0 && jumpEqual) ||
             (exp > 0 && jumpPositive)) {
-			int newPC = A.get();
+            int newPC = A.get();
             if (newPC < 0 || newPC >= Definitions.ROM_SIZE)
-				throw new ProgramException("At line " + PC.get() +
-										   ": Jump requested but A=" + newPC +
-										   " is an illegal program address.");
+                throw new ProgramException("At line " + PC.get() +
+                    ": Jump requested but A=" + newPC +
+                    " is an illegal program address.");
             bus.send(A, 0, PC, 0);
             changed = true;
         }

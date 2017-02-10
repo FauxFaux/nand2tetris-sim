@@ -17,8 +17,8 @@
 
 package HackGUI;
 
-import java.io.File;
 import javax.swing.filechooser.FileFilter;
+import java.io.File;
 
 /**
  * A file filter of script files (.tst).
@@ -35,8 +35,8 @@ public class ScriptFileFilter extends FileFilter {
 
         String extension = getExtension(f);
         if (extension != null) {
-            if (extension.equals("tst") )
-                    return true;
+            if (extension.equals("tst"))
+                return true;
             else {
                 return false;
             }
@@ -53,8 +53,8 @@ public class ScriptFileFilter extends FileFilter {
         String s = f.getName();
         int i = s.lastIndexOf('.');
 
-        if (i > 0 &&  i < s.length() - 1) {
-            ext = s.substring(i+1).toLowerCase();
+        if (i > 0 && i < s.length() - 1) {
+            ext = s.substring(i + 1).toLowerCase();
         }
         return ext;
     }

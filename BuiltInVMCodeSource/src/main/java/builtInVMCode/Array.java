@@ -17,7 +17,6 @@
 
 package builtInVMCode;
 
-import Hack.VMEmulator.BuiltInVMClass;
 import Hack.VMEmulator.TerminateVMProgramThrowable;
 
 /**
@@ -26,16 +25,16 @@ import Hack.VMEmulator.TerminateVMProgramThrowable;
 
 public class Array extends JackOSClass {
 
-	public static short NEW(short size) throws TerminateVMProgramThrowable {
-		if (size <= 0) {
-			callFunction("Sys.error", ARRAY_NEW_NONPOSITIVE_SIZE);
-		}
-		return callFunction("Memory.alloc", size);
-	}
+    public static short NEW(short size) throws TerminateVMProgramThrowable {
+        if (size <= 0) {
+            callFunction("Sys.error", ARRAY_NEW_NONPOSITIVE_SIZE);
+        }
+        return callFunction("Memory.alloc", size);
+    }
 
-	public static void dispose(short arr) throws TerminateVMProgramThrowable {
-		callFunction("Memory.deAlloc", arr);
-		return;
-	}
+    public static void dispose(short arr) throws TerminateVMProgramThrowable {
+        callFunction("Memory.deAlloc", arr);
+        return;
+    }
 
 }

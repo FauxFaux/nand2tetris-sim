@@ -17,8 +17,11 @@
 
 package Hack.Gates;
 
-import java.io.*;
-import java.util.*;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StreamTokenizer;
+import java.util.Hashtable;
 
 /**
  * HDLTokenizer object: Reads input from an HDL reader and produces a stream of
@@ -27,18 +30,18 @@ import java.util.*;
 public class HDLTokenizer {
 
     // Token types
-    public static final int TYPE_KEYWORD     = 1;
-    public static final int TYPE_SYMBOL      = 2;
-    public static final int TYPE_IDENTIFIER  = 3;
-    public static final int TYPE_INT_CONST   = 4;
+    public static final int TYPE_KEYWORD = 1;
+    public static final int TYPE_SYMBOL = 2;
+    public static final int TYPE_IDENTIFIER = 3;
+    public static final int TYPE_INT_CONST = 4;
 
     // Keywords of the scripting language
-    public static final int KW_CHIP      = 1;
-    public static final int KW_IN        = 2;
-    public static final int KW_OUT       = 3;
-    public static final int KW_BUILTIN   = 4;
-    public static final int KW_CLOCKED   = 5;
-    public static final int KW_PARTS     = 6;
+    public static final int KW_CHIP = 1;
+    public static final int KW_IN = 2;
+    public static final int KW_OUT = 3;
+    public static final int KW_BUILTIN = 4;
+    public static final int KW_CLOCKED = 5;
+    public static final int KW_PARTS = 6;
 
     // The parser
     private StreamTokenizer parser;
@@ -93,7 +96,8 @@ public class HDLTokenizer {
         }
     }
 
-    public HDLTokenizer() {}
+    public HDLTokenizer() {
+    }
 
     /**
      * Initializes the tokenizer input
@@ -130,24 +134,23 @@ public class HDLTokenizer {
             switch (parser.ttype) {
                 case StreamTokenizer.TT_NUMBER:
                     tokenType = TYPE_INT_CONST;
-                    intValue = (int)parser.nval;
+                    intValue = (int) parser.nval;
                     currentToken = String.valueOf(intValue);
                     break;
                 case StreamTokenizer.TT_WORD:
                     currentToken = parser.sval;
-                    Integer keywordCode = (Integer)keywords.get(currentToken);
+                    Integer keywordCode = (Integer) keywords.get(currentToken);
                     if (keywordCode != null) {
                         tokenType = TYPE_KEYWORD;
                         keyWordType = keywordCode.intValue();
-                    }
-                    else {
+                    } else {
                         tokenType = TYPE_IDENTIFIER;
                         identifier = currentToken;
                     }
                     break;
                 default:
                     tokenType = TYPE_SYMBOL;
-                    symbol = (char)parser.ttype;
+                    symbol = (char) parser.ttype;
                     currentToken = String.valueOf(symbol);
                     break;
             }
@@ -221,23 +224,23 @@ public class HDLTokenizer {
     // Initializes the keywords hashtable
     private void initKeywords() {
         keywords = new Hashtable();
-        keywords.put("CHIP",new Integer(KW_CHIP));
-        keywords.put("IN",new Integer(KW_IN));
-        keywords.put("OUT",new Integer(KW_OUT));
-        keywords.put("BUILTIN",new Integer(KW_BUILTIN));
-        keywords.put("CLOCKED",new Integer(KW_CLOCKED));
-        keywords.put("PARTS:",new Integer(KW_PARTS));
+        keywords.put("CHIP", new Integer(KW_CHIP));
+        keywords.put("IN", new Integer(KW_IN));
+        keywords.put("OUT", new Integer(KW_OUT));
+        keywords.put("BUILTIN", new Integer(KW_BUILTIN));
+        keywords.put("CLOCKED", new Integer(KW_CLOCKED));
+        keywords.put("PARTS:", new Integer(KW_PARTS));
     }
 
     // Initializes the symbols hashtable
     private void initSymbols() {
         symbols = new Hashtable();
-        symbols.put("{","{");
-        symbols.put("}","}");
-        symbols.put(",",",");
-        symbols.put(";",";");
-        symbols.put("(","(");
-        symbols.put(")",")");
+        symbols.put("{", "{");
+        symbols.put("}", "}");
+        symbols.put(",", ",");
+        symbols.put(";", ";");
+        symbols.put("(", "(");
+        symbols.put(")", ")");
     }
 
     /**

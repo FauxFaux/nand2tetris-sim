@@ -17,8 +17,9 @@
 
 package Hack.Translators;
 
-import Hack.ComputerParts.*;
-import java.io.*;
+import Hack.ComputerParts.TextFileGUI;
+
+import java.io.File;
 
 /**
  * The GUI of the HackTranslator.

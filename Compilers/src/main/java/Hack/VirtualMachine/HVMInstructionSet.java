@@ -17,8 +17,9 @@
 
 package Hack.VirtualMachine;
 
-import java.util.*;
-import Hack.Utilities.*;
+import Hack.Utilities.Definitions;
+
+import java.util.Hashtable;
 
 /**
  * The instruction set of the hack virtual machine.
@@ -334,23 +335,23 @@ public class HVMInstructionSet {
     // initializes the instructions table
     private void initInstructions() {
         instructionToCode = new Hashtable();
-        instructionToCode.put(ADD_STRING,new Byte(ADD_CODE));
-        instructionToCode.put(SUBSTRACT_STRING,new Byte(SUBSTRACT_CODE));
-        instructionToCode.put(NEGATE_STRING,new Byte(NEGATE_CODE));
-        instructionToCode.put(EQUAL_STRING,new Byte(EQUAL_CODE));
-        instructionToCode.put(GREATER_THAN_STRING,new Byte(GREATER_THAN_CODE));
-        instructionToCode.put(LESS_THAN_STRING,new Byte(LESS_THAN_CODE));
-        instructionToCode.put(AND_STRING,new Byte(AND_CODE));
-        instructionToCode.put(OR_STRING,new Byte(OR_CODE));
-        instructionToCode.put(NOT_STRING,new Byte(NOT_CODE));
-        instructionToCode.put(PUSH_STRING,new Byte(PUSH_CODE));
-        instructionToCode.put(POP_STRING,new Byte(POP_CODE));
-        instructionToCode.put(LABEL_STRING,new Byte(LABEL_CODE));
-        instructionToCode.put(GOTO_STRING,new Byte(GOTO_CODE));
-        instructionToCode.put(IF_GOTO_STRING,new Byte(IF_GOTO_CODE));
-        instructionToCode.put(FUNCTION_STRING,new Byte(FUNCTION_CODE));
-        instructionToCode.put(RETURN_STRING,new Byte(RETURN_CODE));
-        instructionToCode.put(CALL_STRING,new Byte(CALL_CODE));
+        instructionToCode.put(ADD_STRING, new Byte(ADD_CODE));
+        instructionToCode.put(SUBSTRACT_STRING, new Byte(SUBSTRACT_CODE));
+        instructionToCode.put(NEGATE_STRING, new Byte(NEGATE_CODE));
+        instructionToCode.put(EQUAL_STRING, new Byte(EQUAL_CODE));
+        instructionToCode.put(GREATER_THAN_STRING, new Byte(GREATER_THAN_CODE));
+        instructionToCode.put(LESS_THAN_STRING, new Byte(LESS_THAN_CODE));
+        instructionToCode.put(AND_STRING, new Byte(AND_CODE));
+        instructionToCode.put(OR_STRING, new Byte(OR_CODE));
+        instructionToCode.put(NOT_STRING, new Byte(NOT_CODE));
+        instructionToCode.put(PUSH_STRING, new Byte(PUSH_CODE));
+        instructionToCode.put(POP_STRING, new Byte(POP_CODE));
+        instructionToCode.put(LABEL_STRING, new Byte(LABEL_CODE));
+        instructionToCode.put(GOTO_STRING, new Byte(GOTO_CODE));
+        instructionToCode.put(IF_GOTO_STRING, new Byte(IF_GOTO_CODE));
+        instructionToCode.put(FUNCTION_STRING, new Byte(FUNCTION_CODE));
+        instructionToCode.put(RETURN_STRING, new Byte(RETURN_CODE));
+        instructionToCode.put(CALL_STRING, new Byte(CALL_CODE));
 
         instructionToString = new Hashtable();
         instructionToString.put(new Byte(ADD_CODE), ADD_STRING);
@@ -409,7 +410,7 @@ public class HVMInstructionSet {
      * If not exists, returns UNKNOWN_INSTRUCTION.
      */
     public byte instructionStringToCode(String instruction) {
-        Byte result = (Byte)instructionToCode.get(instruction);
+        Byte result = (Byte) instructionToCode.get(instruction);
         return (result != null ? result.byteValue() : UNKNOWN_INSTRUCTION);
     }
 
@@ -418,7 +419,7 @@ public class HVMInstructionSet {
      * If not exists, returns null.
      */
     public String instructionCodeToString(byte code) {
-        return (String)instructionToString.get(new Byte(code));
+        return (String) instructionToString.get(new Byte(code));
     }
 
     /**
@@ -433,7 +434,7 @@ public class HVMInstructionSet {
      * If not exists, returns UNKNOWN_SEGMENT.
      */
     public byte segmentVMStringToCode(String segment) {
-        Byte result = (Byte)segmentCodes.get(segment);
+        Byte result = (Byte) segmentCodes.get(segment);
         return (result != null ? result.byteValue() : UNKNOWN_SEGMENT);
     }
 
@@ -442,7 +443,7 @@ public class HVMInstructionSet {
      * If not exists, returns null.
      */
     public String segmentStringVMToPointer(String segment) {
-        return (String)segmentPointerStrings.get(segment);
+        return (String) segmentPointerStrings.get(segment);
     }
 
     /**
@@ -450,6 +451,6 @@ public class HVMInstructionSet {
      * If not exists, returns null.
      */
     public String segmentCodeToVMString(byte code) {
-        return (String)segmentStrings.get(new Byte(code));
+        return (String) segmentStrings.get(new Byte(code));
     }
 }

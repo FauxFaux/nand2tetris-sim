@@ -17,13 +17,14 @@
 
 package SimulatorsGUI;
 
-import Hack.Gates.*;
-import Hack.ComputerParts.*;
+import Hack.ComputerParts.TextFileGUI;
+import Hack.Gates.GatesPanelGUI;
 import Hack.HardwareSimulator.*;
-import HackGUI.*;
+import HackGUI.TextFileComponent;
+
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
+import java.io.File;
 
 /**
  * This class represents the gui of the hardware simulator.
@@ -97,7 +98,8 @@ public class HardwareSimulatorComponent extends HackSimulatorComponent implement
         hdlView.setName("HDL");
     }
 
-    public void loadProgram() {}
+    public void loadProgram() {
+    }
 
     /**
      * Returns the Gates panel.
@@ -198,8 +200,8 @@ public class HardwareSimulatorComponent extends HackSimulatorComponent implement
      * Displays the given message. The display color is chosen according to
      * the 'error' parameter.
      */
-    public void displayMessage (String message, boolean error) {
-        if(error)
+    public void displayMessage(String message, boolean error) {
+        if (error)
             messageLbl.setForeground(Color.red);
         else
             messageLbl.setForeground(UIManager.getColor("Label.foreground"));
@@ -221,18 +223,17 @@ public class HardwareSimulatorComponent extends HackSimulatorComponent implement
             flowLayoutGatesPanel.add(gateComponent);
             flowLayoutGatesPanel.revalidate();
             flowLayoutGatesPanel.repaint();
-        }
-        else {
+        } else {
             Component[] components = nullLayoutGatesPanel.getComponents();
-            for(int i=0; i<components.length; i++) {
+            for (int i = 0; i < components.length; i++) {
                 Rectangle componentBounds = components[i].getBounds();
-                int x1 = (int)componentBounds.getX();
-                int y1 = (int)componentBounds.getY();
-                int x2 = (int)(componentBounds.getX() + componentBounds.getWidth() -1);
-                int y2 = (int)(componentBounds.getY() + componentBounds.getHeight() -1);
-                if(!(gateComponent.getY() > y2 || gateComponent.getX() > x2 ||
-                     gateComponent.getY() + gateComponent.getHeight()-1 < y1  ||
-                     gateComponent.getX() + gateComponent.getWidth()-1 < x1)) {
+                int x1 = (int) componentBounds.getX();
+                int y1 = (int) componentBounds.getY();
+                int x2 = (int) (componentBounds.getX() + componentBounds.getWidth() - 1);
+                int y2 = (int) (componentBounds.getY() + componentBounds.getHeight() - 1);
+                if (!(gateComponent.getY() > y2 || gateComponent.getX() > x2 ||
+                    gateComponent.getY() + gateComponent.getHeight() - 1 < y1 ||
+                    gateComponent.getX() + gateComponent.getWidth() - 1 < x1)) {
 
                     flowLayout = true;
                     if (currentAdditionalDisplay == null) {
@@ -240,7 +241,7 @@ public class HardwareSimulatorComponent extends HackSimulatorComponent implement
                         flowLayoutGatesPanel.setVisible(true);
                     }
 
-                    for(i=0; i<components.length; i++)
+                    for (i = 0; i < components.length; i++)
                         flowLayoutGatesPanel.add(components[i]);
 
                     flowLayoutGatesPanel.add(gateComponent);
@@ -248,7 +249,7 @@ public class HardwareSimulatorComponent extends HackSimulatorComponent implement
                     break;
                 }
             }
-            if(!flowLayout) {
+            if (!flowLayout) {
                 nullLayoutGatesPanel.add(gateComponent);
                 nullLayoutGatesPanel.revalidate();
                 nullLayoutGatesPanel.repaint();
@@ -290,7 +291,7 @@ public class HardwareSimulatorComponent extends HackSimulatorComponent implement
     // Initialization of this component.
     private void jbInit() {
         this.setLayout(null);
-        gateInfo.setBounds(5,10,gateInfo.getWidth(), gateInfo.getHeight());
+        gateInfo.setBounds(5, 10, gateInfo.getWidth(), gateInfo.getHeight());
 
         inputPins.setVisibleRows(15);
         inputPins.setBounds(5, 53, inputPins.getWidth(), inputPins.getHeight());
@@ -334,7 +335,7 @@ public class HardwareSimulatorComponent extends HackSimulatorComponent implement
         this.add(nullLayoutGatesPanel, null);
         this.add(flowLayoutGatesPanel, null);
 
-        setSize(WIDTH,HEIGHT);
+        setSize(WIDTH, HEIGHT);
     }
 
     public void setAdditionalDisplay(JComponent additionalComponent) {
@@ -343,8 +344,7 @@ public class HardwareSimulatorComponent extends HackSimulatorComponent implement
                 flowLayoutGatesPanel.setVisible(false);
             else
                 nullLayoutGatesPanel.setVisible(false);
-        }
-        else if (currentAdditionalDisplay != null && additionalComponent == null) {
+        } else if (currentAdditionalDisplay != null && additionalComponent == null) {
             if (flowLayout)
                 flowLayoutGatesPanel.setVisible(true);
             else

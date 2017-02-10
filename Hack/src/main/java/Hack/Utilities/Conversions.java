@@ -26,14 +26,14 @@ public class Conversions {
     private static final String ZEROS = "0000000000000000000000000000000000000000";
 
     // A helper array of powers of two
-    private static final int[] powersOf2 = {1,2,4,8,16,32,64,128,256,512,1024,2048,4096,
-                                            8192,16384,32768,65536,131072,262144,524288,
-                                            1048576,2097152,4194304,8388608,16777216,
-                                            33554432,67108864,134217728,268435456,536870912,
-                                            1073741824,-2147483648};
+    private static final int[] powersOf2 = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096,
+        8192, 16384, 32768, 65536, 131072, 262144, 524288,
+        1048576, 2097152, 4194304, 8388608, 16777216,
+        33554432, 67108864, 134217728, 268435456, 536870912,
+        1073741824, -2147483648};
 
     // A helper array of powers of 16
-    private static final int[] powersOf16 = {1,16,256,4096,65536,1048576,16777216,268435456};
+    private static final int[] powersOf16 = {1, 16, 256, 4096, 65536, 1048576, 16777216, 268435456};
 
     /**
      * If the given string starts with %X, %B or %D translates it to a normal decimal form.
@@ -48,8 +48,7 @@ public class Conversions {
                 value = String.valueOf(hex4ToInt(value.substring(2)));
             else
                 value = String.valueOf(hexToInt(value.substring(2)));
-        }
-        else if (value.startsWith("%D"))
+        } else if (value.startsWith("%D"))
             value = value.substring(2);
         else {
             try {
@@ -73,7 +72,7 @@ public class Conversions {
         for (int i = value.length() - 1, mask = 1; i >= 0; i--, mask = mask << 1) {
             char bit = value.charAt(i);
             if (bit == '1')
-                result = (short)(result | mask);
+                result = (short) (result | mask);
             else if (bit != '0')
                 throw new NumberFormatException();
         }

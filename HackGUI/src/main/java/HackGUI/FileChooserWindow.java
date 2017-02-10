@@ -17,11 +17,12 @@
 
 package HackGUI;
 
-import java.awt.*;
 import javax.swing.*;
-import java.awt.event.*;
-import java.util.Vector;
 import javax.swing.filechooser.FileFilter;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Vector;
 
 /**
  * This class repersents the GUI of the component which allows the user to load
@@ -69,7 +70,7 @@ public class FileChooserWindow extends JFrame implements EnterPressedListener {
         String file = null;
         file = fileChooser.getFileName();
         fileChooser.setCurrentFileName(file);
-        if(!(file == null))
+        if (!(file == null))
             notifyListeners(file);
         setVisible(false);
     }
@@ -99,7 +100,7 @@ public class FileChooserWindow extends JFrame implements EnterPressedListener {
     // Initialization.
     private void jbInit() {
         fileChooser.addListener(this);
-        fileChooser.setWindowLocation(647,3);
+        fileChooser.setWindowLocation(647, 3);
         this.getContentPane().setLayout(null);
         setTitle("Files selection");
         fileChooser.setBounds(new Rectangle(5, 2, 482, 48));
@@ -122,21 +123,21 @@ public class FileChooserWindow extends JFrame implements EnterPressedListener {
         this.getContentPane().add(fileChooser, null);
         this.getContentPane().add(cancelButton, null);
         this.getContentPane().add(okButton, null);
-        setSize(496,150);
-        setLocation(145,250);
+        setSize(496, 150);
+        setLocation(145, 250);
     }
 
     /**
      * Registers the given FilesTypeListener as a listener to this component.
      */
-    public void addListener (FilesTypeListener listener) {
+    public void addListener(FilesTypeListener listener) {
         listeners.addElement(listener);
     }
 
     /**
      * Un-registers the given FilesTypeListener from being a listener to this component.
      */
-    public void removeListener (FilesTypeListener listener) {
+    public void removeListener(FilesTypeListener listener) {
         listeners.removeElement(listener);
     }
 
@@ -145,11 +146,11 @@ public class FileChooserWindow extends JFrame implements EnterPressedListener {
      * FilesTypeEvent and sending it using the filesNamesChanged method to all
      * of the listeners.
      */
-    public void notifyListeners (String fileName) {
-        FilesTypeEvent event = new FilesTypeEvent(this,fileName, null, null);
+    public void notifyListeners(String fileName) {
+        FilesTypeEvent event = new FilesTypeEvent(this, fileName, null, null);
 
-        for(int i=0;i<listeners.size();i++) {
-            ((FilesTypeListener)listeners.elementAt(i)).filesNamesChanged(event);
+        for (int i = 0; i < listeners.size(); i++) {
+            ((FilesTypeListener) listeners.elementAt(i)).filesNamesChanged(event);
         }
     }
 
@@ -170,7 +171,7 @@ public class FileChooserWindow extends JFrame implements EnterPressedListener {
         file = fileChooser.getFileName();
         fileChooser.setCurrentFileName(file);
         setVisible(false);
-        if(!(file == null)) {
+        if (!(file == null)) {
             notifyListeners(file);
         }
     }

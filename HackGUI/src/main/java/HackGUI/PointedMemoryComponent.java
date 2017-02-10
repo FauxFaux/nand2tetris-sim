@@ -17,10 +17,11 @@
 
 package HackGUI;
 
-import Hack.ComputerParts.*;
-import javax.swing.table.*;
+import Hack.ComputerParts.PointedMemoryGUI;
+
+import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusEvent;
 
 /**
  * This class represents the GUI of a pointed memory.
@@ -37,10 +38,10 @@ public class PointedMemoryComponent extends MemoryComponent implements PointedMe
         return new PointedMemoryTableCellRenderer();
     }
 
-     /**
+    /**
      * Sets the pointer with the given pointer address.
      */
-    public void setPointer (int pointerAddress) {
+    public void setPointer(int pointerAddress) {
         this.pointerAddress = pointerAddress;
 
         if (pointerAddress >= 0)

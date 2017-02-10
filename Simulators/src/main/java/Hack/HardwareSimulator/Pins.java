@@ -17,8 +17,12 @@
 
 package Hack.HardwareSimulator;
 
-import Hack.ComputerParts.*;
-import Hack.Gates.*;
+import Hack.ComputerParts.ComputerPartEvent;
+import Hack.ComputerParts.ComputerPartGUI;
+import Hack.ComputerParts.InteractiveValueComputerPart;
+import Hack.Gates.GateClass;
+import Hack.Gates.Node;
+import Hack.Gates.PinInfo;
 
 /**
  * Represents a collection of pins, using the Nodes implementation.
@@ -42,7 +46,7 @@ public class Pins extends InteractiveValueComputerPart {
      * Constructs a new Pins with the given pin type and Pins GUI.
      */
     public Pins(byte type, PinsGUI gui) {
-        super (gui != null);
+        super(gui != null);
         this.gui = gui;
         this.type = type;
 
@@ -64,7 +68,7 @@ public class Pins extends InteractiveValueComputerPart {
         pins = new PinInfo[nodes.length];
         for (int i = 0; i < pins.length; i++) {
             pins[i] = gateClass.getPinInfo(type, i);
-            pins[i].value = (short)nodes[i].get();
+            pins[i].value = (short) nodes[i].get();
 
             nodes[i].addListener(new NodePinsAdapter(this, i));
         }
@@ -89,13 +93,13 @@ public class Pins extends InteractiveValueComputerPart {
     }
 
     public short getValueAt(int index) {
-        return (short)nodes[index].get();
+        return (short) nodes[index].get();
     }
 
     public void refreshGUI() {
         if (displayChanges) {
             for (int i = 0; i < pins.length; i++)
-                pins[i].value = (short)nodes[i].get();
+                pins[i].value = (short) nodes[i].get();
             gui.setContents(pins);
         }
     }
@@ -103,7 +107,7 @@ public class Pins extends InteractiveValueComputerPart {
     public void reset() {
         gui.reset();
         for (int i = 0; i < nodes.length; i++)
-            nodes[i].set((short)0);
+            nodes[i].set((short) 0);
         refreshGUI();
     }
 
@@ -120,7 +124,7 @@ public class Pins extends InteractiveValueComputerPart {
      */
     public boolean isLegalWidth(int pinIndex, short value) {
         int maxWidth = pins[pinIndex].width;
-        int width = value > 0 ? (int)(Math.log(value) / Math.log(2)) + 1 : 1;
+        int width = value > 0 ? (int) (Math.log(value) / Math.log(2)) + 1 : 1;
         return (width <= maxWidth);
     }
 
@@ -135,7 +139,7 @@ public class Pins extends InteractiveValueComputerPart {
             setValueAt(index, value, true);
         else {
             notifyErrorListeners("Value doesn't match the pin's width");
-            quietUpdateGUI(index, (short)nodes[event.getIndex()].get());
+            quietUpdateGUI(index, (short) nodes[event.getIndex()].get());
         }
     }
 }

@@ -17,7 +17,8 @@
 
 package Hack.VMEmulator;
 
-import Hack.Controller.*;
+import Hack.Controller.ControllerGUI;
+import Hack.Controller.HackApplication;
 
 /**
  * A VM Emulator application.
@@ -33,6 +34,6 @@ public class VMEmulatorApplication extends HackApplication {
                                  VMEmulatorGUI simulatorComponent, String defaultScript,
                                  String contentsFileName, String aboutFileName) {
         super(new VMEmulator(simulatorComponent), controllerComponent, simulatorComponent,
-              defaultScript, contentsFileName, aboutFileName);
+            defaultScript, contentsFileName, aboutFileName);
     }
 }

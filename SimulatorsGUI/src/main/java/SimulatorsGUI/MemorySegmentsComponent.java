@@ -17,9 +17,10 @@
 
 package SimulatorsGUI;
 
+import HackGUI.MemorySegmentComponent;
+
 import javax.swing.*;
 import java.awt.*;
-import HackGUI.*;
 
 /**
  * This Panel contains six MemorySegmentComponents: static, local, arg,
@@ -123,6 +124,7 @@ public class MemorySegmentsComponent extends JPanel {
     public MemorySegmentComponent getStaticSegment() {
         return staticSegment;
     }
+
     /**
      * Returns local memory segment.
      */

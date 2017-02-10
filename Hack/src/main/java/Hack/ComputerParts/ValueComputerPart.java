@@ -64,14 +64,15 @@ public abstract class ValueComputerPart extends ComputerPart {
      */
     public synchronized void updateGUI(int index, short value) {
         if (displayChanges) {
-            ValueComputerPartGUI gui = (ValueComputerPartGUI)getGUI();
+            ValueComputerPartGUI gui = (ValueComputerPartGUI) getGUI();
             gui.setValueAt(index, value);
 
             if (animate) {
                 gui.flash(index);
                 try {
                     wait(FLASH_TIME);
-                } catch (InterruptedException ie) {}
+                } catch (InterruptedException ie) {
+                }
                 gui.hideFlash();
             }
 
@@ -85,7 +86,7 @@ public abstract class ValueComputerPart extends ComputerPart {
      */
     public void quietUpdateGUI(int index, short value) {
         if (displayChanges)
-            ((ValueComputerPartGUI)getGUI()).setValueAt(index, value);
+            ((ValueComputerPartGUI) getGUI()).setValueAt(index, value);
     }
 
     /**
@@ -93,7 +94,7 @@ public abstract class ValueComputerPart extends ComputerPart {
      */
     public void hideHighlight() {
         if (displayChanges)
-            ((ValueComputerPartGUI)getGUI()).hideHighlight();
+            ((ValueComputerPartGUI) getGUI()).hideHighlight();
     }
 
     /**
@@ -101,7 +102,7 @@ public abstract class ValueComputerPart extends ComputerPart {
      */
     public void setNumericFormat(int formatCode) {
         if (displayChanges)
-            ((ValueComputerPartGUI)getGUI()).setNumericFormat(formatCode);
+            ((ValueComputerPartGUI) getGUI()).setNumericFormat(formatCode);
     }
 
     /**
@@ -113,7 +114,7 @@ public abstract class ValueComputerPart extends ComputerPart {
         nullValue = value;
 
         if (hasGUI) {
-            ValueComputerPartGUI gui = (ValueComputerPartGUI)getGUI();
+            ValueComputerPartGUI gui = (ValueComputerPartGUI) getGUI();
             gui.setNullValue(value, hideNullValue);
         }
     }

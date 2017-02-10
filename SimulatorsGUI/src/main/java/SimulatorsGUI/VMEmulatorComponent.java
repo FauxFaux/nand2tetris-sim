@@ -17,13 +17,24 @@
 
 package SimulatorsGUI;
 
-import HackGUI.*;
-import Hack.VMEmulator.*;
-import Hack.CPUEmulator.*;
-import Hack.ComputerParts.*;
-import java.awt.*;
+import Hack.CPUEmulator.KeyboardGUI;
+import Hack.CPUEmulator.ScreenGUI;
+import Hack.ComputerParts.BusGUI;
+import Hack.ComputerParts.LabeledPointedMemoryGUI;
+import Hack.ComputerParts.MemorySegmentGUI;
+import Hack.ComputerParts.PointedMemorySegmentGUI;
+import Hack.VMEmulator.CalculatorGUI;
+import Hack.VMEmulator.CallStackGUI;
+import Hack.VMEmulator.VMEmulatorGUI;
+import Hack.VMEmulator.VMProgramGUI;
+import HackGUI.AbsolutePointedMemorySegmentComponent;
+import HackGUI.BusComponent;
+import HackGUI.LabeledMemoryComponent;
+import HackGUI.TrimmedValuesOnlyAbsoluteMemorySegmentComponent;
+
 import javax.swing.*;
-import java.io.*;
+import java.awt.*;
+import java.io.File;
 
 /**
  * This class represents the gui of the VMEmulator.
@@ -255,13 +266,13 @@ public class VMEmulatorComponent extends HackSimulatorComponent implements VMEmu
         stack.setVisibleRows(15);
         stack.setBounds(new Rectangle(561, 327, stack.getWidth(), stack.getHeight()));
         segments.getSplitPane().setBounds(new Rectangle(289, 10, segments.getSplitPane().getWidth(), segments.getSplitPane().getHeight()));
-        bus.setBounds(new Rectangle(0, 0, WIDTH , HEIGHT));
+        bus.setBounds(new Rectangle(0, 0, WIDTH, HEIGHT));
 
         calculator.setBorder(BorderFactory.createLoweredBevelBorder());
         calculator.setBounds(new Rectangle(137, 331, 148, 103));
         calculator.setVisible(false);
         workingStack.setVisibleRows(7);
-        workingStack.setBounds(new Rectangle(8,304,workingStack.getWidth(), workingStack.getHeight()));
+        workingStack.setBounds(new Rectangle(8, 304, workingStack.getWidth(), workingStack.getHeight()));
 
         callStack.setVisibleRows(7);
         callStack.setBounds(new Rectangle(8, 458, callStack.getWidth(), callStack.getHeight()));
@@ -276,8 +287,8 @@ public class VMEmulatorComponent extends HackSimulatorComponent implements VMEmu
         this.add(stack, null);
         this.add(ram, null);
         this.add(callStack, null);
-        this.add(segments.getSplitPane(),null);
+        this.add(segments.getSplitPane(), null);
 
-        setSize(WIDTH,HEIGHT);
+        setSize(WIDTH, HEIGHT);
     }
 }

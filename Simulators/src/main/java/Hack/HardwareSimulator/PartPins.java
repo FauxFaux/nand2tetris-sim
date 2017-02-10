@@ -17,9 +17,13 @@
 
 package Hack.HardwareSimulator;
 
-import Hack.ComputerParts.*;
+import Hack.ComputerParts.ComputerPartGUI;
+import Hack.ComputerParts.ValueComputerPart;
 import Hack.Gates.*;
-import java.util.*;
+
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 /**
  * Represents a collection of pins of a specific part.
@@ -67,8 +71,8 @@ public class PartPins extends ValueComputerPart {
         // remove all node gui adapters
         Enumeration enum = nodes.keys();
         while (enum.hasMoreElements()) {
-            Node node = (Node)enum.nextElement();
-            Node nodeAdapter = (Node)nodes.get(node);
+            Node node = (Node) enum.nextElement();
+            Node nodeAdapter = (Node) nodes.get(node);
             node.removeListener(nodeAdapter);
         }
 
@@ -108,7 +112,8 @@ public class PartPins extends ValueComputerPart {
             info.partPinName = partInfo.name;
             try {
                 info.partPinSubBus = CompositeGateClass.getSubBus(partPinName);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
 
             // find gate's node and info
             Node node;
@@ -117,28 +122,26 @@ public class PartPins extends ValueComputerPart {
                 node = Gate.TRUE_NODE;
                 info.gatePinName = CompositeGateClass.TRUE_NODE_INFO.name;
                 selfFittingWidth = true;
-            }
-            else if (cleanGatePinName.equals(CompositeGateClass.FALSE_NODE_INFO.name)) {
+            } else if (cleanGatePinName.equals(CompositeGateClass.FALSE_NODE_INFO.name)) {
                 node = Gate.FALSE_NODE;
                 info.gatePinName = CompositeGateClass.FALSE_NODE_INFO.name;
                 selfFittingWidth = true;
-            }
-            else if (cleanGatePinName.equals(CompositeGateClass.CLOCK_NODE_INFO.name)) {
+            } else if (cleanGatePinName.equals(CompositeGateClass.CLOCK_NODE_INFO.name)) {
                 node = Gate.CLOCK_NODE;
                 info.gatePinName = CompositeGateClass.CLOCK_NODE_INFO.name;
-            }
-            else {
+            } else {
                 node = gate.getNode(cleanGatePinName);
                 PinInfo gateInfo = gate.getGateClass().getPinInfo(cleanGatePinName);
                 info.gatePinName = gateInfo.name;
             }
 
             if (selfFittingWidth)
-                info.gatePinSubBus = new byte[]{0, (byte)(partInfo.width - 1)};
+                info.gatePinSubBus = new byte[]{0, (byte) (partInfo.width - 1)};
             else {
                 try {
                     info.gatePinSubBus = CompositeGateClass.getSubBus(gatePinName);
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
 
             // create node adapter for notifying gui on value changes
@@ -147,8 +150,8 @@ public class PartPins extends ValueComputerPart {
                 nodeAdapter = new NodePartPinsAdapter(this, partPins.size());
             else
                 nodeAdapter = new SubNodePartPinsAdapter(info.gatePinSubBus[0],
-                                                         info.gatePinSubBus[1],
-                                                         this, partPins.size());
+                    info.gatePinSubBus[1],
+                    this, partPins.size());
             node.addListener(nodeAdapter);
             nodes.put(node, nodeAdapter);
             partPins.addElement(info);
@@ -163,7 +166,7 @@ public class PartPins extends ValueComputerPart {
     }
 
     public short getValueAt(int index) {
-        return ((PartPinInfo)partPins.elementAt(index)).value;
+        return ((PartPinInfo) partPins.elementAt(index)).value;
     }
 
     public void refreshGUI() {
@@ -176,5 +179,6 @@ public class PartPins extends ValueComputerPart {
             super.setValueAt(index, value, quiet);
     }
 
-    public void doSetValueAt(int index, short value) {}
+    public void doSetValueAt(int index, short value) {
+    }
 }

@@ -17,12 +17,17 @@
 
 package SimulatorsGUI;
 
-import HackGUI.*;
+import HackGUI.FileChooserComponent;
+import HackGUI.FilesTypeEvent;
+import HackGUI.FilesTypeListener;
+import HackGUI.Utilities;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.io.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Vector;
 
 /**
  * This class represents the gui of the chip loader file chooser.
@@ -48,7 +53,7 @@ public class ChipLoaderFileChooser extends JFrame {
      * Constructs a new ChipLoaderFileChooser.
      */
     public ChipLoaderFileChooser() {
-        super ("Directories Selection");
+        super("Directories Selection");
         listeners = new Vector();
         setSelectionToDirectory();
         setNames();
@@ -66,14 +71,14 @@ public class ChipLoaderFileChooser extends JFrame {
     /**
      * Registers the given FilesTypeListener as a listener to this component.
      */
-    public void addListener (FilesTypeListener listener) {
+    public void addListener(FilesTypeListener listener) {
         listeners.addElement(listener);
     }
 
     /**
      * Un-registers the given FilesTypeListener from being a listener to this component.
      */
-    public void removeListener (FilesTypeListener listener) {
+    public void removeListener(FilesTypeListener listener) {
         listeners.removeElement(listener);
     }
 
@@ -82,11 +87,11 @@ public class ChipLoaderFileChooser extends JFrame {
      * FilesTypeEvent and sending it using the filesNamesChanged method to all
      * of the listeners.
      */
-    public void notifyListeners (String working, String builtIn/*, String composite*/) {
-        FilesTypeEvent event = new FilesTypeEvent(this,working, builtIn, null/*, composite*/);
+    public void notifyListeners(String working, String builtIn/*, String composite*/) {
+        FilesTypeEvent event = new FilesTypeEvent(this, working, builtIn, null/*, composite*/);
 
-        for(int i=0;i<listeners.size();i++) {
-            ((FilesTypeListener)listeners.elementAt(i)).filesNamesChanged(event);
+        for (int i = 0; i < listeners.size(); i++) {
+            ((FilesTypeListener) listeners.elementAt(i)).filesNamesChanged(event);
         }
     }
 
@@ -101,7 +106,7 @@ public class ChipLoaderFileChooser extends JFrame {
     /**
      * Sets the BuiltIn HDL directory.
      */
-    public void setBuiltInDir (File file) {
+    public void setBuiltInDir(File file) {
         builtInDir.setCurrentFileName(file.getName());
         builtInDir.showCurrentFileName();
     }
@@ -144,8 +149,8 @@ public class ChipLoaderFileChooser extends JFrame {
         this.getContentPane().add(okButton, null);
         this.getContentPane().add(cancelButton, null);
 
-        setSize(470,210);
-        setLocation(250,250);
+        setSize(470, 210);
+        setLocation(250, 250);
     }
 
     /**
@@ -156,20 +161,20 @@ public class ChipLoaderFileChooser extends JFrame {
         String working = null;
         String builtIn = null;
 
-        if(workingDir.isFileNameChanged()) {
+        if (workingDir.isFileNameChanged()) {
             working = workingDir.getFileName();
             workingDir.setCurrentFileName(working);
             workingDir.showCurrentFileName();
         }
 
-        if(builtInDir.isFileNameChanged()) {
+        if (builtInDir.isFileNameChanged()) {
             builtIn = builtInDir.getFileName();
             builtInDir.setCurrentFileName(builtIn);
             builtInDir.showCurrentFileName();
         }
 
-        if(!(working == null && builtIn == null)) {
-            notifyListeners(working,builtIn);
+        if (!(working == null && builtIn == null)) {
+            notifyListeners(working, builtIn);
         }
         setVisible(false);
     }

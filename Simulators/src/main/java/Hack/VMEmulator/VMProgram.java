@@ -17,37 +17,43 @@
 
 package Hack.VMEmulator;
 
-import java.util.*;
-import Hack.Utilities.*;
+import Hack.ComputerParts.ComputerPartGUI;
+import Hack.ComputerParts.InteractiveComputerPart;
+import Hack.Controller.ProgramException;
+import Hack.Events.ProgramEvent;
+import Hack.Events.ProgramEventListener;
+import Hack.Utilities.Definitions;
+import Hack.Utilities.HackFileFilter;
+import Hack.VirtualMachine.HVMInstructionSet;
+
 import java.io.*;
-import Hack.Utilities.*;
-import Hack.Events.*;
-import Hack.ComputerParts.*;
-import Hack.Controller.*;
-import Hack.VirtualMachine.*;
+import java.util.Hashtable;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 /**
  * A list of VM instructions, with a program counter.
  */
 public class VMProgram extends InteractiveComputerPart
- implements ProgramEventListener {
+    implements ProgramEventListener {
 
-	// pseudo address for returning to built-in functions
-	public static final short BUILTIN_FUNCTION_ADDRESS = -1;
+    // pseudo address for returning to built-in functions
+    public static final short BUILTIN_FUNCTION_ADDRESS = -1;
 
-	// Possible values for the current status - has the user allowed
-	// access to built-in vm functions?
-	private static final int BUILTIN_ACCESS_UNDECIDED = 0;
-	private static final int BUILTIN_ACCESS_AUTHORIZED = 1;
-	private static final int BUILTIN_ACCESS_DENIED = 2;
+    // Possible values for the current status - has the user allowed
+    // access to built-in vm functions?
+    private static final int BUILTIN_ACCESS_UNDECIDED = 0;
+    private static final int BUILTIN_ACCESS_AUTHORIZED = 1;
+    private static final int BUILTIN_ACCESS_DENIED = 2;
 
     // listeners to program changes
     private Vector listeners;
 
     // The list of VM instructions
     private VMEmulatorInstruction[] instructions;
-	private int instructionsLength;
-	private int visibleInstructionsLength;
+    private int instructionsLength;
+    private int visibleInstructionsLength;
 
     // The program counter - points to the next instruction that should be executed.
     private short nextPC;
@@ -64,21 +70,21 @@ public class VMProgram extends InteractiveComputerPart
     // end addresses of the corresponding static segment.
     private Hashtable staticRange;
 
-	// Addresses of functions by name
-	private Hashtable functions;
-	private short infiniteLoopForBuiltInsAddress;
-	
+    // Addresses of functions by name
+    private Hashtable functions;
+    private short infiniteLoopForBuiltInsAddress;
+
     // The current index of the static variables
     private int currentStaticIndex;
 
     // The largest static variable index found in the current file.
     private int largestStaticIndex;
 
-	// Has the user allowed access to built-in vm functions?
-	private int builtInAccessStatus;
+    // Has the user allowed access to built-in vm functions?
+    private int builtInAccessStatus;
 
-	// Is the program currently being read in the middle of a /* */ comment?
-	private boolean isSlashStar;
+    // Is the program currently being read in the middle of a /* */ comment?
+    private boolean isSlashStar;
 
     /**
      * Constructs a new empty program with the given GUI.
@@ -88,7 +94,7 @@ public class VMProgram extends InteractiveComputerPart
         this.gui = gui;
         listeners = new Vector();
         staticRange = new Hashtable();
-		functions = new Hashtable();
+        functions = new Hashtable();
 
         if (hasGUI) {
             gui.addProgramListener(this);
@@ -117,25 +123,24 @@ public class VMProgram extends InteractiveComputerPart
             files = file.listFiles(new HackFileFilter(".vm"));
             if (files == null || files.length == 0)
                 throw new ProgramException("No vm files found in " + fileName);
-        }
-        else
+        } else
             files = new File[]{file};
 
         if (displayChanges)
             gui.showMessage("Loading...");
 
         // First scan
-		staticRange.clear();
-		functions.clear();
-		builtInAccessStatus = BUILTIN_ACCESS_UNDECIDED;
+        staticRange.clear();
+        functions.clear();
+        builtInAccessStatus = BUILTIN_ACCESS_UNDECIDED;
         Hashtable symbols = new Hashtable();
-		nextPC = 0;
+        nextPC = 0;
         for (int i = 0; i < files.length; i++) {
             String name = files[i].getName();
             String className = name.substring(0, name.indexOf("."));
-			// put some dummy into static range - just to tell the function
-			// getAddress in the second pass which classes exist
-			staticRange.put(className, new Boolean(true));
+            // put some dummy into static range - just to tell the function
+            // getAddress in the second pass which classes exist
+            staticRange.put(className, new Boolean(true));
             try {
                 updateSymbolTable(files[i], symbols, functions);
             } catch (ProgramException pe) {
@@ -144,19 +149,19 @@ public class VMProgram extends InteractiveComputerPart
                 throw new ProgramException(name + ": " + pe.getMessage());
             }
         }
-		boolean addCallBuiltInSysInit = false;
-		if ((file.isDirectory() || symbols.get("Main.main") != null) &&
-			symbols.get("Sys.init") == null) {
-			// If the program is in multiple files or there's a Main.main
-			// function it is assumed that it should be run by calling Sys.init.
-			// If no Sys.init is found, add an invisible line with a call
-			// to Sys.init to start on - the builtin version will be called.
-			addCallBuiltInSysInit = true;
-			getAddress("Sys.init"); // confirm calling the built-in Sys.init
-			++nextPC; // A "call Sys.init 0" line will be added
-		}
+        boolean addCallBuiltInSysInit = false;
+        if ((file.isDirectory() || symbols.get("Main.main") != null) &&
+            symbols.get("Sys.init") == null) {
+            // If the program is in multiple files or there's a Main.main
+            // function it is assumed that it should be run by calling Sys.init.
+            // If no Sys.init is found, add an invisible line with a call
+            // to Sys.init to start on - the builtin version will be called.
+            addCallBuiltInSysInit = true;
+            getAddress("Sys.init"); // confirm calling the built-in Sys.init
+            ++nextPC; // A "call Sys.init 0" line will be added
+        }
 
-        instructions = new VMEmulatorInstruction[nextPC+4];
+        instructions = new VMEmulatorInstruction[nextPC + 4];
 
         // Second scan
         nextPC = 0;
@@ -170,8 +175,8 @@ public class VMProgram extends InteractiveComputerPart
             range[0] = currentStaticIndex;
 
             try {
-				// functions is not passed as an argument since it is accessed
-				// through getAddress()
+                // functions is not passed as an argument since it is accessed
+                // through getAddress()
                 buildProgram(files[i], symbols);
             } catch (ProgramException pe) {
                 if (displayChanges)
@@ -183,69 +188,69 @@ public class VMProgram extends InteractiveComputerPart
             range[1] = currentStaticIndex - 1;
             staticRange.put(className, range);
         }
-		instructionsLength = visibleInstructionsLength = nextPC;
-		if (builtInAccessStatus == BUILTIN_ACCESS_AUTHORIZED) {
-			// Add some "invisible" code in the end to make everything work
-			instructionsLength += 4;
-			if (addCallBuiltInSysInit) {
-				instructionsLength += 1;
-			}
-			short indexInInvisibleCode = 0;
-			// Add a jump to the end (noone should get here since
-			// both calls to built-in functions indicate that
-			// that this is a function-based program and not a script
-			// a-la proj7, but just to be on the safe side...).
-			instructions[nextPC] =
-				new VMEmulatorInstruction(HVMInstructionSet.GOTO_CODE,
-										  (short)instructionsLength,
-										  indexInInvisibleCode);
-			instructions[nextPC].setStringArg("afterInvisibleCode");
-			nextPC++;
-			// Add a small infinite loop for built-in
-			// methods to call (for example when Sys.halt is
-			// called it must call a non-built-in infinite loop
-			// because otherwise the current script would not
-			// finish running - a problem for the OS tests.
-			instructions[nextPC] =
-				new VMEmulatorInstruction(HVMInstructionSet.LABEL_CODE,
-										  (short)-1);
-			instructions[nextPC].setStringArg("infiniteLoopForBuiltIns");
-			nextPC++;
-			infiniteLoopForBuiltInsAddress = nextPC;
-			instructions[nextPC] =
-				new VMEmulatorInstruction(HVMInstructionSet.GOTO_CODE,
-										  nextPC, ++indexInInvisibleCode);
-			instructions[nextPC].setStringArg("infiniteLoopForBuiltIns");
-			nextPC++;
-			if (addCallBuiltInSysInit) { // Add a call to the built-in Sys.init
-				instructions[nextPC] =
-					new VMEmulatorInstruction(HVMInstructionSet.CALL_CODE,
-											  getAddress("Sys.init"), (short)0,
-											  ++indexInInvisibleCode);
-				instructions[nextPC].setStringArg("Sys.init");
-				startAddress = nextPC;
-				nextPC++;
-			}
-			// Add the label that the first invisible code line jumps to
-			instructions[nextPC] =
-				new VMEmulatorInstruction(HVMInstructionSet.LABEL_CODE,
-										  (short)-1);
-			instructions[nextPC].setStringArg("afterInvisibleCode");
-			nextPC++;
-		}
+        instructionsLength = visibleInstructionsLength = nextPC;
+        if (builtInAccessStatus == BUILTIN_ACCESS_AUTHORIZED) {
+            // Add some "invisible" code in the end to make everything work
+            instructionsLength += 4;
+            if (addCallBuiltInSysInit) {
+                instructionsLength += 1;
+            }
+            short indexInInvisibleCode = 0;
+            // Add a jump to the end (noone should get here since
+            // both calls to built-in functions indicate that
+            // that this is a function-based program and not a script
+            // a-la proj7, but just to be on the safe side...).
+            instructions[nextPC] =
+                new VMEmulatorInstruction(HVMInstructionSet.GOTO_CODE,
+                    (short) instructionsLength,
+                    indexInInvisibleCode);
+            instructions[nextPC].setStringArg("afterInvisibleCode");
+            nextPC++;
+            // Add a small infinite loop for built-in
+            // methods to call (for example when Sys.halt is
+            // called it must call a non-built-in infinite loop
+            // because otherwise the current script would not
+            // finish running - a problem for the OS tests.
+            instructions[nextPC] =
+                new VMEmulatorInstruction(HVMInstructionSet.LABEL_CODE,
+                    (short) -1);
+            instructions[nextPC].setStringArg("infiniteLoopForBuiltIns");
+            nextPC++;
+            infiniteLoopForBuiltInsAddress = nextPC;
+            instructions[nextPC] =
+                new VMEmulatorInstruction(HVMInstructionSet.GOTO_CODE,
+                    nextPC, ++indexInInvisibleCode);
+            instructions[nextPC].setStringArg("infiniteLoopForBuiltIns");
+            nextPC++;
+            if (addCallBuiltInSysInit) { // Add a call to the built-in Sys.init
+                instructions[nextPC] =
+                    new VMEmulatorInstruction(HVMInstructionSet.CALL_CODE,
+                        getAddress("Sys.init"), (short) 0,
+                        ++indexInInvisibleCode);
+                instructions[nextPC].setStringArg("Sys.init");
+                startAddress = nextPC;
+                nextPC++;
+            }
+            // Add the label that the first invisible code line jumps to
+            instructions[nextPC] =
+                new VMEmulatorInstruction(HVMInstructionSet.LABEL_CODE,
+                    (short) -1);
+            instructions[nextPC].setStringArg("afterInvisibleCode");
+            nextPC++;
+        }
 
-		if (!addCallBuiltInSysInit) {
-			Short sysInitAddress = (Short)symbols.get("Sys.init");
-			if (sysInitAddress == null) // Single file, no Sys.init - start at 0
-				startAddress = 0;
-			else // Implemented Sys.init - start there
-				startAddress = sysInitAddress.shortValue();
-		}
+        if (!addCallBuiltInSysInit) {
+            Short sysInitAddress = (Short) symbols.get("Sys.init");
+            if (sysInitAddress == null) // Single file, no Sys.init - start at 0
+                startAddress = 0;
+            else // Implemented Sys.init - start there
+                startAddress = sysInitAddress.shortValue();
+        }
 
         if (displayChanges)
             gui.hideMessage();
 
-		nextPC = startAddress;
+        nextPC = startAddress;
         setGUIContents();
 
         notifyProgramListeners(ProgramEvent.LOAD, fileName);
@@ -266,7 +271,7 @@ public class VMProgram extends InteractiveComputerPart
         String label;
         int lineNumber = 0;
 
-		isSlashStar = false;
+        isSlashStar = false;
         try {
             while ((line = unCommentLine(reader.readLine())) != null) {
                 lineNumber++;
@@ -277,15 +282,14 @@ public class VMProgram extends InteractiveComputerPart
                         currentFunction = tokenizer.nextToken();
                         if (symbols.containsKey(currentFunction))
                             throw new ProgramException("subroutine " + currentFunction +
-                                                       " already exists");
+                                " already exists");
                         functions.put(currentFunction, new Short(nextPC));
                         symbols.put(currentFunction, new Short(nextPC));
-                    }
-                    else if (line.startsWith("label ")) {
+                    } else if (line.startsWith("label ")) {
                         StringTokenizer tokenizer = new StringTokenizer(line);
                         tokenizer.nextToken();
                         label = currentFunction + "$" + tokenizer.nextToken();
-                        symbols.put(label, new Short((short)(nextPC + 1)));
+                        symbols.put(label, new Short((short) (nextPC + 1)));
                     }
 
                     nextPC++;
@@ -297,9 +301,9 @@ public class VMProgram extends InteractiveComputerPart
         } catch (NoSuchElementException nsee) {
             throw new ProgramException("In line " + lineNumber + ": unexpected end of command");
         }
-		if (isSlashStar) {
-			throw new ProgramException("Unterminated /* comment at end of file");
-		}
+        if (isSlashStar) {
+            throw new ProgramException("Unterminated /* comment at end of file");
+        }
     }
 
     // Scans the given file and creates symbols for its functions & label names.
@@ -325,7 +329,7 @@ public class VMProgram extends InteractiveComputerPart
         short pc = nextPC;
         HVMInstructionSet instructionSet = HVMInstructionSet.getInstance();
 
-		isSlashStar = false;
+        isSlashStar = false;
         try {
             while ((line = unCommentLine(reader.readLine())) != null) {
                 lineNumber++;
@@ -337,7 +341,7 @@ public class VMProgram extends InteractiveComputerPart
                     opCode = instructionSet.instructionStringToCode(instructionName);
                     if (opCode == HVMInstructionSet.UNKNOWN_INSTRUCTION)
                         throw new ProgramException("in line " + lineNumber +
-                                                   ": unknown instruction - " + instructionName);
+                            ": unknown instruction - " + instructionName);
 
                     switch (opCode) {
                         case HVMInstructionSet.PUSH_CODE:
@@ -350,13 +354,13 @@ public class VMProgram extends InteractiveComputerPart
                             arg1 = Short.parseShort(tokenizer.nextToken());
                             if (arg1 < 0)
                                 throw new ProgramException("in line " + lineNumber +
-                                                           ": Illegal argument - " + line);
+                                    ": Illegal argument - " + line);
 
                             if (arg0 == HVMInstructionSet.STATIC_SEGMENT_CODE && arg1 > largestStaticIndex)
                                 largestStaticIndex = arg1;
 
                             instructions[pc] = new VMEmulatorInstruction(opCode, arg0, arg1,
-                                                                         indexInFunction);
+                                indexInFunction);
                             break;
 
                         case HVMInstructionSet.POP_CODE:
@@ -371,13 +375,13 @@ public class VMProgram extends InteractiveComputerPart
 
                             if (arg1 < 0)
                                 throw new ProgramException("in line " + lineNumber +
-                                                           ": Illegal argument - " + line);
+                                    ": Illegal argument - " + line);
 
                             if (arg0 == HVMInstructionSet.STATIC_SEGMENT_CODE && arg1 > largestStaticIndex)
                                 largestStaticIndex = arg1;
 
                             instructions[pc] = new VMEmulatorInstruction(opCode, arg0, arg1,
-                                                                         indexInFunction);
+                                indexInFunction);
                             break;
 
                         case HVMInstructionSet.FUNCTION_CODE:
@@ -387,7 +391,7 @@ public class VMProgram extends InteractiveComputerPart
 
                             if (arg0 < 0)
                                 throw new ProgramException("in line " + lineNumber +
-                                                           ": Illegal argument - " + line);
+                                    ": Illegal argument - " + line);
 
                             instructions[pc] = new VMEmulatorInstruction(opCode, arg0, indexInFunction);
                             instructions[pc].setStringArg(currentFunction);
@@ -395,42 +399,42 @@ public class VMProgram extends InteractiveComputerPart
 
                         case HVMInstructionSet.CALL_CODE:
                             String functionName = tokenizer.nextToken();
-							try {
-								arg0 = getAddress(functionName);
-							} catch (ProgramException pe) {
-								throw new ProgramException("in line " +
-														   lineNumber + ": " +
-														   pe.getMessage());
-							}
+                            try {
+                                arg0 = getAddress(functionName);
+                            } catch (ProgramException pe) {
+                                throw new ProgramException("in line " +
+                                    lineNumber + ": " +
+                                    pe.getMessage());
+                            }
                             arg1 = Short.parseShort(tokenizer.nextToken());
 
                             if (arg1 < 0 || ((arg0 < 0 || arg0 > Definitions.ROM_SIZE) && arg0 != BUILTIN_FUNCTION_ADDRESS))
                                 throw new ProgramException("in line " + lineNumber +
-                                                           ": Illegal argument - " + line);
+                                    ": Illegal argument - " + line);
 
                             instructions[pc] = new VMEmulatorInstruction(opCode, arg0, arg1,
-                                                                         indexInFunction);
+                                indexInFunction);
                             instructions[pc].setStringArg(functionName);
                             break;
 
                         case HVMInstructionSet.LABEL_CODE:
                             label = currentFunction + "$" + tokenizer.nextToken();
-                            instructions[pc] = new VMEmulatorInstruction(opCode, (short)(-1));
+                            instructions[pc] = new VMEmulatorInstruction(opCode, (short) (-1));
                             instructions[pc].setStringArg(label);
                             indexInFunction--; // since Label is not a "physical" instruction
                             break;
 
                         case HVMInstructionSet.GOTO_CODE:
                             label = currentFunction + "$" + tokenizer.nextToken();
-                            Short labelAddress = (Short)symbols.get(label);
+                            Short labelAddress = (Short) symbols.get(label);
                             if (labelAddress == null)
                                 throw new ProgramException("in line " + lineNumber +
-                                                           ": Unknown label - " + label);
+                                    ": Unknown label - " + label);
                             arg0 = labelAddress.shortValue();
 
                             if (arg0 < 0 || arg0 > Definitions.ROM_SIZE)
                                 throw new ProgramException("in line " + lineNumber +
-                                                           ": Illegal argument - " + line);
+                                    ": Illegal argument - " + line);
 
                             instructions[pc] = new VMEmulatorInstruction(opCode, arg0, indexInFunction);
                             instructions[pc].setStringArg(label);
@@ -438,16 +442,16 @@ public class VMProgram extends InteractiveComputerPart
 
                         case HVMInstructionSet.IF_GOTO_CODE:
                             label = currentFunction + "$" + tokenizer.nextToken();
-                            labelAddress = (Short)symbols.get(label);
+                            labelAddress = (Short) symbols.get(label);
                             if (labelAddress == null)
                                 throw new ProgramException("in line " + lineNumber +
-                                                           ": Unknown label - " + label);
+                                    ": Unknown label - " + label);
 
                             arg0 = labelAddress.shortValue();
 
                             if (arg0 < 0 || arg0 > Definitions.ROM_SIZE)
                                 throw new ProgramException("in line " + lineNumber +
-                                                           ": Illegal argument - "  + line);
+                                    ": Illegal argument - " + line);
 
                             instructions[pc] = new VMEmulatorInstruction(opCode, arg0, indexInFunction);
                             instructions[pc].setStringArg(label);
@@ -458,16 +462,15 @@ public class VMProgram extends InteractiveComputerPart
                         default:
                             if (tokenizer.countTokens() == 0) {
                                 instructions[pc] = new VMEmulatorInstruction(opCode, indexInFunction);
-                            }
-                            else {
+                            } else {
                                 arg0 = Short.parseShort(tokenizer.nextToken());
 
                                 if (arg0 < 0)
                                     throw new ProgramException("in line " + lineNumber +
-                                                               ": Illegal argument - " + line);
+                                        ": Illegal argument - " + line);
 
                                 instructions[pc] = new VMEmulatorInstruction(opCode, arg0,
-                                                                             indexInFunction);
+                                    indexInFunction);
                             }
                             break;
                     }
@@ -475,7 +478,7 @@ public class VMProgram extends InteractiveComputerPart
                     // check end of command
                     if (tokenizer.hasMoreTokens())
                         throw new ProgramException("in line " + lineNumber +
-                                                   ": Too many arguments - " + line);
+                            ": Too many arguments - " + line);
 
                     pc++;
                     indexInFunction++;
@@ -491,38 +494,38 @@ public class VMProgram extends InteractiveComputerPart
         } catch (NoSuchElementException nsee) {
             throw new ProgramException("In line " + lineNumber + ": unexpected end of command");
         }
-		if (isSlashStar) {
-			throw new ProgramException("Unterminated /* comment at end of file");
-		}
+        if (isSlashStar) {
+            throw new ProgramException("Unterminated /* comment at end of file");
+        }
     }
 
     // Returns the "un-commented" version of the given line.
-	// Comments can be either with // or /*.
-	// The field isSlashStar holds the current /* comment state.
+    // Comments can be either with // or /*.
+    // The field isSlashStar holds the current /* comment state.
     private String unCommentLine(String line) {
         String result = line;
 
         if (line != null) {
-			if (isSlashStar) {
-				int posStarSlash = line.indexOf("*/");
-				if (posStarSlash >= 0) {
-					isSlashStar = false;
-					result = unCommentLine(line.substring(posStarSlash+2));
-				} else {
-					result = "";
-				}
-			} else {
-				int posSlashSlash = line.indexOf("//");
-				int posSlashStar = line.indexOf("/*");
-				if (posSlashSlash >= 0 &&
-					(posSlashStar < 0 || posSlashStar > posSlashSlash)) {
-					result = line.substring(0, posSlashSlash);
-				} else if (posSlashStar >= 0) {
-					isSlashStar = true;
-					result = line.substring(0, posSlashStar) +
-							 unCommentLine(line.substring(posSlashStar+2));
-				}
-			}
+            if (isSlashStar) {
+                int posStarSlash = line.indexOf("*/");
+                if (posStarSlash >= 0) {
+                    isSlashStar = false;
+                    result = unCommentLine(line.substring(posStarSlash + 2));
+                } else {
+                    result = "";
+                }
+            } else {
+                int posSlashSlash = line.indexOf("//");
+                int posSlashStar = line.indexOf("/*");
+                if (posSlashSlash >= 0 &&
+                    (posSlashStar < 0 || posSlashStar > posSlashSlash)) {
+                    result = line.substring(0, posSlashSlash);
+                } else if (posSlashStar >= 0) {
+                    isSlashStar = true;
+                    result = line.substring(0, posSlashStar) +
+                        unCommentLine(line.substring(posSlashStar + 2));
+                }
+            }
         }
 
         return result;
@@ -534,7 +537,7 @@ public class VMProgram extends InteractiveComputerPart
      * If unknown class name, returns null.
      */
     public int[] getStaticRange(String className) {
-        return (int[])staticRange.get(className);
+        return (int[]) staticRange.get(className);
     }
 
     /**
@@ -544,39 +547,39 @@ public class VMProgram extends InteractiveComputerPart
         return instructionsLength;
     }
 
-	public short getAddress(String functionName) throws ProgramException {
-		Short address = (Short)functions.get(functionName);
-		if (address != null) {
-			return address.shortValue();
-		} else {
-			String className =
-				functionName.substring(0, functionName.indexOf("."));
-			if (staticRange.get(className) == null) {
-				// The class is not implemented by a VM file - search for a
-				// built-in implementation later. Display a popup to confirm
-				// this as this is not a feature from the book but a later
-				// addition.
-				if (builtInAccessStatus == BUILTIN_ACCESS_UNDECIDED) {
-					if (hasGUI && gui.confirmBuiltInAccess()) {
-						builtInAccessStatus = BUILTIN_ACCESS_AUTHORIZED;
-					} else {
-						builtInAccessStatus = BUILTIN_ACCESS_DENIED;
-					}
-				}
-				if (builtInAccessStatus == BUILTIN_ACCESS_AUTHORIZED) {
-					return BUILTIN_FUNCTION_ADDRESS;
-				}
-			}
-			// Either:
-			// 1.The class is implemented by a VM file and no implementation
-			//     for the function is found - don't override with built-in
-			// - or -
-			// 2.The user did not authorize using built-in implementations.
-			throw new ProgramException(className + ".vm not found " +
-									   "or function " + functionName +
-									   " not found in " + className + ".vm");
-		}
-	}
+    public short getAddress(String functionName) throws ProgramException {
+        Short address = (Short) functions.get(functionName);
+        if (address != null) {
+            return address.shortValue();
+        } else {
+            String className =
+                functionName.substring(0, functionName.indexOf("."));
+            if (staticRange.get(className) == null) {
+                // The class is not implemented by a VM file - search for a
+                // built-in implementation later. Display a popup to confirm
+                // this as this is not a feature from the book but a later
+                // addition.
+                if (builtInAccessStatus == BUILTIN_ACCESS_UNDECIDED) {
+                    if (hasGUI && gui.confirmBuiltInAccess()) {
+                        builtInAccessStatus = BUILTIN_ACCESS_AUTHORIZED;
+                    } else {
+                        builtInAccessStatus = BUILTIN_ACCESS_DENIED;
+                    }
+                }
+                if (builtInAccessStatus == BUILTIN_ACCESS_AUTHORIZED) {
+                    return BUILTIN_FUNCTION_ADDRESS;
+                }
+            }
+            // Either:
+            // 1.The class is implemented by a VM file and no implementation
+            //     for the function is found - don't override with built-in
+            // - or -
+            // 2.The user did not authorize using built-in implementations.
+            throw new ProgramException(className + ".vm not found " +
+                "or function " + functionName +
+                " not found in " + className + ".vm");
+        }
+    }
 
     /**
      * Returns the next program counter.
@@ -611,19 +614,19 @@ public class VMProgram extends InteractiveComputerPart
 
     /**
      * Sets the program counter to a specially created infinite loop in the
-	 * end of the programs for access by built-in functions, de-facto halting
-	 * the program.
-	 * important so that tests and other scripts finish counting
-	 * (since a built-in infinite loop doesn't count as steps).
-	 * also needed because there is no good way to use the stop button to
-	 * stop an infinite loop in a built-in jack class.
-	 * A message containing information may be provided (can be null).
+     * end of the programs for access by built-in functions, de-facto halting
+     * the program.
+     * important so that tests and other scripts finish counting
+     * (since a built-in infinite loop doesn't count as steps).
+     * also needed because there is no good way to use the stop button to
+     * stop an infinite loop in a built-in jack class.
+     * A message containing information may be provided (can be null).
      */
     public void setPCToInfiniteLoopForBuiltIns(String message) {
-		if (hasGUI) {
-			gui.notify(message);
-		}
-		setPC(infiniteLoopForBuiltInsAddress);
+        if (hasGUI) {
+            gui.notify(message);
+        }
+        setPC(infiniteLoopForBuiltInsAddress);
     }
 
     /**
@@ -641,7 +644,7 @@ public class VMProgram extends InteractiveComputerPart
             do {
                 nextPC++;
             } while (nextPC < instructionsLength &&
-                     instructions[nextPC].getOpCode() == HVMInstructionSet.LABEL_CODE);
+                instructions[nextPC].getOpCode() == HVMInstructionSet.LABEL_CODE);
 
             setGUIPC();
         }
@@ -664,7 +667,7 @@ public class VMProgram extends InteractiveComputerPart
      */
     public void reset() {
         instructions = new VMEmulatorInstruction[0];
-		visibleInstructionsLength = instructionsLength = 0;
+        visibleInstructionsLength = instructionsLength = 0;
         currentPC = -999;
         prevPC = -999;
         nextPC = -1;
@@ -700,11 +703,11 @@ public class VMProgram extends InteractiveComputerPart
     // Throws an exception if unknown segment.
     private byte translateSegment(String segment, HVMInstructionSet instructionSet,
                                   String fileName)
-     throws ProgramException {
+        throws ProgramException {
         byte code = instructionSet.segmentVMStringToCode(segment);
         if (code == HVMInstructionSet.UNKNOWN_SEGMENT)
             throw new ProgramException(": Illegal memory segment - "
-                                       + segment);
+                + segment);
 
         return code;
     }
@@ -772,7 +775,7 @@ public class VMProgram extends InteractiveComputerPart
         ProgramEvent event = new ProgramEvent(this, eventType, programFileName);
 
         for (int i = 0; i < listeners.size(); i++) {
-            ((ProgramEventListener)listeners.elementAt(i)).programChanged(event);
+            ((ProgramEventListener) listeners.elementAt(i)).programChanged(event);
         }
     }
 }

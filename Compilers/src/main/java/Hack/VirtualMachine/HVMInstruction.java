@@ -122,12 +122,12 @@ public class HVMInstruction {
 
         switch (opCode) {
             case HVMInstructionSet.PUSH_CODE:
-                result[1] = instructionSet.segmentCodeToVMString((byte)arg0);
+                result[1] = instructionSet.segmentCodeToVMString((byte) arg0);
                 result[2] = String.valueOf(arg1);
                 break;
             case HVMInstructionSet.POP_CODE:
                 if (numberOfArgs == 2) {
-                    result[1] = instructionSet.segmentCodeToVMString((byte)arg0);
+                    result[1] = instructionSet.segmentCodeToVMString((byte) arg0);
                     result[2] = String.valueOf(arg1);
                 }
                 break;

@@ -35,7 +35,7 @@ public class BreakpointsChangedEvent extends EventObject {
     public BreakpointsChangedEvent(Object source, Vector breakpoints) {
 
         super(source);
-        this.breakpoints = (Vector)breakpoints.clone();
+        this.breakpoints = (Vector) breakpoints.clone();
     }
 
     /**

@@ -17,16 +17,21 @@
 
 package SimulatorsGUI;
 
-import HackGUI.*;
 import Hack.CPUEmulator.*;
-import Hack.ComputerParts.*;
+import Hack.ComputerParts.BusGUI;
+import Hack.ComputerParts.PointedMemoryGUI;
+import Hack.ComputerParts.RegisterGUI;
+import HackGUI.BusComponent;
+import HackGUI.PointedMemoryComponent;
+import HackGUI.RegisterComponent;
+
 import java.awt.*;
-import java.io.*;
+import java.io.File;
 
 /**
  * This class represents the gui of the CPUEmulator.
  */
-public class CPUEmulatorComponent extends HackSimulatorComponent implements CPUEmulatorGUI  {
+public class CPUEmulatorComponent extends HackSimulatorComponent implements CPUEmulatorGUI {
 
     // The dimension of this window.
     private static final int EMULATOR_WIDTH = 1018;
@@ -176,7 +181,7 @@ public class CPUEmulatorComponent extends HackSimulatorComponent implements CPUE
         rom.setBounds(new Rectangle(20, 25, rom.getWidth(), rom.getHeight()));
         alu.setBounds(new Rectangle(551, 414, alu.getWidth(), alu.getHeight()));
 
-        bus.setBounds(new Rectangle(0, 0, EMULATOR_WIDTH , EMULATOR_HEIGHT));
+        bus.setBounds(new Rectangle(0, 0, EMULATOR_WIDTH, EMULATOR_HEIGHT));
 
         this.add(bus, null);
         this.add(ram, null);

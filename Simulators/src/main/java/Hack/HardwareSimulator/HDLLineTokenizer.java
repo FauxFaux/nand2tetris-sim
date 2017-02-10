@@ -17,9 +17,10 @@
 
 package Hack.HardwareSimulator;
 
+import Hack.Gates.HDLException;
 import Hack.Gates.HDLTokenizer;
+
 import java.io.*;
-import Hack.Gates.*;
 
 /**
  * An HDL tokenizer for a single string line.
@@ -31,7 +32,7 @@ public class HDLLineTokenizer extends HDLTokenizer {
      */
     public HDLLineTokenizer(String line) throws HDLException {
         Reader input = new BufferedReader(new InputStreamReader(new
-             ByteArrayInputStream(line.getBytes())));
+            ByteArrayInputStream(line.getBytes())));
 
         try {
             initizalizeInput(input);

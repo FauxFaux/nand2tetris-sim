@@ -17,13 +17,18 @@
 
 package SimulatorsGUI;
 
-import HackGUI.*;
-import Hack.Gates.*;
-import Hack.HardwareSimulator.*;
+import Hack.Gates.BuiltInGate;
+import Hack.Gates.CompositeGate;
+import Hack.Gates.Gate;
+import Hack.HardwareSimulator.PartsGUI;
+import HackGUI.Utilities;
+
 import javax.swing.*;
-import javax.swing.table.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 /**
  * This class represents the gui of the parts component.
@@ -31,8 +36,8 @@ import java.awt.event.*;
 public class PartsComponent extends JPanel implements PartsGUI {
 
     // The strings representing a composite and BuiltIn gates.
-    private final static String BUILTIN_GATE  = "BuiltIn";
-    private final static String COMPOSITE_GATE  = "Composite";
+    private final static String BUILTIN_GATE = "BuiltIn";
+    private final static String COMPOSITE_GATE = "Composite";
 
     // The table containing the parts data
     private JTable partsTable;
@@ -79,7 +84,7 @@ public class PartsComponent extends JPanel implements PartsGUI {
     /**
      * Sets the name of this component.
      */
-    public void setName (String name) {
+    public void setName(String name) {
         nameLbl.setText(name);
     }
 
@@ -108,15 +113,15 @@ public class PartsComponent extends JPanel implements PartsGUI {
             column = partsTable.getColumnModel().getColumn(i);
             if (i == 0)
                 column.setPreferredWidth(110);
-            else if (i==1)
+            else if (i == 1)
                 column.setPreferredWidth(72);
-            else if (i==2)
+            else if (i == 2)
                 column.setPreferredWidth(55);
         }
     }
 
     // Initialization of this component.
-    private void jbInit()  {
+    private void jbInit() {
         this.setLayout(null);
         partsTable.setFont(Utilities.valueFont);
         partsTable.getTableHeader().setReorderingAllowed(false);
@@ -186,15 +191,14 @@ public class PartsComponent extends JPanel implements PartsGUI {
          */
         public Object getValueAt(int row, int col) {
             Object result = null;
-            if(col==0)
-                result =  parts[row].getGateClass().getName();
-            else if (col==1) {
+            if (col == 0)
+                result = parts[row].getGateClass().getName();
+            else if (col == 1) {
                 if (parts[row] instanceof CompositeGate)
                     result = COMPOSITE_GATE;
                 else if (parts[row] instanceof BuiltInGate)
                     result = BUILTIN_GATE;
-            }
-            else if (col==2)
+            } else if (col == 2)
                 result = new Boolean(parts[row].getGateClass().isClocked());
             return result;
         }
@@ -203,7 +207,7 @@ public class PartsComponent extends JPanel implements PartsGUI {
          * Returns true of this table cells are editable, false -
          * otherwise.
          */
-        public boolean isCellEditable(int row, int col){
+        public boolean isCellEditable(int row, int col) {
             return false;
         }
 

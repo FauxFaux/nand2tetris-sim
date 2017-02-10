@@ -17,17 +17,23 @@
 
 package SimulatorsGUI;
 
-import HackGUI.*;
-import Hack.HardwareSimulator.*;
+import Hack.HardwareSimulator.HardwareSimulatorControllerEvent;
+import Hack.HardwareSimulator.HardwareSimulatorControllerGUI;
+import HackGUI.ControllerComponent;
+import HackGUI.MouseOverJButton;
+import HackGUI.Utilities;
+
 import javax.swing.*;
-import java.awt.event.*;
 import java.awt.*;
-import java.io.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.io.File;
 
 /**
  * The GUI Component of the Hardware Simulator.
  */
-public class HardwareSimulatorControllerComponent extends ControllerComponent implements HardwareSimulatorControllerGUI/*, ChipNameListener */{
+public class HardwareSimulatorControllerComponent extends ControllerComponent implements HardwareSimulatorControllerGUI/*, ChipNameListener */ {
 
     // The buttons of this component.
     private MouseOverJButton loadChipButton;
@@ -133,7 +139,7 @@ public class HardwareSimulatorControllerComponent extends ControllerComponent im
 
         fileMenu.removeAll();
 
-        loadChipMenuItem = new JMenuItem("Load Chip",KeyEvent.VK_L);
+        loadChipMenuItem = new JMenuItem("Load Chip", KeyEvent.VK_L);
         loadChipMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 loadChipMenuItem_actionPerformed(e);
@@ -154,7 +160,7 @@ public class HardwareSimulatorControllerComponent extends ControllerComponent im
         runMenu.add(rewindMenuItem);
         runMenu.addSeparator();
 
-        evalMenuItem = new JMenuItem("Eval",KeyEvent.VK_E);
+        evalMenuItem = new JMenuItem("Eval", KeyEvent.VK_E);
         evalMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 evalMenuItem_actionPerformed(e);
@@ -162,7 +168,7 @@ public class HardwareSimulatorControllerComponent extends ControllerComponent im
         });
         runMenu.add(evalMenuItem);
 
-        tickTockMenuItem = new JMenuItem("Tick Tock",KeyEvent.VK_C);
+        tickTockMenuItem = new JMenuItem("Tick Tock", KeyEvent.VK_C);
         tickTockMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 tickTockMenuItem_actionPerformed(e);
@@ -226,7 +232,7 @@ public class HardwareSimulatorControllerComponent extends ControllerComponent im
     // Called when the load chip button is pressed.
     private void loadChipPressed() {
         int returnVal = chipFileChooser.showDialog(this, "Load Chip");
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
             notifyControllerListeners(HardwareSimulatorControllerEvent.CHIP_CHANGED, chipFileChooser.getSelectedFile().getAbsoluteFile());
         }
     }

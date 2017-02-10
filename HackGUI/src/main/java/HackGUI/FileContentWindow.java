@@ -17,9 +17,12 @@
 
 package HackGUI;
 
-import java.io.*;
-import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * This class represents a window which shows the contents of a specified file.
@@ -54,27 +57,28 @@ public class FileContentWindow extends JFrame {
      * even if its name wasn't changed.
      */
     public void loadAnyway() {
-    	loadAnyway = true;
+        loadAnyway = true;
     }
 
     /**
      * Sets the content of this window.
      */
     public void setContent(File fileName) {
-	if (loadAnyway || !fileName.equals(displayedFileName)) {
+        if (loadAnyway || !fileName.equals(displayedFileName)) {
             displayedFileName = fileName.getAbsolutePath();
             fileContent.setText("");
             try {
-		reader = new BufferedReader(new FileReader(fileName));
-		String line;
-		while((line = reader.readLine()) != null) {
+                reader = new BufferedReader(new FileReader(fileName));
+                String line;
+                while ((line = reader.readLine()) != null) {
                     fileContent.append(line);
                     fileContent.append("\n");
-		}
-		reader.close();
-            } catch (IOException ioe) {}
+                }
+                reader.close();
+            } catch (IOException ioe) {
+            }
         }
-        fileContent.select(0,0);
+        fileContent.select(0, 0);
     }
 
     /**
@@ -92,7 +96,7 @@ public class FileContentWindow extends JFrame {
         fileContent.setDisabledTextColor(Color.black);
         scrollPane = new JScrollPane(fileContent);
         scrollPane.setPreferredSize(new Dimension(190, 330));
-        setSize(375,372);
+        setSize(375, 372);
         this.getContentPane().add(scrollPane, BorderLayout.CENTER);
     }
 }

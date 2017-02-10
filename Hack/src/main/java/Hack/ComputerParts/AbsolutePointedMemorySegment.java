@@ -36,7 +36,7 @@ public class AbsolutePointedMemorySegment extends PointedMemorySegment {
      * the legal values range.
      */
     public AbsolutePointedMemorySegment(Memory mainMemory, PointedMemorySegmentGUI gui,
-                                 short minValue, short maxValue) {
+                                        short minValue, short maxValue) {
         super(mainMemory, gui, minValue, maxValue);
     }
 
@@ -49,9 +49,9 @@ public class AbsolutePointedMemorySegment extends PointedMemorySegment {
     }
 
     public void valueChanged(ComputerPartEvent event) {
-        ComputerPartEvent newEvent = new ComputerPartEvent((ComputerPartGUI)event.getSource(),
-                                                           event.getIndex() + startAddress,
-                                                           event.getValue());
+        ComputerPartEvent newEvent = new ComputerPartEvent((ComputerPartGUI) event.getSource(),
+            event.getIndex() + startAddress,
+            event.getValue());
         super.valueChanged(newEvent);
     }
 }

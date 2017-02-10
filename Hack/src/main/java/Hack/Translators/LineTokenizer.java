@@ -17,7 +17,9 @@
 
 package Hack.Translators;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.StreamTokenizer;
+import java.io.StringReader;
 
 /**
  * A tokenizer for lines of a program.
@@ -53,13 +55,13 @@ public class LineTokenizer extends StreamTokenizer {
 
         switch (ttype) {
             case StreamTokenizer.TT_NUMBER:
-                token = String.valueOf((int)nval);
+                token = String.valueOf((int) nval);
                 break;
             case StreamTokenizer.TT_WORD:
                 token = sval;
                 break;
             default:
-                token = String.valueOf((char)ttype);
+                token = String.valueOf((char) ttype);
                 break;
         }
 
@@ -71,7 +73,7 @@ public class LineTokenizer extends StreamTokenizer {
      */
     public int number() {
         if (ttype == TT_NUMBER)
-            return (int)nval;
+            return (int) nval;
         else
             return 0;
     }
@@ -81,7 +83,7 @@ public class LineTokenizer extends StreamTokenizer {
      */
     public char symbol() {
         if (ttype > 0)
-            return (char)ttype;
+            return (char) ttype;
         else
             return 0;
     }
@@ -142,7 +144,8 @@ public class LineTokenizer extends StreamTokenizer {
             if (!(found = token().equals(token))) {
                 try {
                     advance(false);
-                } catch (HackTranslatorException hte) {}
+                } catch (HackTranslatorException hte) {
+                }
             }
         }
 

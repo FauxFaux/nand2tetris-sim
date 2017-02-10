@@ -17,7 +17,8 @@
 
 package SimulatorsGUI;
 
-import Hack.Controller.*;
+import Hack.Controller.HackSimulatorGUI;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -32,8 +33,8 @@ public abstract class HackSimulatorComponent extends JPanel implements HackSimul
     // The names of the help files
     protected String usageFileName, aboutFileName;
 
-    public void setAdditionalDisplay (JComponent additionalComponent) {
-        if(currentAdditionalDisplay != null) {
+    public void setAdditionalDisplay(JComponent additionalComponent) {
+        if (currentAdditionalDisplay != null) {
             remove(currentAdditionalDisplay);
         }
         JComponent c = additionalComponent;

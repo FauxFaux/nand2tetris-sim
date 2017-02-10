@@ -17,9 +17,9 @@
 
 package HackGUI;
 
-import java.awt.*;
 import javax.swing.*;
-import javax.swing.plaf.*;
+import javax.swing.plaf.FontUIResource;
+import java.awt.*;
 
 /**
  * A class of utility methods.
@@ -102,7 +102,7 @@ public class Utilities {
      * Also required are the containing panel and the number of visible rows in the table.
      */
     public static void tableCenterScroll(JPanel panel, JTable table, int row) {
-        JScrollPane scrollPane = (JScrollPane)table.getParent().getParent();
+        JScrollPane scrollPane = (JScrollPane) table.getParent().getParent();
         JScrollBar bar = scrollPane.getVerticalScrollBar();
         int beforeScrollValue = bar.getValue();
         Rectangle r = table.getCellRect(row, 0, true);
@@ -113,13 +113,13 @@ public class Utilities {
 
         // The scroller moved down
         if (afterScrollValue > beforeScrollValue) {
-            Rectangle newRectangle = table.getCellRect((int)(Math.min(row + visibleRowsCount / 2,table.getRowCount()-1)) , 0, true);
+            Rectangle newRectangle = table.getCellRect((int) (Math.min(row + visibleRowsCount / 2, table.getRowCount() - 1)), 0, true);
             table.scrollRectToVisible(newRectangle);
             panel.repaint();
         }
         // The scroller moved up.
-        else if (afterScrollValue < beforeScrollValue){
-            Rectangle newRectangle = table.getCellRect((int)(Math.max(row - visibleRowsCount / 2,0)) , 0, true);
+        else if (afterScrollValue < beforeScrollValue) {
+            Rectangle newRectangle = table.getCellRect((int) (Math.max(row - visibleRowsCount / 2, 0)), 0, true);
             table.scrollRectToVisible(newRectangle);
             panel.repaint();
         }

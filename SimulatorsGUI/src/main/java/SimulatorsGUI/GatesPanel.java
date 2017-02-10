@@ -17,7 +17,8 @@
 
 package SimulatorsGUI;
 
-import Hack.Gates.*;
+import Hack.Gates.GatesPanelGUI;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -48,27 +49,26 @@ public class GatesPanel implements GatesPanelGUI {
      */
     public void addGateComponent(Component gateComponent) {
         flowLayoutGatesPanel.add(gateComponent);
-        if(flowLayout) {
+        if (flowLayout) {
             flowLayoutGatesPanel.revalidate();
             flowLayoutGatesPanel.repaint();
-        }
-        else  {
+        } else {
             Component[] components = nullLayoutGatesPanel.getComponents();
-            for(int i=0; i<components.length; i++) {
+            for (int i = 0; i < components.length; i++) {
                 Rectangle componentBounds = components[i].getBounds();
-                int x1 = (int)componentBounds.getX();
-                int y1 = (int)componentBounds.getY();
-                int x2 = (int)(componentBounds.getX() + componentBounds.getWidth() -1);
-                int y2 = (int)(componentBounds.getY() + componentBounds.getHeight() -1);
-                if(!(gateComponent.getY() > y2 || gateComponent.getX() > x2 ||
-                     gateComponent.getY() + gateComponent.getHeight()-1 < y1  ||
-                     gateComponent.getX() + gateComponent.getWidth()-1 < x1)) {
+                int x1 = (int) componentBounds.getX();
+                int y1 = (int) componentBounds.getY();
+                int x2 = (int) (componentBounds.getX() + componentBounds.getWidth() - 1);
+                int y2 = (int) (componentBounds.getY() + componentBounds.getHeight() - 1);
+                if (!(gateComponent.getY() > y2 || gateComponent.getX() > x2 ||
+                    gateComponent.getY() + gateComponent.getHeight() - 1 < y1 ||
+                    gateComponent.getX() + gateComponent.getWidth() - 1 < x1)) {
 
                     flowLayout = true;
                     break;
                 }
             }
-            if(!flowLayout) {
+            if (!flowLayout) {
                 nullLayoutGatesPanel.add(gateComponent);
                 nullLayoutGatesPanel.revalidate();
                 nullLayoutGatesPanel.repaint();
@@ -107,7 +107,7 @@ public class GatesPanel implements GatesPanelGUI {
      * Returns the gate panel.
      */
     public JPanel getGatesPanel() {
-        if(flowLayout)
+        if (flowLayout)
             return flowLayoutGatesPanel;
         else
             return nullLayoutGatesPanel;

@@ -20,8 +20,7 @@ package Hack.Controller;
 /**
  * An exception for errors that occurs in the script.
  */
-public class ScriptException extends Exception
-{
+public class ScriptException extends Exception {
     /**
      * Constructs a new ScriptException with the given message, script name and Line number.
      */

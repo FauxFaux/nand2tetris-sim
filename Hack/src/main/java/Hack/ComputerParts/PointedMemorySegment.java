@@ -43,7 +43,7 @@ public class PointedMemorySegment extends MemorySegment {
      */
     public void setPointerAddress(int address) {
         if (displayChanges)
-            ((PointedMemorySegmentGUI)gui).setPointer(address);
+            ((PointedMemorySegmentGUI) gui).setPointer(address);
     }
 
     public void reset() {

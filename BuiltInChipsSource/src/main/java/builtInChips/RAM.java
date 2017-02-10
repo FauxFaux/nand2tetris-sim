@@ -17,9 +17,13 @@
 
 package builtInChips;
 
-import Hack.Gates.*;
-import Hack.ComputerParts.*;
-import HackGUI.*;
+import Hack.ComputerParts.ComputerPartEvent;
+import Hack.ComputerParts.ComputerPartEventListener;
+import Hack.Gates.BuiltInGateWithGUI;
+import Hack.Gates.GateException;
+import Hack.Gates.GatesManager;
+import HackGUI.PointedMemoryComponent;
+
 import java.awt.*;
 
 /**
@@ -49,7 +53,7 @@ public abstract class RAM extends BuiltInGateWithGUI implements ComputerPartEven
             memoryGUI = new PointedMemoryComponent();
             memoryGUI.setContents(values);
             memoryGUI.setVisibleRows(8);
-            memoryGUI.setLocation(166,10);
+            memoryGUI.setLocation(166, 10);
             memoryGUI.addListener(this);
             memoryGUI.addErrorListener(this);
         }
@@ -70,7 +74,7 @@ public abstract class RAM extends BuiltInGateWithGUI implements ComputerPartEven
         short address = inputPins[2].get();
         outputPins[0].set(values[address]);
         if (memoryGUI != null)
-           memoryGUI.setPointer(address);
+            memoryGUI.setPointer(address);
     }
 
     protected void clockDown() {

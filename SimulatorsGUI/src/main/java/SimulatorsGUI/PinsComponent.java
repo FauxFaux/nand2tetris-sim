@@ -17,16 +17,23 @@
 
 package SimulatorsGUI;
 
-import HackGUI.*;
-import Hack.HardwareSimulator.*;
-import Hack.Gates.*;
-import Hack.ComputerParts.*;
-import Hack.Events.*;
+import Hack.ComputerParts.ComputerPartEvent;
+import Hack.ComputerParts.ComputerPartEventListener;
+import Hack.Events.ErrorEvent;
+import Hack.Events.ErrorEventListener;
+import Hack.Gates.PinInfo;
+import Hack.HardwareSimulator.PinsGUI;
+import HackGUI.Format;
+import HackGUI.Utilities;
+
 import javax.swing.*;
-import javax.swing.table.*;
-import java.util.*;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Vector;
 
 /**
  * This class represents the gui of a pins list. Every pin row contains the pin's name
@@ -84,7 +91,7 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
     protected boolean hideNullValue;
 
     // The start and end enabled indices.
-    protected int startEnabling,endEnabling;
+    protected int startEnabling, endEnabling;
 
     // The index of the last selected row.
     private int lastSelectedRow;
@@ -120,7 +127,7 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
     /**
      * Sets the null value of this component.
      */
-    public void setNullValue (short value, boolean hideNullValue) {
+    public void setNullValue(short value, boolean hideNullValue) {
         nullValue = value;
         this.hideNullValue = hideNullValue;
     }
@@ -178,15 +185,15 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
         errorEventListeners.removeElement(listener);
     }
 
-   /**
+    /**
      * Notifies all the ErrorEventListener on an error in this gui by
      * creating an ErrorEvent (with the error message) and sending it
      * using the errorOccured method to all the listeners.
      */
     public void notifyErrorListeners(String errorMessage) {
         ErrorEvent event = new ErrorEvent(this, errorMessage);
-        for (int i=0; i<errorEventListeners.size(); i++)
-            ((ErrorEventListener)errorEventListeners.elementAt(i)).errorOccured(event);
+        for (int i = 0; i < errorEventListeners.size(); i++)
+            ((ErrorEventListener) errorEventListeners.elementAt(i)).errorOccured(event);
     }
 
     public void addListener(ComputerPartEventListener listener) {
@@ -199,13 +206,13 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
 
     public void notifyListeners(int index, short value) {
         ComputerPartEvent event = new ComputerPartEvent(this, index, value);
-        for (int i=0; i<listeners.size(); i++)
-            ((ComputerPartEventListener)listeners.elementAt(i)).valueChanged(event);
+        for (int i = 0; i < listeners.size(); i++)
+            ((ComputerPartEventListener) listeners.elementAt(i)).valueChanged(event);
     }
 
     public void notifyListeners() {
-        for (int i=0; i<listeners.size(); i++)
-            ((ComputerPartEventListener)listeners.elementAt(i)).guiGainedFocus();
+        for (int i = 0; i < listeners.size(); i++)
+            ((ComputerPartEventListener) listeners.elementAt(i)).guiGainedFocus();
     }
 
     /**
@@ -214,12 +221,12 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
      * a boolean which is true if the user pressed the 'ok' button and false
      * if the user pressed the 'cancel' button.
      */
-    public void pinValueChanged (PinValueEvent e) {
+    public void pinValueChanged(PinValueEvent e) {
         pinsTable.setEnabled(true);
-        if(e.getIsOk()) {
+        if (e.getIsOk()) {
             pins[lastSelectedRow].value = translateValueToShort(e.getValueStr());
             valueStr[lastSelectedRow] = translateValueToString(pins[lastSelectedRow].value,
-                                                               pins[lastSelectedRow].width);
+                pins[lastSelectedRow].width);
         }
         notifyListeners(lastSelectedRow, pins[lastSelectedRow].value);
     }
@@ -269,7 +276,7 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
     /**
      * Returns the value at the given index in its string representation.
      */
-    public String getValueAsString (int index) {
+    public String getValueAsString(int index) {
         return valueStr[index];
     }
 
@@ -284,21 +291,21 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
     /**
      * Returns the coordinates of the top left corner of the value at the given index.
      */
-    public Point getCoordinates (int index) {
+    public Point getCoordinates(int index) {
         JScrollBar bar = scrollPane.getVerticalScrollBar();
         Rectangle r = pinsTable.getCellRect(index, 1, true);
         pinsTable.scrollRectToVisible(r);
-        return new Point((int)(r.getX() + topLevelLocation.getX()),
-                         (int)(r.getY() + topLevelLocation.getY() - bar.getValue()));
+        return new Point((int) (r.getX() + topLevelLocation.getX()),
+            (int) (r.getY() + topLevelLocation.getY() - bar.getValue()));
     }
 
     /**
      * Returns the location of the given index relative to the panel.
      */
-    public Point getLocation (int index) {
+    public Point getLocation(int index) {
         Rectangle r = pinsTable.getCellRect(index, 0, true);
         Point p = Utilities.getTopLevelLocation(this, pinsTable);
-        return new Point ((int)(r.getX() + p.getX()) , (int)(r.getY() + p.getY()));
+        return new Point((int) (r.getX() + p.getX()), (int) (r.getY() + p.getY()));
     }
 
     /**
@@ -319,7 +326,7 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
         pins = new PinInfo[newPins.length];
         valueStr = new String[newPins.length];
         System.arraycopy(newPins, 0, pins, 0, newPins.length);
-        for (int i=0; i<newPins.length;i++)
+        for (int i = 0; i < newPins.length; i++)
             valueStr[i] = translateValueToString(newPins[i].value, newPins[i].width);
         pinsTable.clearSelection();
         pinsTable.revalidate();
@@ -328,26 +335,26 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
 
     /**
      * Implementing the action of double-clicking the mouse on the text field
-	 * to popup the binary input component and of clicking the mouse on the
-	 * text field to cancel the binary input component.
-	 * This generates the same feel as the (hexa)decimal input method
+     * to popup the binary input component and of clicking the mouse on the
+     * text field to cancel the binary input component.
+     * This generates the same feel as the (hexa)decimal input method
      */
     public void mouseClicked(MouseEvent e) {
-        if(isEnabled && (e.getModifiers()&InputEvent.BUTTON1_MASK) != 0) {
-			if (binary.isVisible()) {
-				binary.hideBinary();
-				// The pinsTable didn't get the selection message since it
-				// was disabled. Enable it and select the correct row.
-				pinsTable.setEnabled(true);
-				pinsTable.changeSelection(pinsTable.rowAtPoint(e.getPoint()),
-										  pinsTable.columnAtPoint(e.getPoint()),
-										  false, false);
-				pinsTable.grabFocus();
-			}
+        if (isEnabled && (e.getModifiers() & InputEvent.BUTTON1_MASK) != 0) {
+            if (binary.isVisible()) {
+                binary.hideBinary();
+                // The pinsTable didn't get the selection message since it
+                // was disabled. Enable it and select the correct row.
+                pinsTable.setEnabled(true);
+                pinsTable.changeSelection(pinsTable.rowAtPoint(e.getPoint()),
+                    pinsTable.columnAtPoint(e.getPoint()),
+                    false, false);
+                pinsTable.grabFocus();
+            }
             if (e.getClickCount() == 2) {
-                if(dataFormat == Format.BIN_FORMAT) {
+                if (dataFormat == Format.BIN_FORMAT) {
                     pinsTable.setEnabled(false);
-                    binary.setLocation((int)getLocation(pinsTable.getSelectedRow()+1).getX(), (int)getLocation(pinsTable.getSelectedRow()+1).getY() );
+                    binary.setLocation((int) getLocation(pinsTable.getSelectedRow() + 1).getX(), (int) getLocation(pinsTable.getSelectedRow() + 1).getY());
                     binary.setValue(pins[pinsTable.getSelectedRow()].value);
                     binary.setNumOfBits(pins[pinsTable.getSelectedRow()].width);
                     binary.showBinary();
@@ -357,10 +364,17 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
     }
 
     // Empty implementations.
-    public void mouseExited (MouseEvent e) {}
-    public void mouseEntered (MouseEvent e) {}
-    public void mouseReleased (MouseEvent e) {}
-    public void mousePressed (MouseEvent e) {}
+    public void mouseExited(MouseEvent e) {
+    }
+
+    public void mouseEntered(MouseEvent e) {
+    }
+
+    public void mouseReleased(MouseEvent e) {
+    }
+
+    public void mousePressed(MouseEvent e) {
+    }
 
     /**
      * Sets the top level location.
@@ -388,7 +402,7 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
      */
     public void setNumericFormat(int formatCode) {
         dataFormat = formatCode;
-        for(int i=0;i<pins.length; i++)
+        for (int i = 0; i < pins.length; i++)
             valueStr[i] = translateValueToString(pins[i].value, pins[i].width);
         repaint();
 
@@ -398,7 +412,7 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
      * Translates a given string to a short according to the current format.
      */
     protected short translateValueToShort(String data) {
-        return Format.translateValueToShort(data,dataFormat);
+        return Format.translateValueToShort(data, dataFormat);
     }
 
     /**
@@ -407,12 +421,12 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
     protected String translateValueToString(short value, int width) {
         String result = null;
 
-        if(value == nullValue && hideNullValue)
+        if (value == nullValue && hideNullValue)
             result = "";
         else {
             result = Format.translateValueToString(value, dataFormat);
-            if(dataFormat == Format.BIN_FORMAT)
-                result = result.substring(result.length()-width,result.length());
+            if (dataFormat == Format.BIN_FORMAT)
+                result = result.substring(result.length() - width, result.length());
         }
 
         return result;
@@ -451,10 +465,10 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
         pinsTable.getTableHeader().setResizingAllowed(false);
         this.setLayout(null);
         scrollPane = new JScrollPane(pinsTable);
-        scrollPane.setLocation(0,27);
+        scrollPane.setLocation(0, 27);
         setBorder(BorderFactory.createEtchedBorder());
 
-        binary.setSize(new Dimension(240,52));
+        binary.setSize(new Dimension(240, 52));
         binary.setLayout(null);
         binary.setVisible(false);
         binary.addListener(this);
@@ -468,6 +482,7 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
         this.add(nameLbl, null);
 
     }
+
     // The action of the table gaining focus
     public void pinsTable_focusGained(FocusEvent e) {
         notifyListeners();
@@ -479,7 +494,7 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
         pinsTable.clearSelection();
     }
 
-     // An inner class representing the model of the breakpoint table.
+    // An inner class representing the model of the breakpoint table.
     class PinsTableModel extends AbstractTableModel {
         String[] columnNames = {"Name", "Value"};
 
@@ -509,7 +524,7 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
          */
         public Object getValueAt(int row, int col) {
 
-            if(col==0)
+            if (col == 0)
                 return pins[row].name + (pins[row].width > 1 ? "[" + pins[row].width + "]" : "");
             else
                 return valueStr[row];
@@ -519,9 +534,9 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
          * Returns true of this table cells are editable, false -
          * otherwise.
          */
-        public boolean isCellEditable(int row, int col){
+        public boolean isCellEditable(int row, int col) {
             if (isEnabled && col == 1 && dataFormat != Format.BIN_FORMAT &&
-                (endEnabling == -1 || (row>= startEnabling && row <= endEnabling)))
+                (endEnabling == -1 || (row >= startEnabling && row <= endEnabling)))
                 return true;
             else
                 return false;
@@ -532,19 +547,18 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
          */
         public void setValueAt(Object value, int row, int col) {
 
-            String data = (String)value;
+            String data = (String) value;
             if (!valueStr[row].equals(data)) {
                 try {
                     valueStr[row] = data;
 
-                    if(data.equals("") && hideNullValue)
+                    if (data.equals("") && hideNullValue)
                         pins[row].value = nullValue;
                     else
                         pins[row].value = Format.translateValueToShort(data, dataFormat);
 
-                    notifyListeners((short)row,pins[row].value);
-                }
-                catch(NumberFormatException nfe) {
+                    notifyListeners((short) row, pins[row].value);
+                } catch (NumberFormatException nfe) {
                     notifyErrorListeners("Illegal value");
                     valueStr[row] = Format.translateValueToString(pins[row].value, dataFormat);
                 }
@@ -558,29 +572,25 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
     class PinsTableCellRenderer extends DefaultTableCellRenderer {
 
         public Component getTableCellRendererComponent
-            (JTable table, Object value, boolean selected, boolean focused, int row, int column)
-        {
+            (JTable table, Object value, boolean selected, boolean focused, int row, int column) {
             setEnabled(table == null || table.isEnabled());
 
-            if(column==0) {
+            if (column == 0) {
                 setHorizontalAlignment(SwingConstants.CENTER);
                 setForeground(null);
                 setBackground(null);
-            }
-            else {
+            } else {
                 setHorizontalAlignment(SwingConstants.RIGHT);
-                for (int i=0;i<highlightIndex.size(); i++) {
-                    if(row == ((Integer)highlightIndex.elementAt(i)).intValue()) {
+                for (int i = 0; i < highlightIndex.size(); i++) {
+                    if (row == ((Integer) highlightIndex.elementAt(i)).intValue()) {
                         setForeground(Color.blue);
                         break;
-                    }
-                    else
+                    } else
                         setForeground(null);
                 }
                 if (row == flashIndex) {
                     setBackground(Color.orange);
-                }
-                else
+                } else
                     setBackground(null);
 
             }

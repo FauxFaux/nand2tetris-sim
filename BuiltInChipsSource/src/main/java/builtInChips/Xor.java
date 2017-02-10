@@ -27,6 +27,6 @@ public class Xor extends BuiltInGate {
     protected void reCompute() {
         short a = inputPins[0].get();
         short b = inputPins[1].get();
-        outputPins[0].set((short)(a ^ b));
+        outputPins[0].set((short) (a ^ b));
     }
 }

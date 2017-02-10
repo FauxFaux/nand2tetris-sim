@@ -18,10 +18,12 @@
 package HackGUI;
 
 import javax.swing.*;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLFrameHyperlinkEvent;
 import java.awt.*;
-import java.io.*;
-import javax.swing.text.html.*;
-import javax.swing.event.*;
+import java.io.IOException;
 
 /**
  * A frame for viewing HTML files.
@@ -51,7 +53,7 @@ public class HTMLViewFrame extends JFrame {
 
         ep.addHyperlinkListener(new Hyperactive());
         scrollPane = new JScrollPane(ep);
-        setBounds(30,44,750,460);
+        setBounds(30, 44, 750, 460);
         setDefaultCloseOperation(1);
         getContentPane().add(scrollPane, BorderLayout.CENTER);
     }
@@ -64,8 +66,8 @@ class Hyperactive implements HyperlinkListener {
         if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
             JEditorPane pane = (JEditorPane) e.getSource();
             if (e instanceof HTMLFrameHyperlinkEvent) {
-                HTMLFrameHyperlinkEvent  evt = (HTMLFrameHyperlinkEvent)e;
-                HTMLDocument doc = (HTMLDocument)pane.getDocument();
+                HTMLFrameHyperlinkEvent evt = (HTMLFrameHyperlinkEvent) e;
+                HTMLDocument doc = (HTMLDocument) pane.getDocument();
                 doc.processHTMLFrameHyperlinkEvent(evt);
             } else {
                 try {

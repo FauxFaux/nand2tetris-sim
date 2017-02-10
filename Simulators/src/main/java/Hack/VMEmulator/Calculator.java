@@ -17,7 +17,8 @@
 
 package Hack.VMEmulator;
 
-import Hack.ComputerParts.*;
+import Hack.ComputerParts.ComputerPartGUI;
+import Hack.ComputerParts.ValueComputerPart;
 
 /**
  * A simple calculator, with two inputs, one output, and a set of operators.
@@ -130,7 +131,7 @@ public class Calculator extends ValueComputerPart {
      * Constructs a new calculator with the given GUI.
      */
     public Calculator(CalculatorGUI gui) {
-        super (gui != null);
+        super(gui != null);
         this.gui = gui;
 
         operators = new char[9];
@@ -155,23 +156,32 @@ public class Calculator extends ValueComputerPart {
 
         switch (operator) {
             case ADD:
-                result = (short)(input0 + input1); break;
+                result = (short) (input0 + input1);
+                break;
             case SUBTRACT:
-                result = (short)(input0 - input1); break;
+                result = (short) (input0 - input1);
+                break;
             case NEGATE:
-                result = (short)(-input1); break;
+                result = (short) (-input1);
+                break;
             case AND:
-                result = (short)(input0 & input1); break;
+                result = (short) (input0 & input1);
+                break;
             case OR:
-                result = (short)(input0 | input1); break;
+                result = (short) (input0 | input1);
+                break;
             case NOT:
-                result = (short)(~input1); break;
+                result = (short) (~input1);
+                break;
             case EQUAL:
-                result = (short)(input0 == input1 ? -1 : 0); break;
+                result = (short) (input0 == input1 ? -1 : 0);
+                break;
             case GREATER_THAN:
-                result = (short)(input0 > input1 ? -1 : 0); break;
+                result = (short) (input0 > input1 ? -1 : 0);
+                break;
             case LESS_THAN:
-                result = (short)(input0 < input1 ? -1 : 0); break;
+                result = (short) (input0 < input1 ? -1 : 0);
+                break;
         }
 
         setValueAt(2, result, true);
@@ -185,19 +195,31 @@ public class Calculator extends ValueComputerPart {
         short result = 0;
 
         switch (index) {
-            case 0: result = input0; break;
-            case 1: result = input1; break;
-            case 2: result = output; break;
+            case 0:
+                result = input0;
+                break;
+            case 1:
+                result = input1;
+                break;
+            case 2:
+                result = output;
+                break;
         }
 
         return result;
-   }
+    }
 
     public void doSetValueAt(int index, short value) {
         switch (index) {
-            case 0: input0 = value; break;
-            case 1: input1 = value; break;
-            case 2: output = value; break;
+            case 0:
+                input0 = value;
+                break;
+            case 1:
+                input1 = value;
+                break;
+            case 2:
+                output = value;
+                break;
         }
     }
 

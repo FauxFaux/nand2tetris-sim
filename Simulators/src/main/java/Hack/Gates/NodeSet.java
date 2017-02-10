@@ -17,7 +17,7 @@
 
 package Hack.Gates;
 
-import java.util.*;
+import java.util.Vector;
 
 /**
  * A set of nodes.
@@ -28,7 +28,7 @@ public class NodeSet extends Vector {
      * Creates a new NodeSet.
      */
     public NodeSet() {
-        super(1,1);
+        super(1, 1);
     }
 
     /**
@@ -57,6 +57,6 @@ public class NodeSet extends Vector {
      * (Assumes a legal index).
      */
     public Node getNodeAt(int index) {
-        return (Node)elementAt(index);
+        return (Node) elementAt(index);
     }
 }

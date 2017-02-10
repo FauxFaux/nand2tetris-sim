@@ -17,7 +17,6 @@
 
 package builtInVMCode;
 
-import Hack.VMEmulator.BuiltInVMClass;
 import Hack.VMEmulator.TerminateVMProgramThrowable;
 
 /**
@@ -26,69 +25,71 @@ import Hack.VMEmulator.TerminateVMProgramThrowable;
 
 public class Keyboard extends JackOSClass {
 
-	public static void init() { }
+    public static void init() {
+    }
 
-	public static char keyPressed() throws TerminateVMProgramThrowable {
-		return (char)readMemory(KEYBOARD_ADDRESS);
-	}
+    public static char keyPressed() throws TerminateVMProgramThrowable {
+        return (char) readMemory(KEYBOARD_ADDRESS);
+    }
 
-	public static char readChar() throws TerminateVMProgramThrowable {
-		callFunction("Output.printChar", 0);
-		char c = readCharNoEcho();
-		callFunction("Output.printChar", BACKSPACE_KEY);
-		callFunction("Output.printChar", c);
-		return c;
-	}
+    public static char readChar() throws TerminateVMProgramThrowable {
+        callFunction("Output.printChar", 0);
+        char c = readCharNoEcho();
+        callFunction("Output.printChar", BACKSPACE_KEY);
+        callFunction("Output.printChar", c);
+        return c;
+    }
 
-	public static short readLine(short message)
-			throws TerminateVMProgramThrowable {
-		return javaStringToJackStringUsingVM(readLineToJavaString(message));
-	}
+    public static short readLine(short message)
+        throws TerminateVMProgramThrowable {
+        return javaStringToJackStringUsingVM(readLineToJavaString(message));
+    }
 
-	public static short readInt(short message)
-			throws TerminateVMProgramThrowable {
-		return javaStringToInt(readLineToJavaString(message));
-	}
+    public static short readInt(short message)
+        throws TerminateVMProgramThrowable {
+        return javaStringToInt(readLineToJavaString(message));
+    }
 
-	private static char readCharNoEcho() throws TerminateVMProgramThrowable {
-		char current = 0, saved = 0;
-		while (saved == 0 || current != 0) {
-			try {
-				Thread.sleep(25);
-			} catch (InterruptedException e) { }
-			current = keyPressed();
-			if (current != 0) {
-				saved = current;
-			}
-		}
-		return saved;
-	}
+    private static char readCharNoEcho() throws TerminateVMProgramThrowable {
+        char current = 0, saved = 0;
+        while (saved == 0 || current != 0) {
+            try {
+                Thread.sleep(25);
+            } catch (InterruptedException e) {
+            }
+            current = keyPressed();
+            if (current != 0) {
+                saved = current;
+            }
+        }
+        return saved;
+    }
 
-	private static java.lang.String readLineToJavaString(short message)
-			throws TerminateVMProgramThrowable {
-		callFunction("Output.printString", message);
-		StringBuffer s = new StringBuffer();
-		char c;
-		callFunction("Output.printChar", 0);
-		while ((c=readCharNoEcho()) != NEWLINE_KEY) {
-			if (c == BACKSPACE_KEY) {
-				int deleteAt = s.length()-1;
-				if (deleteAt >= 0) {
-					callFunction("Output.printChar", BACKSPACE_KEY);
-					callFunction("Output.printChar", c);
-					callFunction("Output.printChar", 0);
-					s.deleteCharAt(deleteAt);
-				}
-			} else {
-				callFunction("Output.printChar", BACKSPACE_KEY);
-				callFunction("Output.printChar", c);
-				callFunction("Output.printChar", 0);
-				s.append(c);
-			}
-		}
-		callFunction("Output.printChar", BACKSPACE_KEY);
-		callFunction("Output.printChar", c);
-		return s.toString();
-	}
+    private static java.lang.String readLineToJavaString(short message)
+        throws TerminateVMProgramThrowable {
+        callFunction("Output.printString", message);
+        StringBuffer s = new StringBuffer();
+        char c;
+        callFunction("Output.printChar", 0);
+        while ((c = readCharNoEcho()) != NEWLINE_KEY) {
+            if (c == BACKSPACE_KEY) {
+                int deleteAt = s.length() - 1;
+                if (deleteAt >= 0) {
+                    callFunction("Output.printChar", BACKSPACE_KEY);
+                    callFunction("Output.printChar", c);
+                    callFunction("Output.printChar", 0);
+                    s.deleteCharAt(deleteAt);
+                }
+            } else {
+                callFunction("Output.printChar", BACKSPACE_KEY);
+                callFunction("Output.printChar", c);
+                callFunction("Output.printChar", 0);
+                s.append(c);
+            }
+        }
+        callFunction("Output.printChar", BACKSPACE_KEY);
+        callFunction("Output.printChar", c);
+        return s.toString();
+    }
 
 }

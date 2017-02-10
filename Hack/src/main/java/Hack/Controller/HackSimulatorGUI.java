@@ -18,7 +18,7 @@
 package Hack.Controller;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.File;
 
 /**
  * An interface for the gui of the hack simulator.

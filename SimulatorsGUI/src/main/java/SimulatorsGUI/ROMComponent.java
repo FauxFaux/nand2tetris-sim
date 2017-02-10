@@ -17,18 +17,22 @@
 
 package SimulatorsGUI;
 
+import Hack.Assembler.AssemblerException;
+import Hack.Assembler.HackAssemblerTranslator;
+import Hack.CPUEmulator.ROM;
+import Hack.CPUEmulator.ROMGUI;
+import Hack.Events.ProgramEvent;
+import Hack.Events.ProgramEventListener;
 import HackGUI.*;
-import Hack.CPUEmulator.*;
-import Hack.Events.*;
+
 import javax.swing.*;
-import javax.swing.table.*;
-import java.util.Vector;
-import java.awt.event.*;
-import java.awt.*;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.table.*;
-import java.io.*;
-import Hack.Assembler.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.Vector;
 
 /**
  * This class represents the GUI of a ROM.
@@ -83,7 +87,7 @@ public class ROMComponent extends PointedMemoryComponent implements ROMGUI {
 
     public void setNumericFormat(int formatCode) {
         super.setNumericFormat(formatCode);
-        switch(formatCode) {
+        switch (formatCode) {
             case ASM_FORMAT:
                 romFormat.setSelectedIndex(0);
                 break;
@@ -120,8 +124,8 @@ public class ROMComponent extends PointedMemoryComponent implements ROMGUI {
      */
     public void notifyProgramListeners(byte eventType, String programFileName) {
         ProgramEvent event = new ProgramEvent(this, eventType, programFileName);
-        for (int i=0; i<programEventListeners.size(); i++)
-            ((ProgramEventListener)programEventListeners.elementAt(i)).programChanged(event);
+        for (int i = 0; i < programEventListeners.size(); i++)
+            ((ProgramEventListener) programEventListeners.elementAt(i)).programChanged(event);
     }
 
     /**
@@ -156,7 +160,7 @@ public class ROMComponent extends PointedMemoryComponent implements ROMGUI {
     /**
      * Hides the displayed message.
      */
-    public void hideMessage(){
+    public void hideMessage() {
         messageTxt.setText("");
         messageTxt.setVisible(false);
         loadButton.setVisible(true);
@@ -167,7 +171,7 @@ public class ROMComponent extends PointedMemoryComponent implements ROMGUI {
     /**
      * Displays the given message.
      */
-    public void showMessage(String message){
+    public void showMessage(String message) {
         messageTxt.setText(message);
         loadButton.setVisible(false);
         searchButton.setVisible(false);
@@ -180,7 +184,7 @@ public class ROMComponent extends PointedMemoryComponent implements ROMGUI {
      */
     protected short translateValueToShort(String data) throws TranslationException {
         short result = 0;
-        if(dataFormat != ASM_FORMAT)
+        if (dataFormat != ASM_FORMAT)
             result = super.translateValueToShort(data);
         else {
             try {
@@ -197,18 +201,19 @@ public class ROMComponent extends PointedMemoryComponent implements ROMGUI {
      */
     protected String translateValueToString(short value) {
         String result = null;
-        if(dataFormat != ASM_FORMAT)
+        if (dataFormat != ASM_FORMAT)
             result = super.translateValueToString(value);
         else {
             try {
                 result = translator.codeToText(value);
-            } catch (AssemblerException ae) {}
+            } catch (AssemblerException ae) {
+            }
         }
         return result;
     }
 
     // Initializes this rom.
-    private void jbInit()  {
+    private void jbInit() {
         loadButton.setIcon(loadIcon);
         loadButton.setBounds(new Rectangle(97, 2, 31, 25));
         loadButton.setToolTipText("Load Program");
@@ -252,9 +257,9 @@ public class ROMComponent extends PointedMemoryComponent implements ROMGUI {
      */
     public void loadProgram() {
         int returnVal = fileChooser.showDialog(this, "Load ROM");
-        if(returnVal == JFileChooser.APPROVE_OPTION) {
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
             notifyProgramListeners(ProgramEvent.LOAD,
-                                   fileChooser.getSelectedFile().getAbsolutePath());
+                fileChooser.getSelectedFile().getAbsolutePath());
         }
     }
 
@@ -270,17 +275,14 @@ public class ROMComponent extends PointedMemoryComponent implements ROMGUI {
      * Implemeting the action of changing the selected item in the combo box
      */
     public void romFormat_actionPerformed(ActionEvent e) {
-        String newFormat = (String)romFormat.getSelectedItem();
-        if(newFormat.equals(format[0])) {
+        String newFormat = (String) romFormat.getSelectedItem();
+        if (newFormat.equals(format[0])) {
             setNumericFormat(ASM_FORMAT);
-        }
-        else if (newFormat.equals(format[1])) {
+        } else if (newFormat.equals(format[1])) {
             setNumericFormat(Format.DEC_FORMAT);
-        }
-        else if (newFormat.equals(format[2])) {
+        } else if (newFormat.equals(format[2])) {
             setNumericFormat(Format.HEX_FORMAT);
-        }
-        else if (newFormat.equals(format[3])) {
+        } else if (newFormat.equals(format[3])) {
             setNumericFormat(Format.BIN_FORMAT);
         }
     }
@@ -294,7 +296,7 @@ public class ROMComponent extends PointedMemoryComponent implements ROMGUI {
         public void setRenderer(int row, int column) {
             super.setRenderer(row, column);
 
-            if(dataFormat==ASM_FORMAT && column == 1)
+            if (dataFormat == ASM_FORMAT && column == 1)
                 setHorizontalAlignment(SwingConstants.LEFT);
         }
     }
