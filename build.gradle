@@ -5,16 +5,31 @@ subprojects {
     sourceCompatibility = 1.4
 }
 
-version = '2.5.7.0'
-
 distributions {
     standard {
         contents {
-            into ('bin/lib') {
-                from subprojects.collect { it.tasks.withType(Jar) }
+            into ('tools/bin/lib') {
+                from project(':Compilers').jar.outputs.files
+                from project(':Hack').jar.outputs.files
+                from project(':HackGUI').jar.outputs.files
+                from project(':Simulators').jar.outputs.files
+                from project(':SimulatorsGUI').jar.outputs.files
+            }
+
+            into ('tools') {
+                from project(':BuiltInChipsSource').compileJava.outputs.files
+                from project(':BuiltInVMCodeSource').compileJava.outputs.files
+            }
+
+            into ('tools/bin/classes') {
+                from project(':MainClassesSource').compileJava.outputs.files
             }
         }
     }
+}
+
+standardDistZip {
+    archiveName "nand2tetris.zip"
 }
 
 task wrapper(type: Wrapper) {
