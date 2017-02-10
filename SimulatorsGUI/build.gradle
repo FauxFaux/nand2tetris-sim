@@ -2,5 +2,4 @@ dependencies {
     compile project(':Hack')
     compile project(':HackGUI')
     compile project(':Simulators')
-    compile project(':SimulatorsGUI')
 }

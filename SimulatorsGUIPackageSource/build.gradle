@@ -1,5 +1,0 @@
-dependencies {
-    compile project(':HackPackageSource')
-    compile project(':HackGUIPackageSource')
-    compile project(':SimulatorsPackageSource')
-}

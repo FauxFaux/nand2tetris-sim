@@ -1,6 +1,6 @@
 dependencies {
-    compile project(':HackPackageSource')
-    compile project(':HackGUIPackageSource')
-    compile project(':SimulatorsPackageSource')
-    compile project(':SimulatorsGUIPackageSource')
+    compile project(':Hack')
+    compile project(':HackGUI')
+    compile project(':Simulators')
+    compile project(':SimulatorsGUI')
 }

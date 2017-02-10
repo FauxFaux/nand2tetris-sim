@@ -3,5 +3,5 @@ jar {
 }
 
 dependencies {
-    project(':SimulatorsPackageSource')
+    project(':Simulators')
 }
