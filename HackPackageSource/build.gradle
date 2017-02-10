@@ -1,0 +1,7 @@
+jar {
+    archiveName 'Hack.jar'
+}
+
+dependencies {
+    project(':SimulatorsPackageSource')
+}

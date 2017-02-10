@@ -2,6 +2,19 @@ apply plugin: 'distribution'
 
 subprojects {
     apply plugin: 'java'
+    sourceCompatibility = 1.4
+}
+
+version = '2.5.7.0'
+
+distributions {
+    standard {
+        contents {
+            into ('bin/lib') {
+                from subprojects.collect { it.tasks.withType(Jar) }
+            }
+        }
+    }
 }
 
 task wrapper(type: Wrapper) {
