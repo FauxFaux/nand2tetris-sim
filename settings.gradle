@@ -1,0 +1,11 @@
+rootProject.name = 'nand2tetris-sim'
+
+include 'BuiltInChipsSource'
+include 'BuiltInVMCodeSource'
+include 'CompilersPackageSource'
+include 'HackGUIPackageSource'
+include 'HackPackageSource'
+include 'InstallDir'
+include 'MainClassesSource'
+include 'SimulatorsGUIPackageSource'
+include 'SimulatorsPackageSource'
