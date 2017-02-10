@@ -140,11 +140,7 @@ public class HardwareSimulatorControllerComponent extends ControllerComponent im
         fileMenu.removeAll();
 
         loadChipMenuItem = new JMenuItem("Load Chip", KeyEvent.VK_L);
-        loadChipMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                loadChipMenuItem_actionPerformed(e);
-            }
-        });
+        loadChipMenuItem.addActionListener(this::loadChipMenuItem_actionPerformed);
         fileMenu.add(loadChipMenuItem);
 
 
@@ -161,19 +157,11 @@ public class HardwareSimulatorControllerComponent extends ControllerComponent im
         runMenu.addSeparator();
 
         evalMenuItem = new JMenuItem("Eval", KeyEvent.VK_E);
-        evalMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                evalMenuItem_actionPerformed(e);
-            }
-        });
+        evalMenuItem.addActionListener(this::evalMenuItem_actionPerformed);
         runMenu.add(evalMenuItem);
 
         tickTockMenuItem = new JMenuItem("Tick Tock", KeyEvent.VK_C);
-        tickTockMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                tickTockMenuItem_actionPerformed(e);
-            }
-        });
+        tickTockMenuItem.addActionListener(this::tickTockMenuItem_actionPerformed);
 
         runMenu.add(tickTockMenuItem);
         runMenu.addSeparator();
@@ -189,11 +177,7 @@ public class HardwareSimulatorControllerComponent extends ControllerComponent im
         loadChipButton.setPreferredSize(new Dimension(39, 39));
         loadChipButton.setToolTipText("Load Chip");
         loadChipButton.setIcon(loadChipIcon);
-        loadChipButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                loadChipButton_actionPerformed(e);
-            }
-        });
+        loadChipButton.addActionListener(this::loadChipButton_actionPerformed);
     }
 
     // Initializing the tick tock button.
@@ -205,11 +189,7 @@ public class HardwareSimulatorControllerComponent extends ControllerComponent im
         tickTockButton.setPreferredSize(new Dimension(39, 39));
         tickTockButton.setToolTipText("Tick Tock");
         tickTockButton.setIcon(tickTockIcon);
-        tickTockButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                tickTockButton_actionPerformed(e);
-            }
-        });
+        tickTockButton.addActionListener(this::tickTockButton_actionPerformed);
     }
 
 
@@ -222,11 +202,7 @@ public class HardwareSimulatorControllerComponent extends ControllerComponent im
         evalButton.setPreferredSize(new Dimension(39, 39));
         evalButton.setToolTipText("Eval");
         evalButton.setIcon(evalIcon);
-        evalButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                evalButton_actionPerformed(e);
-            }
-        });
+        evalButton.addActionListener(this::evalButton_actionPerformed);
     }
 
     // Called when the load chip button is pressed.

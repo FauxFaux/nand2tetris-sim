@@ -290,8 +290,8 @@ public abstract class GateClass {
      */
     protected void registerPins(PinInfo[] pins, byte type) {
         for (int i = 0; i < pins.length; i++) {
-            namesToTypes.put(pins[i].name, new Byte(type));
-            namesToNumbers.put(pins[i].name, new Integer(i));
+            namesToTypes.put(pins[i].name, type);
+            namesToNumbers.put(pins[i].name, i);
         }
     }
 
@@ -299,8 +299,8 @@ public abstract class GateClass {
      * Registers the given pin with its given type and number.
      */
     protected void registerPin(PinInfo pin, byte type, int number) {
-        namesToTypes.put(pin.name, new Byte(type));
-        namesToNumbers.put(pin.name, new Integer(number));
+        namesToTypes.put(pin.name, type);
+        namesToNumbers.put(pin.name, number);
     }
 
     /**
@@ -309,7 +309,7 @@ public abstract class GateClass {
      */
     public byte getPinType(String pinName) {
         Byte result = (Byte) namesToTypes.get(pinName);
-        return (result != null ? result.byteValue() : UNKNOWN_PIN_TYPE);
+        return (result != null ? result : UNKNOWN_PIN_TYPE);
     }
 
     /**
@@ -318,7 +318,7 @@ public abstract class GateClass {
      */
     public int getPinNumber(String pinName) {
         Integer result = (Integer) namesToNumbers.get(pinName);
-        return (result != null ? result.intValue() : -1);
+        return (result != null ? result : -1);
     }
 
     /**

@@ -64,7 +64,7 @@ public class BinaryComponent extends JPanel implements MouseListener, KeyListene
     private ImageIcon cancelIcon = new ImageIcon(Utilities.imagesDir + "smallcancel.gif");
 
     // A vector conatining the listeners to this component.
-    private Vector listeners;
+    private Vector<PinValueListener> listeners;
 
     // A boolean value which is true if the user pressed the ok button and
     // false otherwise.
@@ -80,7 +80,7 @@ public class BinaryComponent extends JPanel implements MouseListener, KeyListene
      * Constructs a new BinaryComponent.
      */
     public BinaryComponent() {
-        listeners = new Vector();
+        listeners = new Vector<>();
 
         jbInit();
     }
@@ -107,7 +107,7 @@ public class BinaryComponent extends JPanel implements MouseListener, KeyListene
     public void notifyListeners() {
         PinValueEvent event = new PinValueEvent(this, valueStr.toString(), isOk);
         for (int i = 0; i < listeners.size(); i++) {
-            ((PinValueListener) listeners.elementAt(i)).pinValueChanged(event);
+            (listeners.elementAt(i)).pinValueChanged(event);
         }
     }
 
@@ -314,19 +314,11 @@ public class BinaryComponent extends JPanel implements MouseListener, KeyListene
         okButton.setHorizontalTextPosition(SwingConstants.CENTER);
         okButton.setIcon(okIcon);
         okButton.setBounds(new Rectangle(97, 29, 23, 20));
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                okButton_actionPerformed(e);
-            }
-        });
+        okButton.addActionListener(this::okButton_actionPerformed);
         cancelButton.setHorizontalTextPosition(SwingConstants.CENTER);
         cancelButton.setIcon(cancelIcon);
         cancelButton.setBounds(new Rectangle(125, 29, 23, 20));
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                cancelButton_actionPerformed(e);
-            }
-        });
+        cancelButton.addActionListener(this::cancelButton_actionPerformed);
         this.setBorder(binaryBorder);
         this.add(bit15, null);
         this.add(bit14, null);

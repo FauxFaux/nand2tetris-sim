@@ -131,17 +131,9 @@ public class ChipLoaderFileChooser extends JFrame {
         okButton.setToolTipText("OK");
         okButton.setIcon(okIcon);
         okButton.setBounds(new Rectangle(90, 95, 63, 44));
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                okButton_actionPerformed(e);
-            }
-        });
+        okButton.addActionListener(this::okButton_actionPerformed);
         cancelButton.setBounds(new Rectangle(265, 95, 63, 44));
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                cancelButton_actionPerformed(e);
-            }
-        });
+        cancelButton.addActionListener(this::cancelButton_actionPerformed);
         cancelButton.setToolTipText("CANCEL");
         cancelButton.setIcon(cancelIcon);
         this.getContentPane().add(workingDir, null);

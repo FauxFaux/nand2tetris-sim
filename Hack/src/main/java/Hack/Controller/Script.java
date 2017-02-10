@@ -40,10 +40,10 @@ public class Script {
     public static final int MAX_OUTPUT_LIST_ARGUMENTS = 20;
 
     // The list of commands
-    private Vector commands;
+    private Vector<Command> commands;
 
     // The list of script line numbers that match the corresponding command
-    private Vector lineNumbers;
+    private Vector<Integer> lineNumbers;
 
     // The file name of the script
     private String scriptName;
@@ -65,8 +65,8 @@ public class Script {
             throw new ScriptException("Script " + scriptName + " not found");
         }
 
-        commands = new Vector();
-        lineNumbers = new Vector();
+        commands = new Vector<>();
+        lineNumbers = new Vector<>();
         buildScript();
     }
 
@@ -152,7 +152,7 @@ public class Script {
             }
 
             commands.addElement(command);
-            lineNumbers.addElement(new Integer(lineNumber));
+            lineNumbers.addElement(lineNumber);
         }
 
         if (repeatOpen || whileOpen)
@@ -160,7 +160,7 @@ public class Script {
 
         command = new Command(Command.END_SCRIPT_COMMAND);
         commands.addElement(command);
-        lineNumbers.addElement(new Integer(lineNumber));
+        lineNumbers.addElement(lineNumber);
     }
 
     // creates and returns a simulator command.
@@ -390,7 +390,7 @@ public class Script {
             input.getSymbol() == '{'))
             scriptError("Missing '{' in repeat command");
 
-        return new Command(Command.REPEAT_COMMAND, new Integer(repeatNum));
+        return new Command(Command.REPEAT_COMMAND, repeatNum);
     }
 
     // creates and returns a controller While command.
@@ -457,7 +457,7 @@ public class Script {
      * Assumes a legal index.
      */
     public Command getCommandAt(int index) {
-        return (Command) commands.elementAt(index);
+        return commands.elementAt(index);
     }
 
     /**
@@ -465,7 +465,7 @@ public class Script {
      * Assumes a legal index.
      */
     public int getLineNumberAt(int index) {
-        return ((Integer) lineNumbers.elementAt(index)).intValue();
+        return lineNumbers.elementAt(index);
     }
 
     /**

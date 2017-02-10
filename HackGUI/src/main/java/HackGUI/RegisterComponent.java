@@ -26,7 +26,6 @@ import Hack.Events.ErrorEventListener;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Vector;
@@ -43,10 +42,10 @@ public class RegisterComponent extends JPanel implements RegisterGUI {
     protected JTextField registerValue = new JTextField();
 
     // A vector containing the listeners to this object.
-    private Vector listeners;
+    private Vector<ComputerPartEventListener> listeners;
 
     // A vector containing the error listeners to this object.
-    private Vector errorEventListeners;
+    private Vector<ErrorEventListener> errorEventListeners;
 
     // The value of the register
     protected short value;
@@ -68,8 +67,8 @@ public class RegisterComponent extends JPanel implements RegisterGUI {
      */
     public RegisterComponent() {
         dataFormat = Format.DEC_FORMAT;
-        listeners = new Vector();
-        errorEventListeners = new Vector();
+        listeners = new Vector<>();
+        errorEventListeners = new Vector<>();
         // initializes the register
         value = 0;
         registerValue.setText(translateValueToString(value));
@@ -99,14 +98,14 @@ public class RegisterComponent extends JPanel implements RegisterGUI {
     public void notifyListeners(int address, short value) {
         ComputerPartEvent event = new ComputerPartEvent(this, 0, value);
         for (int i = 0; i < listeners.size(); i++) {
-            ((ComputerPartEventListener) listeners.elementAt(i)).valueChanged(event);
+            (listeners.elementAt(i)).valueChanged(event);
         }
     }
 
     public void notifyListeners() {
         ComputerPartEvent event = new ComputerPartEvent(this);
         for (int i = 0; i < listeners.size(); i++) {
-            ((ComputerPartEventListener) listeners.elementAt(i)).guiGainedFocus();
+            (listeners.elementAt(i)).guiGainedFocus();
         }
     }
 
@@ -132,7 +131,7 @@ public class RegisterComponent extends JPanel implements RegisterGUI {
     public void notifyErrorListeners(String errorMessage) {
         ErrorEvent event = new ErrorEvent(this, errorMessage);
         for (int i = 0; i < errorEventListeners.size(); i++)
-            ((ErrorEventListener) errorEventListeners.elementAt(i)).errorOccured(event);
+            (errorEventListeners.elementAt(i)).errorOccured(event);
     }
 
     /**
@@ -280,11 +279,7 @@ public class RegisterComponent extends JPanel implements RegisterGUI {
         registerValue.setDisabledTextColor(Color.black);
         registerValue.setHorizontalAlignment(SwingConstants.RIGHT);
         registerValue.setBounds(new Rectangle(36, 3, 124, 18));
-        registerValue.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                registerValue_actionPerformed(e);
-            }
-        });
+        registerValue.addActionListener(this::registerValue_actionPerformed);
         this.add(registerValue, null);
         this.add(registerName, null);
 

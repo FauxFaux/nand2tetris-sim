@@ -107,17 +107,9 @@ public class FileChooserWindow extends JFrame implements EnterPressedListener {
         okButton.setToolTipText("OK");
         okButton.setIcon(okIcon);
         okButton.setBounds(new Rectangle(124, 64, 63, 44));
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                okButton_actionPerformed(e);
-            }
-        });
+        okButton.addActionListener(this::okButton_actionPerformed);
         cancelButton.setBounds(new Rectangle(282, 63, 63, 44));
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                cancelButton_actionPerformed(e);
-            }
-        });
+        cancelButton.addActionListener(this::cancelButton_actionPerformed);
         cancelButton.setToolTipText("CANCEL");
         cancelButton.setIcon(cancelIcon);
         this.getContentPane().add(fileChooser, null);

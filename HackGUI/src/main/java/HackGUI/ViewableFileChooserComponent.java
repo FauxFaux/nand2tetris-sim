@@ -102,11 +102,7 @@ public class ViewableFileChooserComponent extends FileChooserComponent {
         viewCheckBox.setText("View File");
         viewCheckBox.setFont(Utilities.thinLabelsFont);
         viewCheckBox.setBounds(new Rectangle(407, 12, 76, 23));
-        viewCheckBox.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                viewCheckBox_itemStateChanged(e);
-            }
-        });
+        viewCheckBox.addItemListener(this::viewCheckBox_itemStateChanged);
 
         this.add(viewCheckBox, null);
     }

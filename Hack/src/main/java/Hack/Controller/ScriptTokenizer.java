@@ -107,10 +107,10 @@ public class ScriptTokenizer {
     private StreamTokenizer parser;
 
     // Hashtable containing the keywords of the language
-    private Hashtable keywords;
+    private Hashtable<String, Integer> keywords;
 
     // Hashtable containing the symbols of the language
-    private Hashtable symbols;
+    private Hashtable<String, String> symbols;
 
     // The type of the current token
     private int tokenType;
@@ -168,10 +168,10 @@ public class ScriptTokenizer {
                     break;
                 case StreamTokenizer.TT_WORD:
                     currentToken = parser.sval;
-                    Integer object = (Integer) keywords.get(currentToken);
+                    Integer object = keywords.get(currentToken);
                     if (object != null) {
                         tokenType = TYPE_KEYWORD;
-                        keyWordType = object.intValue();
+                        keyWordType = object;
                     } else {
                         tokenType = TYPE_IDENTIFIER;
                         identifier = currentToken;
@@ -267,22 +267,22 @@ public class ScriptTokenizer {
 
     // Initializes the keywords hashtable
     private void initKeywords() {
-        keywords = new Hashtable();
-        keywords.put("output-file", new Integer(KW_OUTPUT_FILE));
-        keywords.put("compare-to", new Integer(KW_COMPARE_TO));
-        keywords.put("output-list", new Integer(KW_OUTPUT_LIST));
-        keywords.put("output", new Integer(KW_OUTPUT));
-        keywords.put("echo", new Integer(KW_ECHO));
-        keywords.put("clear-echo", new Integer(KW_CLEAR_ECHO));
-        keywords.put("breakpoint", new Integer(KW_BREAKPOINT));
-        keywords.put("clear-breakpoints", new Integer(KW_CLEAR_BREAKPOINTS));
-        keywords.put("repeat", new Integer(KW_REPEAT));
-        keywords.put("while", new Integer(KW_WHILE));
+        keywords = new Hashtable<>();
+        keywords.put("output-file", KW_OUTPUT_FILE);
+        keywords.put("compare-to", KW_COMPARE_TO);
+        keywords.put("output-list", KW_OUTPUT_LIST);
+        keywords.put("output", KW_OUTPUT);
+        keywords.put("echo", KW_ECHO);
+        keywords.put("clear-echo", KW_CLEAR_ECHO);
+        keywords.put("breakpoint", KW_BREAKPOINT);
+        keywords.put("clear-breakpoints", KW_CLEAR_BREAKPOINTS);
+        keywords.put("repeat", KW_REPEAT);
+        keywords.put("while", KW_WHILE);
     }
 
     // Initializes the symbols hashtable
     private void initSymbols() {
-        symbols = new Hashtable();
+        symbols = new Hashtable<>();
         symbols.put("{", "{");
         symbols.put("}", "}");
         symbols.put(",", ",");

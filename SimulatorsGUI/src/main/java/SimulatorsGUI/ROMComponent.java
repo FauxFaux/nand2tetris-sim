@@ -30,7 +30,6 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Vector;
 
@@ -40,7 +39,7 @@ import java.util.Vector;
 public class ROMComponent extends PointedMemoryComponent implements ROMGUI {
 
     // A vector containing the listeners to this object.
-    private Vector programEventListeners;
+    private Vector<ProgramEventListener> programEventListeners;
 
     // The ASM format.
     private final static int ASM_FORMAT = ROM.ASM_FORMAT;
@@ -67,7 +66,7 @@ public class ROMComponent extends PointedMemoryComponent implements ROMGUI {
     private String[] format = {"Asm", "Dec", "Hex", "Bin"};
 
     // The combo box for choosing the numeric format.
-    protected JComboBox romFormat = new JComboBox(format);
+    protected JComboBox<String> romFormat = new JComboBox<>(format);
 
     // The name of the current program.
     private String programFileName;
@@ -77,7 +76,7 @@ public class ROMComponent extends PointedMemoryComponent implements ROMGUI {
      */
     public ROMComponent() {
         dataFormat = ASM_FORMAT;
-        programEventListeners = new Vector();
+        programEventListeners = new Vector<>();
         filter = new ROMFileFilter();
         fileChooser = new JFileChooser();
         fileChooser.setFileFilter(filter);
@@ -125,7 +124,7 @@ public class ROMComponent extends PointedMemoryComponent implements ROMGUI {
     public void notifyProgramListeners(byte eventType, String programFileName) {
         ProgramEvent event = new ProgramEvent(this, eventType, programFileName);
         for (int i = 0; i < programEventListeners.size(); i++)
-            ((ProgramEventListener) programEventListeners.elementAt(i)).programChanged(event);
+            (programEventListeners.elementAt(i)).programChanged(event);
     }
 
     /**
@@ -217,11 +216,7 @@ public class ROMComponent extends PointedMemoryComponent implements ROMGUI {
         loadButton.setIcon(loadIcon);
         loadButton.setBounds(new Rectangle(97, 2, 31, 25));
         loadButton.setToolTipText("Load Program");
-        loadButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                loadButton_actionPerformed(e);
-            }
-        });
+        loadButton.addActionListener(this::loadButton_actionPerformed);
         messageTxt.setBackground(SystemColor.info);
         messageTxt.setEnabled(false);
         messageTxt.setFont(Utilities.labelsFont);
@@ -235,11 +230,7 @@ public class ROMComponent extends PointedMemoryComponent implements ROMGUI {
         romFormat.setBounds(new Rectangle(39, 3, 56, 23));
         romFormat.setFont(Utilities.thinLabelsFont);
         romFormat.setToolTipText("Display Format");
-        romFormat.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                romFormat_actionPerformed(e);
-            }
-        });
+        romFormat.addActionListener(this::romFormat_actionPerformed);
         this.add(messageTxt, null);
         this.add(loadButton);
         this.add(romFormat, null);

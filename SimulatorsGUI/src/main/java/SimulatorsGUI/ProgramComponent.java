@@ -317,11 +317,7 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
         browseButton.setToolTipText("Load Program");
         browseButton.setIcon(browseIcon);
         browseButton.setBounds(new Rectangle(119, 2, 31, 24));
-        browseButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                browseButton_actionPerformed(e);
-            }
-        });
+        browseButton.addActionListener(this::browseButton_actionPerformed);
         messageTxt.setBackground(SystemColor.info);
         messageTxt.setEnabled(false);
         messageTxt.setFont(Utilities.labelsFont);
@@ -334,22 +330,14 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
         searchButton.setToolTipText("Search");
         searchButton.setIcon(searchIcon);
         searchButton.setBounds(new Rectangle(188, 2, 31, 24));
-        searchButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                searchButton_actionPerformed(e);
-            }
-        });
+        searchButton.addActionListener(this::searchButton_actionPerformed);
         this.setForeground(Color.lightGray);
         this.setLayout(null);
         nameLbl.setText("Program");
         nameLbl.setBounds(new Rectangle(5, 5, 73, 20));
         nameLbl.setFont(Utilities.labelsFont);
 
-        clearButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                clearButton_actionPerformed(e);
-            }
-        });
+        clearButton.addActionListener(this::clearButton_actionPerformed);
         clearButton.setBounds(new Rectangle(154, 2, 31, 24));
         clearButton.setIcon(clearIcon);
         clearButton.setToolTipText("Clear");
@@ -400,7 +388,7 @@ public class ProgramComponent extends JPanel implements VMProgramGUI {
                 case 0:
                     short index = instructions[row].getIndexInFunction();
                     if (index >= 0)
-                        return new Short(index);
+                        return index;
                     else
                         return "";
                 case 1:

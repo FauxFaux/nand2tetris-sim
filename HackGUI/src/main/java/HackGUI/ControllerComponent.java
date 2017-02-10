@@ -549,29 +549,17 @@ public class ControllerComponent extends JFrame implements ControllerGUI,
         menuBar.add(helpMenu);
 
         programMenuItem = new JMenuItem("Load Program", KeyEvent.VK_O);
-        programMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                programMenuItem_actionPerformed(e);
-            }
-        });
+        programMenuItem.addActionListener(this::programMenuItem_actionPerformed);
         fileMenu.add(programMenuItem);
 
         scriptMenuItem = new JMenuItem("Load Script", KeyEvent.VK_P);
-        scriptMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                scriptMenuItem_actionPerformed(e);
-            }
-        });
+        scriptMenuItem.addActionListener(this::scriptMenuItem_actionPerformed);
         fileMenu.add(scriptMenuItem);
         fileMenu.addSeparator();
 
         exitMenuItem = new JMenuItem("Exit", KeyEvent.VK_X);
         exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.ALT_MASK));
-        exitMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                exitMenuItem_actionPerformed(e);
-            }
-        });
+        exitMenuItem.addActionListener(this::exitMenuItem_actionPerformed);
         fileMenu.add(exitMenuItem);
 
         viewMenu.addSeparator();
@@ -585,31 +573,19 @@ public class ControllerComponent extends JFrame implements ControllerGUI,
         partAnimMenuItem = new JRadioButtonMenuItem("Program flow");
         partAnimMenuItem.setMnemonic(KeyEvent.VK_P);
         partAnimMenuItem.setSelected(true);
-        partAnimMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                partAnimMenuItem_actionPerformed(e);
-            }
-        });
+        partAnimMenuItem.addActionListener(this::partAnimMenuItem_actionPerformed);
         animationRadioButtons.add(partAnimMenuItem);
         animationSubMenu.add(partAnimMenuItem);
 
         fullAnimMenuItem = new JRadioButtonMenuItem("Program & data flow");
         fullAnimMenuItem.setMnemonic(KeyEvent.VK_D);
-        fullAnimMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                fullAnimMenuItem_actionPerformed(e);
-            }
-        });
+        fullAnimMenuItem.addActionListener(this::fullAnimMenuItem_actionPerformed);
         animationRadioButtons.add(fullAnimMenuItem);
         animationSubMenu.add(fullAnimMenuItem);
 
         noAnimMenuItem = new JRadioButtonMenuItem("No Animation");
         noAnimMenuItem.setMnemonic(KeyEvent.VK_N);
-        noAnimMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                noAnimMenuItem_actionPerformed(e);
-            }
-        });
+        noAnimMenuItem.addActionListener(this::noAnimMenuItem_actionPerformed);
         animationRadioButtons.add(noAnimMenuItem);
         animationSubMenu.add(noAnimMenuItem);
 
@@ -623,41 +599,25 @@ public class ControllerComponent extends JFrame implements ControllerGUI,
         scriptDisplayMenuItem = new JRadioButtonMenuItem("Script");
         scriptDisplayMenuItem.setMnemonic(KeyEvent.VK_S);
         scriptDisplayMenuItem.setSelected(true);
-        scriptDisplayMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                scriptDisplayMenuItem_actionPerformed(e);
-            }
-        });
+        scriptDisplayMenuItem.addActionListener(this::scriptDisplayMenuItem_actionPerformed);
         additionalDisplayRadioButtons.add(scriptDisplayMenuItem);
         additionalDisplaySubMenu.add(scriptDisplayMenuItem);
 
         outputMenuItem = new JRadioButtonMenuItem("Output");
         outputMenuItem.setMnemonic(KeyEvent.VK_O);
-        outputMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                outputMenuItem_actionPerformed(e);
-            }
-        });
+        outputMenuItem.addActionListener(this::outputMenuItem_actionPerformed);
         additionalDisplayRadioButtons.add(outputMenuItem);
         additionalDisplaySubMenu.add(outputMenuItem);
 
         compareMenuItem = new JRadioButtonMenuItem("Compare");
         compareMenuItem.setMnemonic(KeyEvent.VK_C);
-        compareMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                compareMenuItem_actionPerformed(e);
-            }
-        });
+        compareMenuItem.addActionListener(this::compareMenuItem_actionPerformed);
         additionalDisplayRadioButtons.add(compareMenuItem);
         additionalDisplaySubMenu.add(compareMenuItem);
 
         noAdditionalDisplayMenuItem = new JRadioButtonMenuItem("Screen");
         noAdditionalDisplayMenuItem.setMnemonic(KeyEvent.VK_N);
-        noAdditionalDisplayMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                noAdditionalDisplayMenuItem_actionPerformed(e);
-            }
-        });
+        noAdditionalDisplayMenuItem.addActionListener(this::noAdditionalDisplayMenuItem_actionPerformed);
         additionalDisplayRadioButtons.add(noAdditionalDisplayMenuItem);
         additionalDisplaySubMenu.add(noAdditionalDisplayMenuItem);
 
@@ -671,31 +631,19 @@ public class ControllerComponent extends JFrame implements ControllerGUI,
         decMenuItem = new JRadioButtonMenuItem("Decimal");
         decMenuItem.setMnemonic(KeyEvent.VK_D);
         decMenuItem.setSelected(true);
-        decMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                decMenuItem_actionPerformed(e);
-            }
-        });
+        decMenuItem.addActionListener(this::decMenuItem_actionPerformed);
         formatRadioButtons.add(decMenuItem);
         numericFormatSubMenu.add(decMenuItem);
 
         hexaMenuItem = new JRadioButtonMenuItem("Hexadecimal");
         hexaMenuItem.setMnemonic(KeyEvent.VK_H);
-        hexaMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                hexaMenuItem_actionPerformed(e);
-            }
-        });
+        hexaMenuItem.addActionListener(this::hexaMenuItem_actionPerformed);
         formatRadioButtons.add(hexaMenuItem);
         numericFormatSubMenu.add(hexaMenuItem);
 
         binMenuItem = new JRadioButtonMenuItem("Binary");
         binMenuItem.setMnemonic(KeyEvent.VK_B);
-        binMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                binMenuItem_actionPerformed(e);
-            }
-        });
+        binMenuItem.addActionListener(this::binMenuItem_actionPerformed);
         formatRadioButtons.add(binMenuItem);
         numericFormatSubMenu.add(binMenuItem);
 
@@ -703,65 +651,37 @@ public class ControllerComponent extends JFrame implements ControllerGUI,
 
         singleStepMenuItem = new JMenuItem("Single Step", KeyEvent.VK_S);
         singleStepMenuItem.setAccelerator(KeyStroke.getKeyStroke("F11"));
-        singleStepMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                singleStepMenuItem_actionPerformed(e);
-            }
-        });
+        singleStepMenuItem.addActionListener(this::singleStepMenuItem_actionPerformed);
         runMenu.add(singleStepMenuItem);
 
         ffwdMenuItem = new JMenuItem("Run", KeyEvent.VK_F);
         ffwdMenuItem.setAccelerator(KeyStroke.getKeyStroke("F5"));
-        ffwdMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                ffwdMenuItem_actionPerformed(e);
-            }
-        });
+        ffwdMenuItem.addActionListener(this::ffwdMenuItem_actionPerformed);
         runMenu.add(ffwdMenuItem);
 
         stopMenuItem = new JMenuItem("Stop", KeyEvent.VK_T);
         stopMenuItem.setAccelerator(KeyStroke.getKeyStroke("shift F5"));
-        stopMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                stopMenuItem_actionPerformed(e);
-            }
-        });
+        stopMenuItem.addActionListener(this::stopMenuItem_actionPerformed);
         runMenu.add(stopMenuItem);
 
 
         rewindMenuItem = new JMenuItem("Reset", KeyEvent.VK_R);
-        rewindMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                rewindMenuItem_actionPerformed(e);
-            }
-        });
+        rewindMenuItem.addActionListener(this::rewindMenuItem_actionPerformed);
         runMenu.add(rewindMenuItem);
 
         runMenu.addSeparator();
 
         breakpointsMenuItem = new JMenuItem("Breakpoints", KeyEvent.VK_B);
-        breakpointsMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                breakpointsMenuItem_actionPerformed(e);
-            }
-        });
+        breakpointsMenuItem.addActionListener(this::breakpointsMenuItem_actionPerformed);
         runMenu.add(breakpointsMenuItem);
 
         usageMenuItem = new JMenuItem("Usage", KeyEvent.VK_U);
         usageMenuItem.setAccelerator(KeyStroke.getKeyStroke("F1"));
-        usageMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                usageMenuItem_actionPerformed(e);
-            }
-        });
+        usageMenuItem.addActionListener(this::usageMenuItem_actionPerformed);
         helpMenu.add(usageMenuItem);
 
         aboutMenuItem = new JMenuItem("About ...", KeyEvent.VK_A);
-        aboutMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                aboutMenuItem_actionPerformed(e);
-            }
-        });
+        aboutMenuItem.addActionListener(this::aboutMenuItem_actionPerformed);
         helpMenu.add(aboutMenuItem);
 
     }
@@ -786,14 +706,10 @@ public class ControllerComponent extends JFrame implements ControllerGUI,
         slowLabel.setFont(Utilities.thinLabelsFont);
         JLabel fastLabel = new JLabel("Fast");
         fastLabel.setFont(Utilities.thinLabelsFont);
-        labelTable.put(new Integer(1), slowLabel);
-        labelTable.put(new Integer(5), fastLabel);
+        labelTable.put(1, slowLabel);
+        labelTable.put(5, fastLabel);
 
-        speedSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                SpeedSlider_stateChanged(e);
-            }
-        });
+        speedSlider.addChangeListener(this::SpeedSlider_stateChanged);
         speedSlider.setLabelTable(labelTable);
         speedSlider.setMajorTickSpacing(1);
         speedSlider.setPaintTicks(true);
@@ -804,11 +720,7 @@ public class ControllerComponent extends JFrame implements ControllerGUI,
         speedSlider.setToolTipText("Speed");
         speedSlider.setMaximumSize(new Dimension(95, 50));
 
-        loadProgramButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                loadProgramButton_actionPerformed(e);
-            }
-        });
+        loadProgramButton.addActionListener(this::loadProgramButton_actionPerformed);
         loadProgramButton.setMaximumSize(new Dimension(39, 39));
         loadProgramButton.setMinimumSize(new Dimension(39, 39));
         loadProgramButton.setPreferredSize(new Dimension(39, 39));
@@ -821,17 +733,9 @@ public class ControllerComponent extends JFrame implements ControllerGUI,
         ffwdButton.setPreferredSize(new Dimension(39, 39));
         ffwdButton.setToolTipText("Run");
         ffwdButton.setIcon(ffwdIcon);
-        ffwdButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                ffwdButton_actionPerformed(e);
-            }
-        });
+        ffwdButton.addActionListener(this::ffwdButton_actionPerformed);
 
-        stopButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                stopButton_actionPerformed(e);
-            }
-        });
+        stopButton.addActionListener(this::stopButton_actionPerformed);
         stopButton.setMaximumSize(new Dimension(39, 39));
         stopButton.setMinimumSize(new Dimension(39, 39));
         stopButton.setPreferredSize(new Dimension(39, 39));
@@ -843,28 +747,16 @@ public class ControllerComponent extends JFrame implements ControllerGUI,
         rewindButton.setPreferredSize(new Dimension(39, 39));
         rewindButton.setToolTipText("Reset");
         rewindButton.setIcon(rewindIcon);
-        rewindButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                rewindButton_actionPerformed(e);
-            }
-        });
+        rewindButton.addActionListener(this::rewindButton_actionPerformed);
 
         scriptButton.setMaximumSize(new Dimension(39, 39));
         scriptButton.setMinimumSize(new Dimension(39, 39));
         scriptButton.setPreferredSize(new Dimension(39, 39));
         scriptButton.setToolTipText("Load Script");
         scriptButton.setIcon(scriptIcon);
-        scriptButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                scriptButton_actionPerformed(e);
-            }
-        });
+        scriptButton.addActionListener(this::scriptButton_actionPerformed);
 
-        breakButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                breakButton_actionPerformed(e);
-            }
-        });
+        breakButton.addActionListener(this::breakButton_actionPerformed);
         breakButton.setMaximumSize(new Dimension(39, 39));
         breakButton.setMinimumSize(new Dimension(39, 39));
         breakButton.setPreferredSize(new Dimension(39, 39));
@@ -873,11 +765,7 @@ public class ControllerComponent extends JFrame implements ControllerGUI,
 
         breakpointWindow.addBreakpointListener(this);
 
-        singleStepButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                singleStepButton_actionPerformed(e);
-            }
-        });
+        singleStepButton.addActionListener(this::singleStepButton_actionPerformed);
         singleStepButton.setMaximumSize(new Dimension(39, 39));
         singleStepButton.setMinimumSize(new Dimension(39, 39));
         singleStepButton.setPreferredSize(new Dimension(39, 39));
@@ -885,23 +773,11 @@ public class ControllerComponent extends JFrame implements ControllerGUI,
         singleStepButton.setToolTipText("Single Step");
         singleStepButton.setIcon(singleStepIcon);
 
-        animationCombo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                animationCombo_actionPerformed(e);
-            }
-        });
+        animationCombo.addActionListener(this::animationCombo_actionPerformed);
 
-        formatCombo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                formatCombo_actionPerformed(e);
-            }
-        });
+        formatCombo.addActionListener(this::formatCombo_actionPerformed);
 
-        additionalDisplayCombo.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                additionalDisplayCombo_actionPerformed(e);
-            }
-        });
+        additionalDisplayCombo.addActionListener(this::additionalDisplayCombo_actionPerformed);
 
         messageLbl.setFont(Utilities.statusLineFont);
         messageLbl.setBorder(BorderFactory.createLoweredBevelBorder());
@@ -961,7 +837,7 @@ public class ControllerComponent extends JFrame implements ControllerGUI,
                 break;
         }
 
-        notifyControllerListeners(ControllerEvent.ADDITIONAL_DISPLAY_CHANGE, new Integer(selectedIndex));
+        notifyControllerListeners(ControllerEvent.ADDITIONAL_DISPLAY_CHANGE, selectedIndex);
     }
 
     /**
@@ -1020,7 +896,7 @@ public class ControllerComponent extends JFrame implements ControllerGUI,
         JSlider source = (JSlider) e.getSource();
         if (!source.getValueIsAdjusting()) {
             int speed = (int) source.getValue();
-            notifyControllerListeners(ControllerEvent.SPEED_CHANGE, new Integer(speed));
+            notifyControllerListeners(ControllerEvent.SPEED_CHANGE, speed);
         }
     }
 
@@ -1046,7 +922,7 @@ public class ControllerComponent extends JFrame implements ControllerGUI,
                 break;
         }
 
-        notifyControllerListeners(ControllerEvent.ANIMATION_MODE_CHANGE, new Integer(selectedIndex));
+        notifyControllerListeners(ControllerEvent.ANIMATION_MODE_CHANGE, selectedIndex);
     }
 
     /**
@@ -1071,7 +947,7 @@ public class ControllerComponent extends JFrame implements ControllerGUI,
                 break;
         }
 
-        notifyControllerListeners(ControllerEvent.NUMERIC_FORMAT_CHANGE, new Integer(selectedIndex));
+        notifyControllerListeners(ControllerEvent.NUMERIC_FORMAT_CHANGE, selectedIndex);
     }
 
     /**

@@ -32,7 +32,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.Vector;
@@ -51,16 +50,16 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
     public int dataFormat;
 
     // A vector containing the listeners to this object.
-    private Vector listeners;
+    private Vector<ComputerPartEventListener> listeners;
 
     // A vector containing the clear listeners to this object.
-    private Vector clearListeners;
+    private Vector<ClearEventListener> clearListeners;
 
     // A vector containing the error listeners to this object.
-    private Vector errorEventListeners;
+    private Vector<ErrorEventListener> errorEventListeners;
 
     // A vector containing the repaint listeners to this object.
-    private Vector changeListeners;
+    private Vector<MemoryChangeListener> changeListeners;
 
     // The table representing the memory.
     protected JTable memoryTable;
@@ -90,7 +89,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
     protected JScrollPane scrollPane;
 
     // A vector containing the highlighted rows.
-    protected Vector highlightIndex;
+    protected Vector<Integer> highlightIndex;
 
     // The index of the flashed row.
     protected int flashIndex = -1;
@@ -129,11 +128,11 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
         tf.setBorder(null);
         DefaultCellEditor editor = new DefaultCellEditor(tf);
 
-        listeners = new Vector();
-        clearListeners = new Vector();
-        errorEventListeners = new Vector();
-        changeListeners = new Vector();
-        highlightIndex = new Vector();
+        listeners = new Vector<>();
+        clearListeners = new Vector<>();
+        errorEventListeners = new Vector<>();
+        changeListeners = new Vector<>();
+        highlightIndex = new Vector<>();
         memoryTable = new JTable(getTableModel());
         memoryTable.setDefaultRenderer(memoryTable.getColumnClass(0), getCellRenderer());
         memoryTable.getColumnModel().getColumn(getValueColumnIndex()).setCellEditor(editor);
@@ -215,14 +214,14 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
     public void notifyListeners(int address, short value) {
         ComputerPartEvent event = new ComputerPartEvent(this, address, value);
         for (int i = 0; i < listeners.size(); i++) {
-            ((ComputerPartEventListener) listeners.elementAt(i)).valueChanged(event);
+            (listeners.elementAt(i)).valueChanged(event);
         }
     }
 
     public void notifyListeners() {
         ComputerPartEvent event = new ComputerPartEvent(this);
         for (int i = 0; i < listeners.size(); i++) {
-            ((ComputerPartEventListener) listeners.elementAt(i)).guiGainedFocus();
+            (listeners.elementAt(i)).guiGainedFocus();
         }
     }
 
@@ -237,7 +236,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
     public void notifyClearListeners() {
         ClearEvent clearEvent = new ClearEvent(this);
         for (int i = 0; i < clearListeners.size(); i++)
-            ((ClearEventListener) clearListeners.elementAt(i)).clearRequested(clearEvent);
+            (clearListeners.elementAt(i)).clearRequested(clearEvent);
     }
 
     /**
@@ -262,7 +261,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
     public void notifyErrorListeners(String errorMessage) {
         ErrorEvent event = new ErrorEvent(this, errorMessage);
         for (int i = 0; i < errorEventListeners.size(); i++)
-            ((ErrorEventListener) errorEventListeners.elementAt(i)).errorOccured(event);
+            (errorEventListeners.elementAt(i)).errorOccured(event);
     }
 
     /**
@@ -284,7 +283,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
      */
     public void notifyRepaintListeners() {
         for (int i = 0; i < changeListeners.size(); i++) {
-            ((MemoryChangeListener) changeListeners.elementAt(i)).repaintChange();
+            (changeListeners.elementAt(i)).repaintChange();
         }
     }
 
@@ -293,7 +292,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
      */
     public void notifyRevalidateListeners() {
         for (int i = 0; i < changeListeners.size(); i++) {
-            ((MemoryChangeListener) changeListeners.elementAt(i)).revalidateChange();
+            (changeListeners.elementAt(i)).revalidateChange();
         }
     }
 
@@ -361,7 +360,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
      * Highlights the value at the given index.
      */
     public void highlight(int index) {
-        highlightIndex.addElement(new Integer(index));
+        highlightIndex.addElement(index);
         repaint();
     }
 
@@ -508,11 +507,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
         searchButton.setToolTipText("Search");
         searchButton.setIcon(searchIcon);
         searchButton.setBounds(new Rectangle(159, 2, 31, 25));
-        searchButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                searchButton_actionPerformed(e);
-            }
-        });
+        searchButton.addActionListener(this::searchButton_actionPerformed);
         memoryTable.setFont(Utilities.valueFont);
         nameLbl.setBounds(new Rectangle(3, 5, 70, 23));
         nameLbl.setFont(Utilities.labelsFont);
@@ -520,11 +515,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
         setBorder(BorderFactory.createEtchedBorder());
         scrollPane.setLocation(0, 27);
 
-        clearButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                clearButton_actionPerformed(e);
-            }
-        });
+        clearButton.addActionListener(this::clearButton_actionPerformed);
         clearButton.setIcon(clearIcon);
         clearButton.setBounds(new Rectangle(128, 2, 31, 25));
         clearButton.setToolTipText("Clear");
@@ -722,7 +713,7 @@ public class MemoryComponent extends JPanel implements MemoryGUI {
                 setHorizontalAlignment(SwingConstants.RIGHT);
 
                 for (int i = 0; i < highlightIndex.size(); i++) {
-                    if (row == ((Integer) highlightIndex.elementAt(i)).intValue()) {
+                    if (row == highlightIndex.elementAt(i)) {
                         setForeground(Color.blue);
                         break;
                     }

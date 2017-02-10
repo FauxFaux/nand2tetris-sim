@@ -33,7 +33,7 @@ import java.util.Vector;
 public abstract class InteractiveComputerPart extends ComputerPart
     implements ErrorEventListener {
 
-    private Vector errorListeners;
+    private Vector<ComputerPartErrorEventListener> errorListeners;
 
     /**
      * Constructs a new interactive computer part.
@@ -41,7 +41,7 @@ public abstract class InteractiveComputerPart extends ComputerPart
      */
     public InteractiveComputerPart(boolean hasGUI) {
         super(hasGUI);
-        errorListeners = new Vector();
+        errorListeners = new Vector<ComputerPartErrorEventListener>();
     }
 
     /**
@@ -68,7 +68,7 @@ public abstract class InteractiveComputerPart extends ComputerPart
         ComputerPartErrorEvent event = new ComputerPartErrorEvent(this, errorMessage);
 
         for (int i = 0; i < errorListeners.size(); i++)
-            ((ComputerPartErrorEventListener) errorListeners.elementAt(i)).computerPartErrorOccured(event);
+            (errorListeners.elementAt(i)).computerPartErrorOccured(event);
     }
 
     /**
@@ -78,7 +78,7 @@ public abstract class InteractiveComputerPart extends ComputerPart
         ComputerPartErrorEvent event = new ComputerPartErrorEvent(this, null);
 
         for (int i = 0; i < errorListeners.size(); i++)
-            ((ComputerPartErrorEventListener) errorListeners.elementAt(i)).computerPartErrorOccured(event);
+            (errorListeners.elementAt(i)).computerPartErrorOccured(event);
     }
 
     /**

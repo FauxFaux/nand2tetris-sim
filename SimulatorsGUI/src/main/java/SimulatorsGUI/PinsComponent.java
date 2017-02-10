@@ -58,10 +58,10 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
     protected int dataFormat;
 
     // A vector containing the listeners to this object.
-    private Vector listeners;
+    private Vector<ComputerPartEventListener> listeners;
 
     // A vector containing the error listeners to this object.
-    private Vector errorEventListeners;
+    private Vector<ErrorEventListener> errorEventListeners;
 
     // The scroll pane on which the table is placed.
     protected JScrollPane scrollPane;
@@ -70,7 +70,7 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
     protected int flashIndex = -1;
 
     // A vector containing the index of the rows that should be highlighted.
-    protected Vector highlightIndex;
+    protected Vector<Integer> highlightIndex;
 
     // The location of this component relative to its top level ancestor.
     protected Point topLevelLocation;
@@ -111,9 +111,9 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
 
         pins = new PinInfo[0];
         valueStr = new String[0];
-        listeners = new Vector();
-        errorEventListeners = new Vector();
-        highlightIndex = new Vector();
+        listeners = new Vector<ComputerPartEventListener>();
+        errorEventListeners = new Vector<>();
+        highlightIndex = new Vector<>();
         binary = new BinaryComponent();
         pinsTable = new JTable(getTableModel());
         pinsTable.setDefaultRenderer(pinsTable.getColumnClass(0), renderer);
@@ -193,7 +193,7 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
     public void notifyErrorListeners(String errorMessage) {
         ErrorEvent event = new ErrorEvent(this, errorMessage);
         for (int i = 0; i < errorEventListeners.size(); i++)
-            ((ErrorEventListener) errorEventListeners.elementAt(i)).errorOccured(event);
+            (errorEventListeners.elementAt(i)).errorOccured(event);
     }
 
     public void addListener(ComputerPartEventListener listener) {
@@ -207,12 +207,12 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
     public void notifyListeners(int index, short value) {
         ComputerPartEvent event = new ComputerPartEvent(this, index, value);
         for (int i = 0; i < listeners.size(); i++)
-            ((ComputerPartEventListener) listeners.elementAt(i)).valueChanged(event);
+            (listeners.elementAt(i)).valueChanged(event);
     }
 
     public void notifyListeners() {
         for (int i = 0; i < listeners.size(); i++)
-            ((ComputerPartEventListener) listeners.elementAt(i)).guiGainedFocus();
+            (listeners.elementAt(i)).guiGainedFocus();
     }
 
     /**
@@ -251,7 +251,7 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
      * Highlights the value at the given index.
      */
     public void highlight(int index) {
-        highlightIndex.addElement(new Integer(index));
+        highlightIndex.addElement(index);
         repaint();
     }
 
@@ -582,7 +582,7 @@ public class PinsComponent extends JPanel implements PinsGUI, MouseListener, Pin
             } else {
                 setHorizontalAlignment(SwingConstants.RIGHT);
                 for (int i = 0; i < highlightIndex.size(); i++) {
-                    if (row == ((Integer) highlightIndex.elementAt(i)).intValue()) {
+                    if (row == highlightIndex.elementAt(i)) {
                         setForeground(Color.blue);
                         break;
                     } else

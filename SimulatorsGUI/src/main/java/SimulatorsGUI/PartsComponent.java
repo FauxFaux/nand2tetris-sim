@@ -199,7 +199,7 @@ public class PartsComponent extends JPanel implements PartsGUI {
                 else if (parts[row] instanceof BuiltInGate)
                     result = BUILTIN_GATE;
             } else if (col == 2)
-                result = new Boolean(parts[row].getGateClass().isClocked());
+                result = parts[row].getGateClass().isClocked();
             return result;
         }
 

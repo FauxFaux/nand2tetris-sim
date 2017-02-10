@@ -92,7 +92,7 @@ public abstract class HackTranslator implements HackTranslatorEventListener, Act
     // in the destination. The key is the pc of the source (Integer) and
     // the value is an int array of length 2, containing start and end pc of the destination
     // file.
-    protected Hashtable compilationMap;
+    protected Hashtable<Integer, int[]> compilationMap;
 
     // true only in the process of full compilation
     protected boolean inFullCompilation;
@@ -241,7 +241,7 @@ public abstract class HackTranslator implements HackTranslatorEventListener, Act
      * Restarts the compilation from the beginning of the source.
      */
     protected void restartCompilation() {
-        compilationMap = new Hashtable();
+        compilationMap = new Hashtable<>();
         sourcePC = 0;
         destPC = 0;
 
@@ -264,8 +264,8 @@ public abstract class HackTranslator implements HackTranslatorEventListener, Act
     // Loads the given source file and displays it in the Source GUI
     private void loadSource(String fileName) throws HackTranslatorException {
         String line;
-        Vector formattedLines = new Vector();
-        Vector lines = null;
+        Vector<String> formattedLines = new Vector<>();
+        Vector<String> lines = null;
         String errorMessage = null;
 
         try {
@@ -285,7 +285,7 @@ public abstract class HackTranslator implements HackTranslatorEventListener, Act
             checkSourceFile(fileName);
             sourceFileName = fileName;
 
-            lines = new Vector();
+            lines = new Vector<>();
             BufferedReader sourceReader = new BufferedReader(new FileReader(sourceFileName));
 
             while ((line = sourceReader.readLine()) != null) {
@@ -386,7 +386,7 @@ public abstract class HackTranslator implements HackTranslatorEventListener, Act
             while (sourcePC < source.length) {
                 int[] compiledRange = compileLineAndCount(source[sourcePC]);
                 if (compiledRange != null) {
-                    compilationMap.put(new Integer(sourcePC), compiledRange);
+                    compilationMap.put(sourcePC, compiledRange);
                 }
 
                 sourcePC++;
@@ -490,7 +490,7 @@ public abstract class HackTranslator implements HackTranslatorEventListener, Act
             int[] compiledRange = compileLineAndCount(source[sourcePC]);
 
             if (compiledRange != null) {
-                compilationMap.put(new Integer(sourcePC), compiledRange);
+                compilationMap.put(sourcePC, compiledRange);
             }
 
             sourcePC++;
@@ -601,8 +601,8 @@ public abstract class HackTranslator implements HackTranslatorEventListener, Act
      * Returns the range in the compilation map that corresponds to the given rowIndex.
      */
     protected int[] rowIndexToRange(int rowIndex) {
-        Integer key = new Integer(rowIndex);
-        return (int[]) compilationMap.get(key);
+        Integer key = rowIndex;
+        return compilationMap.get(key);
     }
 
     // Returns the working dir that is saved in the data file, or "" if data file doesn't exist.

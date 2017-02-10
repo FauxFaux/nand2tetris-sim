@@ -482,7 +482,7 @@ public class HackController
                     doClearBreakpointsCommand(command);
                     break;
                 case Command.REPEAT_COMMAND:
-                    repeatCounter = ((Integer) command.getArg()).intValue();
+                    repeatCounter = (Integer) command.getArg();
                     loopCommandIndex = currentCommandIndex + 1;
                     redo = true;
                     break;
@@ -976,7 +976,7 @@ public class HackController
                     rewind();
                     break;
                 case ControllerEvent.SPEED_CHANGE:
-                    setSpeed(((Integer) event.getData()).intValue());
+                    setSpeed((Integer) event.getData());
                     break;
                 case ControllerEvent.BREAKPOINTS_CHANGE:
                     setBreakpoints((Vector) event.getData());
@@ -989,17 +989,17 @@ public class HackController
                     rewind();
                     break;
                 case ControllerEvent.ANIMATION_MODE_CHANGE:
-                    setAnimationModeTask.setMode(((Integer) event.getData()).intValue());
+                    setAnimationModeTask.setMode((Integer) event.getData());
                     t = new Thread(setAnimationModeTask);
                     t.start();
                     break;
                 case ControllerEvent.NUMERIC_FORMAT_CHANGE:
-                    setNumericFormatTask.setFormat(((Integer) event.getData()).intValue());
+                    setNumericFormatTask.setFormat((Integer) event.getData());
                     t = new Thread(setNumericFormatTask);
                     t.start();
                     break;
                 case ControllerEvent.ADDITIONAL_DISPLAY_CHANGE:
-                    setAdditionalDisplay(((Integer) event.getData()).intValue());
+                    setAdditionalDisplay((Integer) event.getData());
                     break;
                 case ControllerEvent.DISABLE_ANIMATION_MODE_CHANGE:
                     gui.disableAnimationModes();

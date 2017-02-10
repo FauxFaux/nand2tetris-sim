@@ -92,7 +92,7 @@ public class CompositeGateClass extends GateClass {
         int counter = 0;
         for (int i = 0; i < topologicalOrder.length; i++) {
             if (topologicalOrder[i] instanceof Integer)
-                partsOrder[counter++] = ((Integer) topologicalOrder[i]).intValue();
+                partsOrder[counter++] = (Integer) topologicalOrder[i];
         }
 
         // for each input pin, check if there is a path in the graph to an output pin
@@ -414,7 +414,7 @@ public class CompositeGateClass extends GateClass {
 
         while (connectionIter.hasNext()) {
             Connection connection = (Connection) connectionIter.next();
-            Integer part = new Integer(connection.getPartNumber());
+            Integer part = connection.getPartNumber();
             int gatePinNumber = connection.getGatePinNumber();
 
             switch (connection.getType()) {
@@ -457,7 +457,7 @@ public class CompositeGateClass extends GateClass {
 
         // connect the "master part" node to all the parts.
         for (int i = 0; i < partsList.size(); i++)
-            graph.addEdge(partsList, new Integer(i));
+            graph.addEdge(partsList, i);
 
         // connect all output pins to the "master output" node
         for (int i = 0; i < outputPinsInfo.length; i++)
@@ -474,7 +474,7 @@ public class CompositeGateClass extends GateClass {
     // a connection to a clocked input is not considered as a connection
     // in the graph.
     private boolean isLegalToPartEdge(Connection connection, Integer part) {
-        GateClass partGateClass = (GateClass) partsList.elementAt(part.intValue());
+        GateClass partGateClass = (GateClass) partsList.elementAt(part);
         int partPinNumber = partGateClass.getPinNumber(connection.getPartPinName());
         return !partGateClass.isInputClocked[partPinNumber];
     }
@@ -483,7 +483,7 @@ public class CompositeGateClass extends GateClass {
     // a connection from a clocked output is not considered as a connection
     // in the graph.
     private boolean isLegalFromPartEdge(Connection connection, Integer part) {
-        GateClass partGateClass = (GateClass) partsList.elementAt(part.intValue());
+        GateClass partGateClass = (GateClass) partsList.elementAt(part);
         int partPinNumber = partGateClass.getPinNumber(connection.getPartPinName());
         return !partGateClass.isOutputClocked[partPinNumber];
     }

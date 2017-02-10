@@ -63,13 +63,13 @@ public class MemorySegmentComponent extends JPanel
     protected JLabel nameLbl = new JLabel();
 
     // A vector containing the values that should be highlighted.
-    protected Vector highlightIndex;
+    protected Vector<Integer> highlightIndex;
 
     // The listeners of this component.
-    private Vector listeners;
+    private Vector<ComputerPartEventListener> listeners;
 
     // The error listeners of this component.
-    private Vector errorEventListeners;
+    private Vector<ErrorEventListener> errorEventListeners;
 
     // The index of the flashed row.
     protected int flashIndex = -1;
@@ -103,9 +103,9 @@ public class MemorySegmentComponent extends JPanel
      */
     public MemorySegmentComponent() {
         dataFormat = Format.DEC_FORMAT;
-        listeners = new Vector();
-        errorEventListeners = new Vector();
-        highlightIndex = new Vector();
+        listeners = new Vector<ComputerPartEventListener>();
+        errorEventListeners = new Vector<>();
+        highlightIndex = new Vector<Integer>();
         segmentTable = new JTable(getTableModel());
         segmentTable.setDefaultRenderer(segmentTable.getColumnClass(0), getCellRenderer());
         startEnabling = -1;
@@ -200,14 +200,14 @@ public class MemorySegmentComponent extends JPanel
     public void notifyListeners(int address, short value) {
         ComputerPartEvent event = new ComputerPartEvent(this, address, value);
         for (int i = 0; i < listeners.size(); i++) {
-            ((ComputerPartEventListener) listeners.elementAt(i)).valueChanged(event);
+            (listeners.elementAt(i)).valueChanged(event);
         }
     }
 
     public void notifyListeners() {
         ComputerPartEvent event = new ComputerPartEvent(this);
         for (int i = 0; i < listeners.size(); i++) {
-            ((ComputerPartEventListener) listeners.elementAt(i)).guiGainedFocus();
+            (listeners.elementAt(i)).guiGainedFocus();
         }
     }
 
@@ -233,7 +233,7 @@ public class MemorySegmentComponent extends JPanel
     public void notifyErrorListeners(String errorMessage) {
         ErrorEvent event = new ErrorEvent(this, errorMessage);
         for (int i = 0; i < errorEventListeners.size(); i++)
-            ((ErrorEventListener) errorEventListeners.elementAt(i)).errorOccured(event);
+            (errorEventListeners.elementAt(i)).errorOccured(event);
     }
 
     /**
@@ -295,7 +295,7 @@ public class MemorySegmentComponent extends JPanel
      * Highlights the value at the given index.
      */
     public void highlight(int index) {
-        highlightIndex.addElement(new Integer(index));
+        highlightIndex.addElement(index);
         repaint();
     }
 
@@ -563,7 +563,7 @@ public class MemorySegmentComponent extends JPanel
                 setHorizontalAlignment(SwingConstants.RIGHT);
 
                 for (int i = 0; i < highlightIndex.size(); i++) {
-                    if (row == ((Integer) highlightIndex.elementAt(i)).intValue()) {
+                    if (row == highlightIndex.elementAt(i)) {
                         setForeground(Color.blue);
                         break;
                     }

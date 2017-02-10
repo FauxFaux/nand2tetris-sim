@@ -28,7 +28,7 @@ import java.util.*;
 public class Graph {
 
     // The graph
-    private HashMap graph;
+    private HashMap<Object, HashSet<Object>> graph;
 
     // true if the graph has a circle
     private boolean hasCircle;
@@ -37,7 +37,7 @@ public class Graph {
      * Constructs a new empty Graph.
      */
     public Graph() {
-        graph = new HashMap();
+        graph = new HashMap<>();
     }
 
     /**
@@ -50,14 +50,14 @@ public class Graph {
         checkExistence(source);
         checkExistence(target);
 
-        Set edgeSet = (Set) graph.get(source);
+        Set<Object> edgeSet = graph.get(source);
         edgeSet.add(target);
     }
 
     // Checks whether the given object exists in the graph. If not, creates it.
     private void checkExistence(Object object) {
         if (!graph.keySet().contains(object)) {
-            HashSet edgeSet = new HashSet();
+            HashSet<Object> edgeSet = new HashSet<>();
             graph.put(object, edgeSet);
         }
     }
@@ -83,9 +83,9 @@ public class Graph {
     private boolean doPathExists(Object source, Object destination, Set marked) {
         boolean pathFound = false;
         marked.add(source);
-        Set edgeSet = (Set) graph.get(source);
+        Set<Object> edgeSet = graph.get(source);
         if (edgeSet != null) {
-            Iterator edgeIter = edgeSet.iterator();
+            Iterator<Object> edgeIter = edgeSet.iterator();
             while (edgeIter.hasNext() && !pathFound) {
                 Object currentNode = edgeIter.next();
                 pathFound = currentNode.equals(destination);
@@ -123,9 +123,9 @@ public class Graph {
     private void doTopologicalSort(Object node, Vector nodes, Set marked, Set processed) {
         marked.add(node);
         processed.add(node);
-        Set edgeSet = (Set) graph.get(node);
+        Set<Object> edgeSet = graph.get(node);
         if (edgeSet != null) {
-            Iterator edgeIter = edgeSet.iterator();
+            Iterator<Object> edgeIter = edgeSet.iterator();
             while (edgeIter.hasNext()) {
                 Object currentNode = edgeIter.next();
 

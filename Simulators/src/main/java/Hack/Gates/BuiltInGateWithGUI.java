@@ -33,7 +33,7 @@ import java.util.Vector;
 public abstract class BuiltInGateWithGUI extends BuiltInGate
     implements ErrorEventListener {
 
-    private Vector errorListeners;
+    private Vector<GateErrorEventListener> errorListeners;
 
     // The gate parent of this gate. re-evaluates when a change is done through the gui.
     protected Gate parent;
@@ -42,7 +42,7 @@ public abstract class BuiltInGateWithGUI extends BuiltInGate
      * Constructs a new BuiltInGateWithGUI.
      */
     public BuiltInGateWithGUI() {
-        errorListeners = new Vector();
+        errorListeners = new Vector<>();
     }
 
     /**
@@ -86,7 +86,7 @@ public abstract class BuiltInGateWithGUI extends BuiltInGate
         GateErrorEvent event = new GateErrorEvent(this, errorMessage);
 
         for (int i = 0; i < errorListeners.size(); i++)
-            ((GateErrorEventListener) errorListeners.elementAt(i)).gateErrorOccured(event);
+            (errorListeners.elementAt(i)).gateErrorOccured(event);
     }
 
     /**
@@ -96,7 +96,7 @@ public abstract class BuiltInGateWithGUI extends BuiltInGate
         GateErrorEvent event = new GateErrorEvent(this, null);
 
         for (int i = 0; i < errorListeners.size(); i++)
-            ((GateErrorEventListener) errorListeners.elementAt(i)).gateErrorOccured(event);
+            (errorListeners.elementAt(i)).gateErrorOccured(event);
     }
 
     /**

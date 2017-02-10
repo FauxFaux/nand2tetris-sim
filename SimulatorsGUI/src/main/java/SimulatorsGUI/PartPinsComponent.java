@@ -266,7 +266,7 @@ public class PartPinsComponent extends PinsComponent implements PartPinsGUI {
             } else {
                 setHorizontalAlignment(SwingConstants.RIGHT);
                 for (int i = 0; i < highlightIndex.size(); i++) {
-                    if (row == ((Integer) highlightIndex.elementAt(i)).intValue()) {
+                    if (row == highlightIndex.elementAt(i)) {
                         setForeground(Color.blue);
                         break;
                     } else

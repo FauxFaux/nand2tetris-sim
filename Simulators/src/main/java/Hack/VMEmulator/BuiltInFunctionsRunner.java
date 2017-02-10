@@ -170,7 +170,7 @@ public class BuiltInFunctionsRunner implements Runnable {
         Class[] paramsClasses = new Class[params.length];
         Object[] requestParams = new Object[params.length];
         for (int i = 0; i < params.length; ++i) {
-            requestParams[i] = new Short(params[i]);
+            requestParams[i] = params[i];
             paramsClasses[i] = short.class;
         }
 
@@ -280,11 +280,11 @@ public class BuiltInFunctionsRunner implements Runnable {
                         programToBuiltIn.params);
                 builtInToProgram.request = RETURN_REQUEST;
                 if (returnType == short.class) {
-                    builtInToProgram.returnValue = ((Short) returnValue).shortValue();
+                    builtInToProgram.returnValue = (Short) returnValue;
                 } else if (returnType == char.class) {
                     builtInToProgram.returnValue = (short) ((Character) returnValue).charValue();
                 } else if (returnType == boolean.class) {
-                    if (((Boolean) returnValue).booleanValue()) {
+                    if ((Boolean) returnValue) {
                         builtInToProgram.returnValue = (short) -1;
                     } else {
                         builtInToProgram.returnValue = 0;

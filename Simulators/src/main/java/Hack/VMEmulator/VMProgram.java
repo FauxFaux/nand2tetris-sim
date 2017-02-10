@@ -48,7 +48,7 @@ public class VMProgram extends InteractiveComputerPart
     private static final int BUILTIN_ACCESS_DENIED = 2;
 
     // listeners to program changes
-    private Vector listeners;
+    private Vector<ProgramEventListener> listeners;
 
     // The list of VM instructions
     private VMEmulatorInstruction[] instructions;
@@ -71,7 +71,7 @@ public class VMProgram extends InteractiveComputerPart
     private Hashtable staticRange;
 
     // Addresses of functions by name
-    private Hashtable functions;
+    private Hashtable<String, Short> functions;
     private short infiniteLoopForBuiltInsAddress;
 
     // The current index of the static variables
@@ -92,9 +92,9 @@ public class VMProgram extends InteractiveComputerPart
     public VMProgram(VMProgramGUI gui) {
         super(gui != null);
         this.gui = gui;
-        listeners = new Vector();
+        listeners = new Vector<>();
         staticRange = new Hashtable();
-        functions = new Hashtable();
+        functions = new Hashtable<>();
 
         if (hasGUI) {
             gui.addProgramListener(this);
@@ -133,14 +133,14 @@ public class VMProgram extends InteractiveComputerPart
         staticRange.clear();
         functions.clear();
         builtInAccessStatus = BUILTIN_ACCESS_UNDECIDED;
-        Hashtable symbols = new Hashtable();
+        Hashtable<String, Short> symbols = new Hashtable<>();
         nextPC = 0;
         for (int i = 0; i < files.length; i++) {
             String name = files[i].getName();
             String className = name.substring(0, name.indexOf("."));
             // put some dummy into static range - just to tell the function
             // getAddress in the second pass which classes exist
-            staticRange.put(className, new Boolean(true));
+            staticRange.put(className, Boolean.TRUE);
             try {
                 updateSymbolTable(files[i], symbols, functions);
             } catch (ProgramException pe) {
@@ -240,11 +240,11 @@ public class VMProgram extends InteractiveComputerPart
         }
 
         if (!addCallBuiltInSysInit) {
-            Short sysInitAddress = (Short) symbols.get("Sys.init");
+            Short sysInitAddress = symbols.get("Sys.init");
             if (sysInitAddress == null) // Single file, no Sys.init - start at 0
                 startAddress = 0;
             else // Implemented Sys.init - start there
-                startAddress = sysInitAddress.shortValue();
+                startAddress = sysInitAddress;
         }
 
         if (displayChanges)
@@ -257,7 +257,7 @@ public class VMProgram extends InteractiveComputerPart
     }
 
     // Scans the given file and creates symbols for its functions & label names.
-    private void updateSymbolTable(File file, Hashtable symbols, Hashtable functions) throws ProgramException {
+    private void updateSymbolTable(File file, Hashtable<String, Short> symbols, Hashtable<String, Short> functions) throws ProgramException {
         BufferedReader reader = null;
 
         try {
@@ -283,13 +283,13 @@ public class VMProgram extends InteractiveComputerPart
                         if (symbols.containsKey(currentFunction))
                             throw new ProgramException("subroutine " + currentFunction +
                                 " already exists");
-                        functions.put(currentFunction, new Short(nextPC));
-                        symbols.put(currentFunction, new Short(nextPC));
+                        functions.put(currentFunction, nextPC);
+                        symbols.put(currentFunction, nextPC);
                     } else if (line.startsWith("label ")) {
                         StringTokenizer tokenizer = new StringTokenizer(line);
                         tokenizer.nextToken();
                         label = currentFunction + "$" + tokenizer.nextToken();
-                        symbols.put(label, new Short((short) (nextPC + 1)));
+                        symbols.put(label, (short) (nextPC + 1));
                     }
 
                     nextPC++;
@@ -307,7 +307,7 @@ public class VMProgram extends InteractiveComputerPart
     }
 
     // Scans the given file and creates symbols for its functions & label names.
-    private void buildProgram(File file, Hashtable symbols)
+    private void buildProgram(File file, Hashtable<String, Short> symbols)
         throws ProgramException {
 
         BufferedReader reader = null;
@@ -426,11 +426,11 @@ public class VMProgram extends InteractiveComputerPart
 
                         case HVMInstructionSet.GOTO_CODE:
                             label = currentFunction + "$" + tokenizer.nextToken();
-                            Short labelAddress = (Short) symbols.get(label);
+                            Short labelAddress = symbols.get(label);
                             if (labelAddress == null)
                                 throw new ProgramException("in line " + lineNumber +
                                     ": Unknown label - " + label);
-                            arg0 = labelAddress.shortValue();
+                            arg0 = labelAddress;
 
                             if (arg0 < 0 || arg0 > Definitions.ROM_SIZE)
                                 throw new ProgramException("in line " + lineNumber +
@@ -442,12 +442,12 @@ public class VMProgram extends InteractiveComputerPart
 
                         case HVMInstructionSet.IF_GOTO_CODE:
                             label = currentFunction + "$" + tokenizer.nextToken();
-                            labelAddress = (Short) symbols.get(label);
+                            labelAddress = symbols.get(label);
                             if (labelAddress == null)
                                 throw new ProgramException("in line " + lineNumber +
                                     ": Unknown label - " + label);
 
-                            arg0 = labelAddress.shortValue();
+                            arg0 = labelAddress;
 
                             if (arg0 < 0 || arg0 > Definitions.ROM_SIZE)
                                 throw new ProgramException("in line " + lineNumber +
@@ -548,9 +548,9 @@ public class VMProgram extends InteractiveComputerPart
     }
 
     public short getAddress(String functionName) throws ProgramException {
-        Short address = (Short) functions.get(functionName);
+        Short address = functions.get(functionName);
         if (address != null) {
-            return address.shortValue();
+            return address;
         } else {
             String className =
                 functionName.substring(0, functionName.indexOf("."));
@@ -775,7 +775,7 @@ public class VMProgram extends InteractiveComputerPart
         ProgramEvent event = new ProgramEvent(this, eventType, programFileName);
 
         for (int i = 0; i < listeners.size(); i++) {
-            ((ProgramEventListener) listeners.elementAt(i)).programChanged(event);
+            (listeners.elementAt(i)).programChanged(event);
         }
     }
 }
